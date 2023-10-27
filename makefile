@@ -4,7 +4,7 @@ Cflags = -Wall
 allegro := $$(pkg-config allegro-5 allegro_main-5 allegro_font-5 --libs $(Cflags))
 
 #arquivos objeto
-objects = main.o ship.o enemy.o space.o
+objects = main.o ship.o enemy.o space.o shots.o
 
 all: space_invaders
 
@@ -21,6 +21,9 @@ enemy.o: enemy.c
 	$(CC) -c $(Cflags) $^
 
 space.o: space.c
+	$(CC) -c $(Cflags) $^
+
+shots.o: shots.c
 	$(CC) -c $(Cflags) $^
 
 clean:

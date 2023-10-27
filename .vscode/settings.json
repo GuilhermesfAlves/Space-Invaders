@@ -1,0 +1,7 @@
+{
+    "files.associations": {
+        "space.h": "c",
+        "shots.h": "c",
+        "enemy.h": "c"
+    }
+}

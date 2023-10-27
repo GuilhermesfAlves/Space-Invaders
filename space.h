@@ -1,6 +1,9 @@
 #ifndef __SPACE__
 #define __SPACE__
 
+#define UP -1
+#define DOWN 1
+
 typedef struct {
 	void *entity;
 	enum {ENEMY, OBSTACLE, SHIP} type;
