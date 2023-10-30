@@ -1,4 +1,3 @@
-#include <stdlib.h>
 #include "enemy.h"
 
 int enemy_move(space *board, enemy *alien, int move_y, int move_x){
@@ -12,19 +11,26 @@ int enemy_move(space *board, enemy *alien, int move_y, int move_x){
 		return STAY;
 
 	if ((move_x) && in_limits(board, pos_y, pos_x + move_x)){
-		board -> map[pos_y][pos_x + move_x].entity = board -> map[pos_y][pos_x].entity;
+		if (board -> map[pos_y][pos_x + move_x].type == ENEMY)
+			return STAY;
+		board -> map[pos_y][pos_x + move_x].entity = alien;
 		board -> map[pos_y][pos_x + move_x].type = ENEMY;
 		alien -> pos_x = pos_x + move_x;
+		board -> map[pos_x][pos_y].entity = NULL;
+		board -> map[pos_x][pos_y].type = VACUUM;
 		return (move_x > 0)? LEFT: RIGHT;
 	}
 	if ((move_y) && (in_limits(board, pos_y + move_y, pos_x))){
-		board -> map[pos_y + move_y][pos_x].entity = board -> map[pos_y][pos_x].entity;
+		if (board -> map[pos_y][pos_x + move_x].type == ENEMY)
+			return STAY;
+		board -> map[pos_y + move_y][pos_x].entity = alien;
 		board -> map[pos_y + move_y][pos_x].type = ENEMY;
 		alien -> pos_y = pos_y + move_y;
+		board -> map[pos_x][pos_y].entity = NULL;
+		board -> map[pos_x][pos_y].type = VACUUM;
 		return (move_y > 0)? UP: DOWN;
 	}
-	board -> map[pos_x][pos_y].entity = NULL;
-	board -> map[pos_x][pos_y].type = VACUUM;
+	return STAY;
 }
 
 //IMPLEMENTAR!

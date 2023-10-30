@@ -5,11 +5,11 @@ void ship_move(space *board, ship_t* ship){
 	if (board -> map[ship -> pos_x][ship -> pos_y].type != SHIP)
 		return;
 
-	if ((ship -> move != 0) && (in_limits(board, ship -> pos_y, ship -> pos_x + ship -> move))){
-		board -> map[ship -> pos_x + ship -> move][ship -> pos_y].entity = board -> map[ship -> pos_x][ship -> pos_y].entity;
-		board -> map[ship -> pos_x + ship -> move][ship -> pos_y].type = SHIP;
-		board -> map[ship -> pos_x][ship -> pos_y].entity = NULL;
-		board -> map[ship -> pos_x][ship -> pos_y].type = VACUUM;
+	if ((ship -> move != 0) && (in_limits(board, ship -> pos_y, ship -> pos_x + ship -> move)) && (board -> map[ship -> pos_y][ship -> pos_x + ship -> move].entity == NULL)){
+		board -> map[ship -> pos_y][ship -> pos_x + ship -> move].entity = board -> map[ship -> pos_y][ship -> pos_x].entity;
+		board -> map[ship -> pos_y][ship -> pos_x + ship -> move].type = SHIP;
+		board -> map[ship -> pos_y][ship -> pos_x].entity = NULL;
+		board -> map[ship -> pos_y][ship -> pos_x].type = VACUUM;
 		ship -> move += (ship -> move > 0)? -1: 1;
 	}
 }

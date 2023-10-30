@@ -7,6 +7,8 @@
 #define LEFT -1
 #define STAY 0
 
+#include <stdlib.h>
+
 typedef struct {
 	void *entity;
 	enum {VACUUM, ENEMY, OBSTACLE, SHIP} type;

@@ -1,5 +1,4 @@
 #include "shots.h"
-#include <stdlib.h>
 
 shot_sentinel* create_shotlist(void){
 	shot_sentinel* list; 

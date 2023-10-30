@@ -7,7 +7,7 @@ typedef struct shot{
 	int pos_x;
 	int pos_y;
 	int trajectory;
-	shot_t *next;
+	struct shot *next;
 }shot_t;
 
 typedef struct shot_sentinel{

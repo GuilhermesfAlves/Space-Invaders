@@ -1,5 +1,3 @@
-#include <stdlib.h>
-#include <stdio.h>
 #include "space.h"
 #include "enemy.h"
 
@@ -25,9 +23,9 @@ space* create_board(int max_y, int max_x, int enemy_lines){
 	space* board;
 
 	if ((max_x <= 0) || (max_y <= 0)) 
-		return 0;
+		return NULL;
 	if (enemy_lines > max_y) 
-		return 0;
+		return NULL;
 	
 	board = generate_board(max_y, max_x);
 	for (int i = 0; i <= enemy_lines; i++) 
@@ -60,6 +58,7 @@ void destroy_board(space* board){
 
 int in_limits(space* board, int pos_y, int pos_x){
 
-	return ((board -> max_x < pos_x) || (board -> max_x < pos_y)\
+	return ((board -> max_x < pos_x)\
+	 || (board -> max_x < pos_y)\
 	 || (pos_y < 0) || (pos_x < 0))? 0: 1;
 }
