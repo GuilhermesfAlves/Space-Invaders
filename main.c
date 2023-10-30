@@ -1,5 +1,6 @@
 #include <allegro5/allegro5.h>
 #include <allegro5/allegro_font.h>
+#include <allegro5/allegro_image.h>
 #include <stdio.h>
 
 int main(){
@@ -12,6 +13,7 @@ int main(){
     ALLEGRO_DISPLAY* disp = al_create_display(1920, 1080);
     ALLEGRO_FONT* font = al_create_builtin_font();
     ALLEGRO_BITMAP *logo = al_load_bitmap("SPACE_INVADERS_LOGO2.bmp");
+
 
     if (!logo)
         printf("não tem img\n");
