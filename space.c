@@ -57,3 +57,9 @@ void destroy_board(space* board){
 	free(board -> map);
 	free(board);
 }
+
+int in_limits(space* board, int pos_y, int pos_x){
+
+	return ((board -> max_x < pos_x) || (board -> max_x < pos_y)\
+	 || (pos_y < 0) || (pos_x < 0))? 0: 1;
+}

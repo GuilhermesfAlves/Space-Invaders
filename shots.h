@@ -4,8 +4,8 @@
 #include "space.h"
 
 typedef struct shot{
-	int position_x;
-	int position_y;
+	int pos_x;
+	int pos_y;
 	int trajectory;
 	shot_t *next;
 }shot_t;

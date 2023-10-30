@@ -53,13 +53,13 @@ void update_shots(space *board, shot_sentinel *list){
 	prev = NULL;
 
 	while (aux){
-		if ((aux -> position_y + DOWN > board -> max_y)\
-		 || (board -> map[aux -> position_y + DOWN][aux -> position_x].type == OBSTACLE)\
-		 || (board -> map[aux -> position_y + DOWN][aux -> position_x].type == SHIP))
+		if ((aux -> pos_y + aux -> trajectory > board -> max_y)\
+		 || (board -> map[aux -> pos_y + aux -> trajectory][aux -> pos_x].type == OBSTACLE)\
+		 || (board -> map[aux -> pos_y + aux -> trajectory][aux -> pos_x].type == SHIP))
 			aux = remove_shot(aux, prev, list);
 		
 		else{
-			aux -> position_y++;
+			aux -> pos_y++;
 			aux = aux -> next;
 		}
 
