@@ -10,7 +10,7 @@ int enemy_move(space *board, enemy *alien, int move_y, int move_x){
 	if ((move_x == 0) && (move_y == 0))
 		return STAY;
 
-	if ((move_x) && in_limits(board, pos_y, pos_x + move_x)){
+	if ((move_x != 0) && in_limits(board, pos_y, pos_x + move_x)){
 		if (board -> map[pos_y][pos_x + move_x].type == ENEMY)
 			return STAY;
 		board -> map[pos_y][pos_x + move_x].entity = alien;
@@ -20,7 +20,7 @@ int enemy_move(space *board, enemy *alien, int move_y, int move_x){
 		board -> map[pos_x][pos_y].type = VACUUM;
 		return (move_x > 0)? LEFT: RIGHT;
 	}
-	if ((move_y) && (in_limits(board, pos_y + move_y, pos_x))){
+	if ((move_y != 0) && (in_limits(board, pos_y + move_y, pos_x))){
 		if (board -> map[pos_y][pos_x + move_x].type == ENEMY)
 			return STAY;
 		board -> map[pos_y + move_y][pos_x].entity = alien;
