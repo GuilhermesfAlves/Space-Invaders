@@ -1,7 +1,6 @@
 #include <allegro5/allegro5.h>
 #include <allegro5/allegro_font.h>
 #include <allegro5/allegro_image.h>
-#include <stdio.h>
 
 /*           ____                                                   */ 
 /*         /\  __`\                                                 */
@@ -38,6 +37,7 @@ int main(){
     int frame = 0;
     int move = 0;
     char start = 0;
+    char exit = 0;
 
     al_register_event_source(queue, al_get_keyboard_event_source());
     al_register_event_source(queue, al_get_display_event_source(disp));
@@ -50,12 +50,16 @@ int main(){
             frame = 0;
         
         if (start)
-            move += 2;
+            move += 3;
 
         if ((event.type == ALLEGRO_EVENT_KEY_DOWN) && (event.keyboard.keycode == ALLEGRO_KEY_SPACE))
             start = 1;
 
-        if ((event.type == ALLEGRO_EVENT_DISPLAY_CLOSE) || (move == 1000))
+        if (event.type == ALLEGRO_EVENT_DISPLAY_CLOSE){
+            exit = 1;
+            break;
+        }
+        if (move == 700)
             break;
 
         if ((event.type == ALLEGRO_EVENT_TIMER) && (al_is_event_queue_empty(queue))){
@@ -67,6 +71,10 @@ int main(){
         frame++;
     }
     al_destroy_bitmap(logo);
+    if (!exit)
+        while(1){
+            //jogo
+        }
     al_destroy_font(font);
     al_destroy_display(disp);
     al_destroy_timer(timer);

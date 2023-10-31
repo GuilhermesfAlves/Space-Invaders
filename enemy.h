@@ -4,6 +4,7 @@
 #include "shots.h"
 
 typedef struct enemy{
+	enum {EASY, MEDIUM, HARD} type;
 	int pos_x;
 	int pos_y;
 } enemy;

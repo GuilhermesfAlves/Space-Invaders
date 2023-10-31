@@ -62,7 +62,7 @@ shot_t* straight_shoot(space *board, shot_sentinel *list, enemy *shooter){
 
 //IMPLEMENTAR!
 //Adiciona um inimigo no tabuleiro. Essa tarefa inclui a alocação do mesmo
-int add_enemy(space *board, int pos_y, int pos_x){
+int add_enemy(space *board, int pos_y, int pos_x, int type){
 	enemy* new;
 
 	if (!in_limits(board,pos_y,pos_x))
@@ -71,6 +71,7 @@ int add_enemy(space *board, int pos_y, int pos_x){
 	if (!(new = malloc(sizeof(enemy))))
 		return 0;
 
+	new -> type = type;
 	new -> pos_x = pos_x;
 	new -> pos_y = pos_y;
 
