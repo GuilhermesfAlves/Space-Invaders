@@ -1,6 +1,9 @@
 {
     "files.associations": {
         "shots.h": "c",
-        "space.h": "c"
+        "space.h": "c",
+        "ship.h": "c",
+        "stdlib.h": "c",
+        "enemy.h": "c"
     }
 }

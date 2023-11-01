@@ -1,18 +1,4 @@
-#include "ship.h"
-
-void ship_move(space *board, ship_t* ship){
-
-	if (board -> map[ship -> pos_x][ship -> pos_y].type != SHIP)
-		return;
-
-	if ((ship -> move != 0) && (in_limits(board, ship -> pos_y, ship -> pos_x + ship -> move)) && (board -> map[ship -> pos_y][ship -> pos_x + ship -> move].entity == NULL)){
-		board -> map[ship -> pos_y][ship -> pos_x + ship -> move].entity = board -> map[ship -> pos_y][ship -> pos_x].entity;
-		board -> map[ship -> pos_y][ship -> pos_x + ship -> move].type = SHIP;
-		board -> map[ship -> pos_y][ship -> pos_x].entity = NULL;
-		board -> map[ship -> pos_y][ship -> pos_x].type = VACUUM;
-		ship -> move += (ship -> move > 0)? -1: 1;
-	}
-}
+#include "../headers/ship.h"
 
 shot_t* ship_straight_shoot(space *board, shot_sentinel *list, ship_t *ship){
 	shot_t* new_shot;

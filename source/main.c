@@ -21,8 +21,8 @@ void START_ALERT(ALLEGRO_FONT* font, int frame, int move){
     if ((!move) && ((frame < 40) || ((frame > 80) && (frame < 120)) || ((frame > 160) && (frame < 200))))
         al_draw_text(font, al_map_rgb(255, 255, 255), 960, 960 - move, ALLEGRO_ALIGN_CENTRE, "Press SPACE to Start!");
 }
-
-
+ 
+  
 int main(){
     al_init();
     al_install_keyboard();
@@ -59,7 +59,7 @@ int main(){
             exit = 1;
             break;
         }
-        if (move == 700)
+        if (move == 720)
             break;
 
         if ((event.type == ALLEGRO_EVENT_TIMER) && (al_is_event_queue_empty(queue))){

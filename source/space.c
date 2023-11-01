@@ -1,5 +1,5 @@
-#include "space.h"
-#include "enemy.h"
+#include "../headers/space.h"
+#include "../headers/enemy.h"
 
 // Biblioteca que cria e gerencia um tabuleiro dado seu tamanho
 // O tabuleiro tem índices [0,X+1] e [0,Y+1] - ou seja, tamanho, em linhas, de X+2; e em colunas, de Y+2,
@@ -30,11 +30,11 @@ space* create_board(int max_y, int max_x, int enemy_lines){
 	board = generate_board(max_y, max_x);
 	for (int i = 0; i <= enemy_lines; i++) 
 		for (int j = 0; j <= max_x; j++) 
-			add_enemy(board, i, j);
+			add_enemy(board, i, j, 1);
 	
 	return board;
 }
-
+ 
 void clean_board(space *board){
 	
 	for (int i = 0; i <= board -> max_y; i++){

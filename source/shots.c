@@ -1,6 +1,6 @@
-#include "shots.h"
-#include "ship.h"
-#include "enemy.h"
+#include "../headers/shots.h"
+#include "../headers/ship.h"
+#include "../headers/enemy.h"
 
 shot_sentinel* create_shotlist(void){
 	shot_sentinel* list; 

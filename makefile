@@ -4,27 +4,20 @@ Cflags = -Wall
 allegro := $$(pkg-config allegro-5 allegro_main-5 allegro_font-5 allegro_image-5 --libs --cflags)
 
 #arquivos objeto
-objects = main.o ship.o enemy.o space.o shots.o
+SOURCES = $(wildcard $(SRC_DIR)/*.c)
+OBJECTS = $(SOURCES:$(SRC_DIR)/%.c=$(OBJ_DIR)/%.o)
+OBJ_DIR = objects
+SRC_DIR = source
+TARGET = space_invaders
 
-all: space_invaders
+all: $(TARGET)
 
-space_invaders: $(objects)
+$(TARGET): $(OBJECTS)
 	$(CC) -o $@ $^ $(allegro)
 
-main.o: main.c
-	$(CC) -c $(Cflags) $^ 
-
-ship.o: ship.c
-	$(CC) -c $(Cflags) $^
-
-enemy.o: enemy.c
-	$(CC) -c $(Cflags) $^
-
-space.o: space.c
-	$(CC) -c $(Cflags) $^
-
-shots.o: shots.c
-	$(CC) -c $(Cflags) $^
+$(OBJ_DIR)/%.o: $(SRC_DIR)/%.c
+	@mkdir -p $(OBJ_DIR)
+	$(CC) $(CFLAGS) -c $< -o $@
 
 clean:
-	remove -f $(objects) space_invaders
+	rm -rf $(OBJ_DIR) $(TARGET)
