@@ -6,16 +6,17 @@
 #define RIGHT 1
 #define LEFT -1
 #define STAY 0
-#include <enemy.h>
 #include <stdlib.h>
-#include <ship.h>
-
+#include "enemy.h"
+#include "ship.h"
+#include "obstacles.h"
 
 typedef struct {
-	enemy **map;
+	enemy ***map;
 	int max_x;
 	int max_y;
 	ship *ship;
+	obstacles *obstacles;
 } space;
 
 space* create_board(int max_y, int max_x, int enemy_lines);

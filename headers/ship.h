@@ -6,7 +6,7 @@
 
 typedef struct{
     int life;
-    short move;
+    unsigned char move;
     int pos_x;
     int pos_y;
 }ship;

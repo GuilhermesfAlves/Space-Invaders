@@ -10,7 +10,7 @@ typedef struct{
 } enemy;
 
 shot* enemy_straight_shoot(space *board, shot_sentinel *list, enemy *shooter);
-int add_enemy(space *board, int pos_y, int pos_x, int type);
-int remove_enemy(space *board, int pos_y, int pos_x);
+enemy* add_enemy(int pos_y, int pos_x, int type);
+void remove_enemy(space *board, int i, int j);
 
 #endif
