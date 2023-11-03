@@ -1,7 +1,7 @@
 CC = gcc
 Cflags = -Wall
 #Para compilação dos programas que usam allegro5.h
-allegro := $$(pkg-config allegro-5 allegro_main-5 allegro_font-5 allegro_image-5 --libs --cflags)
+allegro := $$(pkg-config allegro-5 allegro_main-5 allegro_font-5 allegro_image-5 allegro_primitives-5 --libs --cflags)
 
 #arquivos objeto
 SOURCES = $(wildcard $(SRC_DIR)/*.c)
