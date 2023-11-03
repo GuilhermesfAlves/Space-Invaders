@@ -45,7 +45,7 @@ void START_ALERT(ALLEGRO_FONT* font, ALLEGRO_DISPLAY_MODE disp_data, int frame, 
 }
  
 void update_joystick(joystick* joystick, theme* theme){
-    if (joystick -> TAB) theme -> actual = (theme -> actual >= theme -> max)? 0 : theme -> actual + 1;
+    if (joystick -> TAB) theme -> actual = (theme -> actual >= theme -> max - 1)? 0 : theme -> actual + 1; joystick -> TAB = 0;
 } 
 
 joystick* inicia_joystick(){
@@ -99,39 +99,39 @@ theme* create_themes(){
     new_theme -> vec[1].secondary = al_map_rgb(135,21,69);
     new_theme -> vec[1].back_theme = al_map_rgb(38,0,55);
     new_theme -> vec[2].set = RED_B;
-    new_theme -> vec[2].name = strdup("RED & BLACK");
+    new_theme -> vec[2].name = strdup("BLUE & BLACK");
     new_theme -> vec[2].primary = al_map_rgb(0,255,255);
     new_theme -> vec[2].secondary = al_map_rgb(0,146,146);
     new_theme -> vec[2].back_theme = al_map_rgb(23,23,23);
     new_theme -> vec[3].set = GREEN_B;
-    new_theme -> vec[3].name = strdup("GREEN & BLACK");
+    new_theme -> vec[3].name = strdup("RED & BLACK");
     new_theme -> vec[3].primary = al_map_rgb(255,82,82);
     new_theme -> vec[3].secondary = al_map_rgb(150,47,47);
     new_theme -> vec[3].back_theme = al_map_rgb(23,23,23);
     new_theme -> vec[4].set = BLUE_B;
-    new_theme -> vec[4].name = strdup("BLUE & BLACK");
+    new_theme -> vec[4].name = strdup("GREEN & BLACK");
     new_theme -> vec[4].primary = al_map_rgb(187,225,107);
     new_theme -> vec[4].secondary = al_map_rgb(102,137,57);
     new_theme -> vec[4].back_theme = al_map_rgb(23,23,23);
     new_theme -> vec[5].set = ORANG_W;
-    new_theme -> vec[5].name = strdup("ORANGE & WHITE");
+    new_theme -> vec[5].name = strdup("ORANGE & GRAY");
     new_theme -> vec[5].primary = al_map_rgb(255,142,37);
     new_theme -> vec[5].secondary = al_map_rgb(135,75,20);
     new_theme -> vec[5].back_theme = al_map_rgb(53,51,51);
     new_theme -> vec[6].set = RED_W;
-    new_theme -> vec[6].name = strdup("RED & WHITE");
-    new_theme -> vec[6].primary = al_map_rgb(0,255,255);
-    new_theme -> vec[6].secondary = al_map_rgb(0,146,146);
+    new_theme -> vec[6].name = strdup("BLUE & WHITE");
+    new_theme -> vec[6].primary = al_map_rgb(0,146,146);
+    new_theme -> vec[6].secondary = al_map_rgb(0,255,255);
     new_theme -> vec[6].back_theme = al_map_rgb(239,239,239);
     new_theme -> vec[7].set = GREEN_W;
-    new_theme -> vec[7].name = strdup("GREEN & WHITE");
-    new_theme -> vec[7].primary = al_map_rgb(255,82,82);
-    new_theme -> vec[7].secondary = al_map_rgb(150,47,47);
+    new_theme -> vec[7].name = strdup("RED & WHITE");
+    new_theme -> vec[7].primary = al_map_rgb(150,47,47);
+    new_theme -> vec[7].secondary = al_map_rgb(255,82,82);
     new_theme -> vec[7].back_theme = al_map_rgb(239,239,239);
     new_theme -> vec[8].set = BLUE_W;
-    new_theme -> vec[8].name = strdup("BLUE & WHITE");
-    new_theme -> vec[8].primary = al_map_rgb(187,225,107);
-    new_theme -> vec[8].secondary = al_map_rgb(102,137,57);
+    new_theme -> vec[8].name = strdup("GREEN & WHITE");
+    new_theme -> vec[8].primary = al_map_rgb(102,137,57);
+    new_theme -> vec[8].secondary = al_map_rgb(187,225,107);
     new_theme -> vec[8].back_theme = al_map_rgb(239,239,239);
     return new_theme;
 }
@@ -197,11 +197,11 @@ int main(){
             START_ALERT(font, disp_data, frame, move);
             al_flip_display();
         }
-        if ((event.type == ALLEGRO_EVENT_KEY_DOWN) || (event.type == ALLEGRO_EVENT_KEY_UP)){
-            if (event.keyboard.keycode == ALLEGRO_KEY_TAB) joystick -> TAB = joystick -> TAB ^ 1;
-            if (event.keyboard.keycode == ALLEGRO_KEY_ENTER) joystick -> ENTER = joystick -> ENTER ^ 1;
-            if (event.keyboard.keycode == ALLEGRO_KEY_LEFT) joystick -> LEFT = joystick -> LEFT ^ 1;
-            if (event.keyboard.keycode == ALLEGRO_KEY_RIGHT) joystick -> RIGHT = joystick -> RIGHT ^ 1;
+        else if ((event.type == ALLEGRO_EVENT_KEY_DOWN)){
+            if (event.keyboard.keycode == ALLEGRO_KEY_TAB) joystick -> TAB = 1;
+            else if (event.keyboard.keycode == ALLEGRO_KEY_ENTER) joystick -> ENTER = 1;
+            else if (event.keyboard.keycode == ALLEGRO_KEY_LEFT) joystick -> LEFT = 1;
+            else if (event.keyboard.keycode == ALLEGRO_KEY_RIGHT) joystick -> RIGHT =1;
         }
         frame++;
     }
