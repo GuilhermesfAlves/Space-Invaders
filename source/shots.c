@@ -16,7 +16,7 @@ shot_sentinel* create_shotlist(void){
 
 //IMPLEMENTAR!
 //	Remove os tiros da lista
-shot_t* remove_shot(shot_t* current, shot_t* previous, shot_sentinel *list){
+shot* remove_shot(shot* current, shot* previous, shot_sentinel *list){
 	
 	if (current == list -> last)
 		list -> last = previous;
@@ -31,10 +31,10 @@ shot_t* remove_shot(shot_t* current, shot_t* previous, shot_sentinel *list){
 }
 
 void clean_shots(shot_sentinel *list){
-	shot_t *p;
-	shot_t *q;
+	shot *p;
+	shot *q;
 
-	p = (shot_t*) list -> first;
+	p = (shot*) list -> first;
 	q = NULL;
 	
 	while (p)
@@ -46,30 +46,30 @@ void clean_shots(shot_sentinel *list){
 //  Se o tiro acertar um alvo, ou sair do tabuleiro, ele deve ser removido da lista
 //  Caso contrário, ele deve "andar" uma casa (sqm) à frente
 void update_shots(space *board, shot_sentinel *list){
-	shot_t* prev;
-	shot_t* aux;
+	shot* prev;
+	shot* aux;
 	int i = 0;
 
 	aux = list -> first;
 	prev = NULL;
 
 	while (aux){
-		if (aux -> pos_y + aux -> trajectory > board -> max_y)
-			aux = remove_shot(aux, prev, list);
-		else if (board -> map[aux -> pos_y + aux -> trajectory][aux -> pos_x].type == OBSTACLE){
-			// board -> map[aux -> pos_y + aux -> trajectory][aux -> pos_x].type DIMINUI A VIDA
-			//CONFERE SE AINDA HÁ VIDA
-			aux = remove_shot(aux, prev, list);
-		}
-		else if (board -> map[aux -> pos_y + aux -> trajectory][aux -> pos_x].type == SHIP){
-			//board -> map[aux -> pos_y + aux -> trajectory][aux -> pos_x].entity DIMINUI VIDA
-			//CONFERE SE AINDA HÁ VIDA
-			aux = remove_shot(aux, prev, list);
-		}
-		else{
-			aux -> pos_y++;
-			aux = aux -> next;
-		}
+		// if (aux -> pos_y + aux -> trajectory > board -> max_y)
+		// 	aux = remove_shot(aux, prev, list);
+		// else if (board -> map[aux -> pos_y + aux -> trajectory][aux -> pos_x].type == OBSTACLE){
+		// 	// board -> map[aux -> pos_y + aux -> trajectory][aux -> pos_x].type DIMINUI A VIDA
+		// 	//CONFERE SE AINDA HÁ VIDA
+		// 	aux = remove_shot(aux, prev, list);
+		// }
+		// else if (board -> map[aux -> pos_y + aux -> trajectory][aux -> pos_x].type == SHIP){
+		// 	//board -> map[aux -> pos_y + aux -> trajectory][aux -> pos_x].entity DIMINUI VIDA
+		// 	//CONFERE SE AINDA HÁ VIDA
+		// 	aux = remove_shot(aux, prev, list);
+		// }
+		// else{
+		// 	aux -> pos_y++;
+		// 	aux = aux -> next;
+		// }
 
 		if ((!prev) && (list -> first != aux))
 			prev = list -> first;

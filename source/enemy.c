@@ -3,8 +3,8 @@
 
 //IMPLEMENTAR!
 //Adiciona um novo tiro à lista. Neste momento, todos os tiros se movem apenas para frente
-shot_t* straight_shoot(space *board, shot_sentinel *list, enemy *shooter){
-	shot_t* new;
+shot* straight_shoot(space *board, shot_sentinel *list, enemy *shooter){
+	shot* new;
 
 	if (board -> max_y < shooter -> pos_y + DOWN)
 		return NULL;
@@ -12,7 +12,7 @@ shot_t* straight_shoot(space *board, shot_sentinel *list, enemy *shooter){
 	if (board -> map[shooter -> pos_y + DOWN][shooter -> pos_x].entity)
 		return NULL;
 		
-	if (!(new = (shot_t*) malloc(sizeof(shot_t))))
+	if (!(new = (shot*) malloc(sizeof(shot))))
         return NULL;
 	new -> pos_x = shooter -> pos_x;
 	new -> pos_y = shooter -> pos_y + DOWN;
@@ -44,7 +44,7 @@ int add_enemy(space *board, int pos_y, int pos_x, int type){
 	new -> pos_y = pos_y;
 
 	board -> map[pos_y][pos_x].entity = new;
-	board -> map[pos_y][pos_x].type = ENEMY;
+	//board -> map[pos_y][pos_x].type = ENEMY;
 	return 1;
 }
 

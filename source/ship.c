@@ -1,12 +1,12 @@
 #include "../headers/ship.h"
 
-shot_t* ship_straight_shoot(space *board, shot_sentinel *list, ship_t *ship){
-	shot_t* new_shot;
+shot* ship_straight_shoot(space *board, shot_sentinel *list, ship *ship){
+	shot* new_shot;
 		
-	if (board -> map[ship -> pos_y + UP][ship -> pos_x].entity)
+	//if (board -> map[ship -> pos_y + UP][ship -> pos_x].entity)
 		return NULL;
 		
-	if (!(new_shot = (shot_t*) malloc(sizeof(shot_t))))
+	if (!(new_shot = (shot*) malloc(sizeof(shot))))
         return NULL;
 	new_shot -> pos_x = ship -> pos_x;
 	new_shot -> pos_y = ship -> pos_y + UP;
@@ -22,10 +22,10 @@ shot_t* ship_straight_shoot(space *board, shot_sentinel *list, ship_t *ship){
 	return new_shot;	
 }
 
-ship_t* add_ship(int pos_x, int pos_y){
-    ship_t* new_ship;
+ship* add_ship(int pos_x, int pos_y){
+    ship* new_ship;
 
-    if(!(new_ship = (ship_t*) malloc(sizeof(ship_t))))
+    if(!(new_ship = (ship*) malloc(sizeof(ship))))
         return NULL;
 
     new_ship -> life = 3;
@@ -36,7 +36,7 @@ ship_t* add_ship(int pos_x, int pos_y){
     return new_ship;
 }
 
-void remove_ship(ship_t* ship){
+void remove_ship(ship* ship){
     
     free(ship);
 }

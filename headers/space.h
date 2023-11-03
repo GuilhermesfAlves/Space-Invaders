@@ -6,18 +6,16 @@
 #define RIGHT 1
 #define LEFT -1
 #define STAY 0
-
+#include <enemy.h>
 #include <stdlib.h>
+#include <ship.h>
+
 
 typedef struct {
-	void *entity;
-	enum {VACUUM, ENEMY, OBSTACLE, SHIP} type;
-} sqm;
-
-typedef struct {
-	sqm **map;
+	enemy **map;
 	int max_x;
 	int max_y;
+	ship *ship;
 } space;
 
 space* create_board(int max_y, int max_x, int enemy_lines);

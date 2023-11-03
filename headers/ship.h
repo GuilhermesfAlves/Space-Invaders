@@ -4,16 +4,16 @@
 #include <stdlib.h>
 #include "shots.h"
 
-typedef struct ship{
+typedef struct{
     int life;
     short move;
     int pos_x;
     int pos_y;
-}ship_t;
+}ship;
 
-shot_t* ship_straight_shoot(space *board, shot_sentinel *list, ship_t *shooter);
+shot* ship_straight_shoot(space *board, shot_sentinel *list, ship *shooter);
 
-ship_t* add_ship(int pos_x, int pos_y);
-void remove_ship(ship_t* ship);
+ship* add_ship(int pos_x, int pos_y);
+void remove_ship(ship* ship);
 
 #endif //__SHIP__
