@@ -24,6 +24,8 @@ shot* destroy_shot(shot* current, shot* previous, shot_sentinel *list){
 	else
 		list -> first = current -> next;
 
+	al_destroy_bitmap(current -> img1);
+	al_destroy_bitmap(current -> img2);
 	free(current);
 	return (previous)? previous -> next: list -> first;
 }

@@ -7,10 +7,10 @@ game* add_game(unsigned char difficult, set_theme *theme, ALLEGRO_DISPLAY_MODE *
     if(!(new_game = (game*) malloc(sizeof(game))))
         return NULL;
 
-    new_game -> limits.min_x = 50;
-    new_game -> limits.min_y = 60;
-    new_game -> limits.max_x = disp_mode -> width - 50;
-    new_game -> limits.max_y = disp_mode -> height - 60;
+    new_game -> limits.min_width = 50;
+    new_game -> limits.min_height = 60;
+    new_game -> limits.max_width = disp_mode -> width - 50;
+    new_game -> limits.max_height = disp_mode -> height - 60;
     new_game -> difficult = difficult;
     new_game -> joystick = add_joystick();
     new_game -> points = 0;
@@ -22,4 +22,7 @@ game* add_game(unsigned char difficult, set_theme *theme, ALLEGRO_DISPLAY_MODE *
 
 void destroy_game(game* game){
 
+    destroy_joystick(game -> joystick);
+    destroy_board(game -> space);
+    free(game);
 }

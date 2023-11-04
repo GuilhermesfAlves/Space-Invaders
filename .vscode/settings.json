@@ -8,6 +8,9 @@
         "design.h": "c",
         "obstacles.h": "c",
         "headers.h": "c",
-        "theme.h": "c"
+        "theme.h": "c",
+        "allegro_primitives.h": "c",
+        "allegro_image.h": "c",
+        "allegro5.h": "c"
     }
 }

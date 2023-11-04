@@ -8,11 +8,17 @@
 #define STAY 0
 #include <stdlib.h>
 
+#include <allegro5/allegro5.h>
+#include <allegro5/allegro_image.h>
+
+
 typedef struct{
 	int pos_x;
 	int pos_y;
 	int trajectory;
-	struct shot *next;
+	shot *next;
+	ALLEGRO_BITMAP *img1;
+	ALLEGRO_BITMAP *img2;
 }shot;
 
 typedef struct{

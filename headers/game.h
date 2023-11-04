@@ -5,8 +5,6 @@
 #include "joystick.h"
 #include "theme.h"
 
-
-
 typedef struct{
     int points;
     unsigned char difficult;
