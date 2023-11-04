@@ -1,15 +1,17 @@
 #ifndef __SI_SPACE__
 #define __SI_SPACE__
 
-#define UP -1
-#define DOWN 1
-#define RIGHT 1
-#define LEFT -1
-#define STAY 0
 #include <stdlib.h>
 #include "enemy.h"
 #include "ship.h"
 #include "obstacles.h"
+
+typedef struct{
+    int min_x;
+    int max_x;
+    int min_y;
+    int max_y;
+}limits;
 
 typedef struct {
 	enemy ***map;
@@ -19,7 +21,8 @@ typedef struct {
 	obstacles *obstacles;
 } space;
 
-space* create_board(int max_y, int max_x, int enemy_lines);
+space* generate_board(int max_y, int max_x);
+space* create_board(unsigned char difficult, limits limits);
 void clean_board(space *board);
 void destroy_board(space *board);
 

@@ -1,10 +1,7 @@
 #include "../headers/ship.h"
 
-shot* ship_straight_shoot(space *board, shot_sentinel *list, ship *ship){
+shot* ship_straight_shoot(shot_sentinel *list, ship *ship){
 	shot* new_shot;
-		
-	//if (board -> map[ship -> pos_y + UP][ship -> pos_x].entity)
-		return NULL;
 		
 	if (!(new_shot = (shot*) malloc(sizeof(shot))))
         return NULL;

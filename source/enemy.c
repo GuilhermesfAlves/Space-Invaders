@@ -3,12 +3,9 @@
 
 //IMPLEMENTAR!
 //Adiciona um novo tiro à lista. Neste momento, todos os tiros se movem apenas para frente
-shot* straight_shoot(space *board, shot_sentinel *list, enemy *shooter){
+shot* straight_shoot(shot_sentinel *list, enemy *shooter){
 	shot* new;
 
-	if (board -> max_y < shooter -> pos_y + DOWN)
-		return NULL;
-		
 	if (!(new = (shot*) malloc(sizeof(shot))))
         return NULL;
 
@@ -43,7 +40,8 @@ enemy* add_enemy(int pos_y, int pos_x, int type){
 
 //IMPLEMENTAR!
 //Remove um inimigo do tabuleiro. Essa tarefa inclui a desalocação do mesmo
-void destroy_enemy(space *board, int pos_y, int pos_x){
+void* destroy_enemy(enemy* enemy){
 
-	free(board -> map[pos_y][pos_x]);
+	free(enemy);
+	return NULL;
 }

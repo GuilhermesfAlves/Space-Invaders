@@ -5,6 +5,9 @@
         "ship.h": "c",
         "stdlib.h": "c",
         "enemy.h": "c",
-        "design.h": "c"
+        "design.h": "c",
+        "obstacles.h": "c",
+        "headers.h": "c",
+        "theme.h": "c"
     }
 }

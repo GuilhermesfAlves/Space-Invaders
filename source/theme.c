@@ -16,7 +16,7 @@ theme* create_themes(){
     new_theme -> vec[0].secondary = al_map_rgb(0,146,0);
     new_theme -> vec[0].back_theme = al_map_rgb(0,0,0);
     new_theme -> vec[1].set = SYNTH_WAVE;
-    new_theme -> vec[1].name = strdup("SYNTH_WAVE");
+    new_theme -> vec[1].name = strdup("SYNTH_WAVE '84");
     new_theme -> vec[1].primary = al_map_rgb(255,44,132);
     new_theme -> vec[1].secondary = al_map_rgb(135,21,69);
     new_theme -> vec[1].back_theme = al_map_rgb(38,0,55);

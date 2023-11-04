@@ -8,10 +8,16 @@ joystick* add_joystick(){
     
     new_joystick -> tab = 0;
     new_joystick -> enter = 0;
+    new_joystick -> space = 0;
     new_joystick -> left = 0;
     new_joystick -> right = 0;
 
     return new_joystick;
+}
+
+void destroy_joystick(joystick* joystick){
+
+    free(joystick);
 }
 
 void joystick_space(joystick* joystick){ joystick -> space ^= 1;}

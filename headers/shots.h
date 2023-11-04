@@ -1,7 +1,12 @@
 #ifndef __SI_SHOTS__
 #define __SI_SHOTS__
 
-#include "space.h"
+#define UP -1
+#define DOWN 1
+#define RIGHT 1
+#define LEFT -1
+#define STAY 0
+#include <stdlib.h>
 
 typedef struct{
 	int pos_x;

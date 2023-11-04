@@ -1,9 +1,5 @@
 #include "../headers/space.h"
 
-// Biblioteca que cria e gerencia um tabuleiro dado seu tamanho
-// O tabuleiro tem índices [0,X+1] e [0,Y+1] - ou seja, tamanho, em linhas, de X+2; e em colunas, de Y+2,
-// onde as bordas/limites do tabuleiro estão definidos.
-
 space* generate_board(int max_y, int max_x){
 	space* new_board;
 	
@@ -18,19 +14,48 @@ space* generate_board(int max_y, int max_x){
 	return new_board;
 }
 
-space* create_board(int max_y, int max_x, int enemy_lines){
+space* create_board(unsigned char difficult, limits limits){
 	space* board;
+	int x;
+	int y;
+	int qtd_obstacles;
+	int vec[6];
 
-	if ((max_x < 0) || (max_y < 0) || (enemy_lines >= max_y)) 
+	switch (difficult){
+	case 0:
+		x = 9;
+		y = 3;
+		qtd_obstacles = 6;
+		vec[0] = 2; vec[1] = 1; vec[2] = 1; vec[3] = 0; vec[4] = 0; vec[5] = 0;
+		break;
+	case 1:
+		x = 10;
+		y = 4;
+		qtd_obstacles = 5;
+		vec[0] = 3; vec[1] = 2; vec[2] = 1; vec[3] = 1; vec[4] = 0; vec[5] = 0;
+		break;
+	case 2:
+		x = 11;
+		y = 5;
+		qtd_obstacles = 4;
+		vec[0] = 3; vec[1] = 2; vec[2] = 2; vec[3] = 1; vec[4] = 1; vec[5] = 0;
+		break;
+	case 3:
+		x = 13;
+		y = 6;
+		qtd_obstacles = 3;
+		vec[0] = 3; vec[1] = 3; vec[2] = 2; vec[3] = 2; vec[4] = 1; vec[5] = 1;
+		break;
+	default:
 		return NULL;
-	
-	//MUDAR A FORMAÇÃO DE CADA MAPA DEPENDENDO DA DIFICULDADE
-	board = generate_board(max_y, max_x);
-	for (int i = 0; i < enemy_lines; i++) 
-		for (int j = 0; j < max_x; j++) 
-			add_enemy(i, j, 1);
-	//ADICIONAR A CRIAÇÃO DE OBSTACLES
-	
+	}
+
+	board = generate_board(y, x);
+	for (int i = 0; i < y; i++) 
+		for (int j = 0; j < x; j++) 
+			board -> map[j][i] = add_enemy(i - y + (limits.min_x + limits.max_x)/2, j, vec[i]);
+
+
 	return board;
 }
  

@@ -36,7 +36,7 @@ void clean_shots(shot_sentinel *list){
 	q = NULL;
 	
 	while (p)
-		p = remove_shot(p, q, list);
+		p = destroy_shot(p, q, list);
 }
 
 //IMPLEMENTAR!

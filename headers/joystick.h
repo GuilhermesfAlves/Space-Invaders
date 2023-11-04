@@ -11,6 +11,7 @@ typedef struct{
 }joystick;
 
 joystick* add_joystick();
+void destroy_joystick(joystick* joystick);
 
 void joystick_space(joystick* joystick);
 void joystick_enter(joystick* joystick);
