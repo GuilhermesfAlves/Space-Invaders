@@ -50,7 +50,8 @@ void destroy_board(space* board){
 	for (int i = 0; i < board -> max_y; i++)
 		free(board -> map[i]);
 
-	delete_obstacles(board -> obstacles);
+	destroy_ship(board -> ship);
+	destroy_obstacles(board -> obstacles);
 	free(board -> map);
 	free(board);
 }

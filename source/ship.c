@@ -36,7 +36,7 @@ ship* add_ship(int pos_x, int pos_y){
     return new_ship;
 }
 
-void remove_ship(ship* ship){
+void destroy_ship(ship* ship){
     
     free(ship);
 }

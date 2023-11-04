@@ -1,6 +1,4 @@
 #include "../headers/shots.h"
-#include "../headers/ship.h"
-#include "../headers/enemy.h"
 
 shot_sentinel* create_shotlist(void){
 	shot_sentinel* list; 
@@ -16,7 +14,7 @@ shot_sentinel* create_shotlist(void){
 
 //IMPLEMENTAR!
 //	Remove os tiros da lista
-shot* remove_shot(shot* current, shot* previous, shot_sentinel *list){
+shot* destroy_shot(shot* current, shot* previous, shot_sentinel *list){
 	
 	if (current == list -> last)
 		list -> last = previous;

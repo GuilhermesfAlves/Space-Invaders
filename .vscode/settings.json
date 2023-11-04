@@ -4,6 +4,7 @@
         "space.h": "c",
         "ship.h": "c",
         "stdlib.h": "c",
-        "enemy.h": "c"
+        "enemy.h": "c",
+        "design.h": "c"
     }
 }

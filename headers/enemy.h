@@ -1,5 +1,5 @@
-#ifndef __ENEMY__
-#define __ENEMY__
+#ifndef __SI_ENEMY__
+#define __SI_ENEMY__
 
 #include "shots.h"
 
@@ -11,6 +11,6 @@ typedef struct{
 
 shot* enemy_straight_shoot(space *board, shot_sentinel *list, enemy *shooter);
 enemy* add_enemy(int pos_y, int pos_x, int type);
-void remove_enemy(space *board, int i, int j);
+void destroy_enemy(space *board, int i, int j);
 
 #endif

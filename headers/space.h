@@ -1,5 +1,5 @@
-#ifndef __SPACE__
-#define __SPACE__
+#ifndef __SI_SPACE__
+#define __SI_SPACE__
 
 #define UP -1
 #define DOWN 1

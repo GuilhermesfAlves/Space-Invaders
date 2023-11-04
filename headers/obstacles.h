@@ -1,5 +1,5 @@
-#ifndef __OBSTACLES__
-#define __OBSTACLES__
+#ifndef __SI_OBSTACLES__
+#define __SI_OBSTACLES__
 #include <stdlib.h>
 
 typedef struct{
@@ -8,7 +8,7 @@ typedef struct{
     int pos_y;
 }obstacles;
 
-obstacles* create_obstacles(unsigned char level, int height, int width);
-void delete_obstacles(obstacles* obstacles);
+obstacles* add_obstacles(unsigned char level, int height, int width);
+void destroy_obstacles(obstacles* obstacles);
 
 #endif //__OBSTACLES__

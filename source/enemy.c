@@ -43,7 +43,7 @@ enemy* add_enemy(int pos_y, int pos_x, int type){
 
 //IMPLEMENTAR!
 //Remove um inimigo do tabuleiro. Essa tarefa inclui a desalocação do mesmo
-void remove_enemy(space *board, int pos_y, int pos_x){
+void destroy_enemy(space *board, int pos_y, int pos_x){
 
 	free(board -> map[pos_y][pos_x]);
 }

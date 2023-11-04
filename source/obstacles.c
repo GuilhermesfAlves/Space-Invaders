@@ -1,6 +1,6 @@
 #include "../headers/obstacles.h"
 
-obstacles* create_obstacles(unsigned char level, int height, int width){
+obstacles* add_obstacles(unsigned char level, int height, int width){
     obstacles* new_obstacles;
     int qtd;
 
@@ -31,7 +31,7 @@ obstacles* create_obstacles(unsigned char level, int height, int width){
     return new_obstacles;
 }
 
-void delete_obstacles(obstacles* obstacles){
+void destroy_obstacles(obstacles* obstacles){
 
     free(obstacles);
 }
