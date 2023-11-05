@@ -11,6 +11,8 @@
         "theme.h": "c",
         "allegro_primitives.h": "c",
         "allegro_image.h": "c",
-        "allegro5.h": "c"
+        "allegro5.h": "c",
+        "difficult.h": "c",
+        "game.h": "c"
     }
 }

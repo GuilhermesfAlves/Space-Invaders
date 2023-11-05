@@ -16,7 +16,7 @@ typedef struct{
 	int pos_x;
 	int pos_y;
 	int trajectory;
-	shot *next;
+	struct shot *next;
 	ALLEGRO_BITMAP *img1;
 	ALLEGRO_BITMAP *img2;
 }shot;

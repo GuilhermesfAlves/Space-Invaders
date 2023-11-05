@@ -1,5 +1,4 @@
 #include "../headers/space.h"
-
 space* generate_board(int lines, int rows){
 	space* new_board;
 	
@@ -53,9 +52,11 @@ space* create_board(unsigned char difficult, limits limits){
 	board = generate_board(lines, rows);
 	for (int i = 0; i < lines; i++) 
 		for (int j = 0; j < rows; j++) 
-			board -> map[j][i] = add_enemy(i - lines + (limits.min_height + limits.max_height)/2, j - rows + (limits.min_width + limits.max_width)/2, vec[i]);
+			board -> map[i][j] = add_enemy(i - lines + (limits.min_height + limits.max_height)/2, j - rows + (limits.min_width + limits.max_width)/2, vec[i]);
 
-
+	board -> obstacles = add_obstacles(difficult, limits.max_height, limits.max_width);
+	board -> ship = add_ship((limits.max_width + limits.min_width)/2, limits.max_height - 100);
+	
 	return board;
 }
  

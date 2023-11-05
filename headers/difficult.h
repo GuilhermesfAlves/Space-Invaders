@@ -23,14 +23,14 @@ typedef struct{
 typedef struct{
     unsigned char show;
     unsigned char actual;
-    difficulties* vec[];
+    difficulties** vec;
 }difficult;
 
 historic_node* start_node(int points);
 void destroy_node(historic_node* node);
 historic_node* get_historic(FILE* arq);
 
-difficult* start_difficult();
+difficult* add_difficult();
 void destroy_difficult(difficult* difficult);
 
 #endif //__DIFFICULT__

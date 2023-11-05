@@ -16,7 +16,7 @@ typedef struct{
 
 typedef struct{
     unsigned char actual;
-    set_theme *vec;
+    set_theme **vec;
 }theme;
 
 theme* create_themes();

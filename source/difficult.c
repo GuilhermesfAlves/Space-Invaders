@@ -30,42 +30,50 @@ historic_node* get_historic(FILE* arq){
     int points;
     char* line;
 
-    while(fscanf(arq, "%s", line)){
-        new = start_node(atoi(strtok(line, " ")));
-        new -> data = strdup(strtok(NULL, " "));
-        if (!head)
-            head = new;
-        else if (!previous)
-            previous = head;
-        previous -> next = new;
-    }
+    // while(fgets(line, 1024, arq)){
+    //     new = start_node(atoi(strtok(line, " ")));
+    //     new -> data = strdup(strtok(NULL, " "));
+    //     if (!head)
+    //         head = new;
+    //     else if (!previous)
+    //         previous = head;
+    //     previous -> next = (struct historic_node*) new;
+    // }
     return head;
 }
 
-difficult* start_difficult(){
-    difficult* new_difficult;
+difficulties* add_difficulties(char** actual, unsigned char type){
+    difficulties* new_difficulties;
+    char path[34];
 
-    if (!(new_difficult = (difficult*) malloc(MAX_DIFFICULTIES*sizeof(difficult))))
+    sprintf(path, "../database/%s.txt", actual[type]);
+     
+    if (!(new_difficulties = (difficulties*) malloc(sizeof(difficulties))))
+        return NULL;
+    
+    new_difficulties -> arq = fopen(path,"r+");
+    new_difficulties -> name = strdup(actual[type]);
+    new_difficulties -> type = type;
+    new_difficulties -> node = get_historic(new_difficulties -> arq);
+
+    return new_difficulties;
+}
+
+difficult* add_difficult(){
+    difficult* new_difficult; 
+    char* name[MAX_DIFFICULTIES] = {"Easy", "Normal", "Hard", "Extreme"};
+    char** passed;
+
+    if (!(new_difficult = (difficult*) malloc(sizeof(difficult))))
+        return NULL;
+
+    if (!(new_difficult -> vec = (difficulties**) malloc(MAX_DIFFICULTIES*sizeof(difficulties*))))
         return NULL;
 
     new_difficult -> actual = 0;
     new_difficult -> show = 0;
-    new_difficult -> vec[0] -> arq = fopen("Easy.txt","r+");
-    new_difficult -> vec[0] -> name = strdup("Easy");
-    new_difficult -> vec[0] -> type = Easy;
-    new_difficult -> vec[0] -> node = get_historic(new_difficult -> vec[0] -> arq);
-    new_difficult -> vec[1] -> arq = fopen("Normal.txt","r+");
-    new_difficult -> vec[1] -> name = strdup("Normal");
-    new_difficult -> vec[1] -> type = Normal;
-    new_difficult -> vec[1] -> node = get_historic(new_difficult -> vec[1] -> arq);
-    new_difficult -> vec[2] -> arq = fopen("Hard.txt","r+");
-    new_difficult -> vec[2] -> name = strdup("Hard");
-    new_difficult -> vec[2] -> type = Hard;
-    new_difficult -> vec[2] -> node = get_historic(new_difficult -> vec[2] -> arq);
-    new_difficult -> vec[3] -> arq = fopen("Extreme.txt","r+");
-    new_difficult -> vec[3] -> name = strdup("EXTREME");
-    new_difficult -> vec[3] -> type = Extreme;
-    new_difficult -> vec[3] -> node = get_historic(new_difficult -> vec[3] -> arq);
+    for (int i = 0; i < MAX_DIFFICULTIES; i++)
+        new_difficult -> vec[i] = add_difficulties(name, i);
     
     return new_difficult;
 }
@@ -76,7 +84,7 @@ void destroy_difficult(difficult* difficult){
         free(difficult -> vec[i] -> name);
         fclose(difficult -> vec[i] -> arq);
         for (historic_node* aux = difficult -> vec[i] -> node; aux; difficult -> vec[i] -> node){
-            difficult -> vec[i] -> node = aux -> next;
+            difficult -> vec[i] -> node = (historic_node*) aux -> next;
             free(aux -> data);
             free(aux);
         }

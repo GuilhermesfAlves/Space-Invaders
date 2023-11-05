@@ -1,24 +1,32 @@
 #include "../headers/design.h"
 
-void START_ALERT(ALLEGRO_FONT* font, ALLEGRO_DISPLAY_MODE *disp_data, int frame, int move){
+void show_START_ALERT(ALLEGRO_FONT* font, ALLEGRO_DISPLAY_MODE *disp_data, int frame, int move){
+
     if ((!move) && ((frame < 40) || ((frame > 80) && (frame < 120)) || ((frame > 160) && (frame < 200))))
         al_draw_text(font, al_map_rgb(255, 255, 255), disp_data -> width/2, disp_data -> height - 25 - move, ALLEGRO_ALIGN_CENTRE, "Press SPACE to Start!");
 }
 
 void show_themes(ALLEGRO_FONT* font, ALLEGRO_DISPLAY_MODE *disp_data, theme* theme, int move){
+
     al_draw_text(font, al_map_rgb(255,255,255), disp_data -> width/2, disp_data -> height - 400 - move, ALLEGRO_ALIGN_CENTRE, "Press TAB to change color");
     for (unsigned char i = 0; i < MAX_THEMES; i++){
         if (theme -> actual == i){
-            al_draw_filled_circle((disp_data -> width/2) + (i - 4)*35, disp_data -> height - 370 - move , 15, theme -> vec[i].primary);
-            al_draw_filled_circle((disp_data -> width/2) + (i - 4)*35, disp_data -> height - 370 - move, 10, theme -> vec[i].back_theme);
+            al_draw_filled_circle((disp_data -> width/2) + (i - 4)*35, disp_data -> height - 370 - move , 15, theme -> vec[i] -> primary);
+            al_draw_filled_circle((disp_data -> width/2) + (i - 4)*35, disp_data -> height - 370 - move, 10, theme -> vec[i] -> back_theme);
         }
         else{
-            al_draw_filled_circle((disp_data -> width/2) + (i - 4)*35, disp_data -> height - 370 - move, 10, theme -> vec[i].back_theme);
-            al_draw_filled_circle((disp_data -> width/2) + (i - 4)*35, disp_data -> height - 370 - move, 5, theme -> vec[i].primary);
+            al_draw_filled_circle((disp_data -> width/2) + (i - 4)*35, disp_data -> height - 370 - move, 10, theme -> vec[i] -> back_theme);
+            al_draw_filled_circle((disp_data -> width/2) + (i - 4)*35, disp_data -> height - 370 - move, 5, theme -> vec[i] -> primary);
         }
     }
-    al_draw_text(font, theme -> vec[theme -> actual].primary, disp_data -> width/2, disp_data -> height - 320 - move, ALLEGRO_ALIGN_CENTRE, theme -> vec[theme -> actual].name);
+    al_draw_text(font, theme -> vec[theme -> actual] -> primary, disp_data -> width/2, disp_data -> height - 320 - move, ALLEGRO_ALIGN_CENTRE, theme -> vec[theme -> actual] -> name);
 }
+
+void show_difficulties(ALLEGRO_FONT* font, ALLEGRO_DISPLAY_MODE* disp_data, theme* theme, difficult* difficult, int move){
+
+    al_draw_text(font, theme -> vec[theme -> actual] -> primary, disp_data -> width/2, disp_data -> height - 300 - move, ALLEGRO_ALIGN_CENTRE, "Press ENTER to show historic");
+    al_draw_text(font, theme -> vec[theme -> actual] -> primary, disp_data -> width/2, disp_data -> height - 250 - move, ALLEGRO_ALIGN_CENTRE, difficult -> vec[difficult -> actual] -> name);
+}   
 
 ALLEGRO_BITMAP* add_logo(ALLEGRO_DISPLAY_MODE* disp_data){
     ALLEGRO_BITMAP *logo = al_load_bitmap("img/Space_Invaders_Logo.bmp");
@@ -32,7 +40,7 @@ ALLEGRO_BITMAP* add_logo(ALLEGRO_DISPLAY_MODE* disp_data){
 }
 
 ALLEGRO_BITMAP* add_logo_alien(ALLEGRO_DISPLAY_MODE* disp_data){
-    ALLEGRO_BITMAP *ALIEN = al_load_bitmap("img/SPRITE1.bmp");
+    ALLEGRO_BITMAP *ALIEN = al_load_bitmap("img/ALIEN2_0.bmp");
     ALLEGRO_BITMAP *ALIEN_REDIM = al_create_bitmap(disp_data -> width*0.15, disp_data -> width*0.15);
     
     al_set_target_bitmap(ALIEN_REDIM);
@@ -67,7 +75,7 @@ void set_ship_sprite(ship* ship, sprite_base* sprite_base){
 sprite_base* get_sprite_base(game* game, ALLEGRO_DISPLAY *disp){
     sprite_base* new_sprite_base;
     ALLEGRO_BITMAP* unscaled;
-    char** name = {"ALIEN", "SHOT", "OBSTACLE", "SHIP"};
+    char* name[4] = {"ALIEN", "SHOT", "OBSTACLE", "SHIP"};
     char* path;
 
     if (!(new_sprite_base = (sprite_base*) malloc(sizeof(sprite_base))))
@@ -108,7 +116,7 @@ sprite_base* get_sprite_base(game* game, ALLEGRO_DISPLAY *disp){
     for (int i = 0; i < OBSTACLE_LIFES; i++){
         sprintf(path, "img/%s%d", name[2], i);
         unscaled = al_load_bitmap(path);
-        al_set_target_bitmap(new_sprite_base -> aliens[i]);
+        al_set_target_bitmap(new_sprite_base -> obstacles[i]);
         al_draw_scaled_bitmap(unscaled, 0, 0, al_get_bitmap_width(unscaled), al_get_bitmap_height(unscaled), 0, 0, (game -> limits.min_width - game -> limits.max_width)*al_get_bitmap_width(unscaled)/8, (game -> limits.min_width - game -> limits.max_width)*al_get_bitmap_width(unscaled)/8, 0);
         al_destroy_bitmap(unscaled);
     }
@@ -170,5 +178,6 @@ void show_obstacles(obstacles* obstacle, set_theme* theme){
 }
 
 void show_ship(ship* ship, set_theme* theme){
+
     al_draw_tinted_bitmap(ship -> img, theme -> primary, ship -> pos_x, ship -> pos_y, 0);
 }
