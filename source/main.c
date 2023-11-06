@@ -73,7 +73,7 @@ int main(){
             frame = 0;
         
         if (joystick -> space)
-            move += 3;
+            move += 30;
 
         if (event.type == ALLEGRO_EVENT_DISPLAY_CLOSE){
             exit = 1;
@@ -102,13 +102,19 @@ int main(){
     }
     joystick_space(joystick);
     if (!exit){
-        printf("subiu\n");
         game = add_game(difficult -> actual, theme -> vec[theme -> actual], &disp_data);
 
+            printf("aqui\n");
         sprite_base* sprite_base = get_sprite_base(game, disp);
         while(1){
             al_wait_for_event(queue, &event);
-
+            for (int i = 0; i < game -> space -> qtd_obstacles; i++)
+                set_obstacle_sprite(game -> space -> obstacles[i], sprite_base);
+            set_ship_sprite(game -> space -> ship, sprite_base);
+printf("aqui2\n");
+            for (int i = 0; i < game -> space -> qtd_obstacles; i++)
+                show_obstacles(game -> space -> obstacles[i], game -> theme);
+            show_ship(game -> space -> ship, game -> theme);
             al_flip_display();
         }
     }

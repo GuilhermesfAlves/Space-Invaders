@@ -16,7 +16,6 @@ game* add_game(unsigned char difficult, set_theme *theme, ALLEGRO_DISPLAY_MODE *
     new_game -> points = 0;
     new_game -> theme = theme;
     new_game -> space = create_board(difficult, new_game -> limits);
-    printf("chegamos\n");
 
     return new_game;
 }

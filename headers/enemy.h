@@ -8,8 +8,8 @@ typedef struct{
 	int pos_x;
 	int pos_y;
 	unsigned char exploded;
-	ALLEGRO_BITMAP* img1;
-	ALLEGRO_BITMAP* img2;
+	ALLEGRO_BITMAP** img1;
+	ALLEGRO_BITMAP** img2;
 } enemy;
 
 shot* enemy_straight_shoot(shot_sentinel *list, enemy *shooter);

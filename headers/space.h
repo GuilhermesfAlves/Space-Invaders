@@ -18,7 +18,8 @@ typedef struct {
 	int rows;
 	int lines;
 	ship *ship;
-	obstacles *obstacles;
+	obstacles **obstacles;
+	unsigned char qtd_obstacles;
 } space;
 
 space* generate_board(int max_y, int max_x);

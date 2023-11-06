@@ -9,7 +9,7 @@ typedef struct{
     unsigned char move;
     int pos_x;
     int pos_y;
-    ALLEGRO_BITMAP* img;
+    ALLEGRO_BITMAP** img;
 }ship;
 
 shot* ship_straight_shoot(shot_sentinel *list, ship *shooter);

@@ -13,6 +13,8 @@
         "allegro_image.h": "c",
         "allegro5.h": "c",
         "difficult.h": "c",
-        "game.h": "c"
+        "game.h": "c",
+        "color.h": "c",
+        "base.h": "c"
     }
 }

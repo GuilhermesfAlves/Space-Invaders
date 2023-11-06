@@ -33,7 +33,6 @@ enemy* add_enemy(int pos_y, int pos_x, int type){
 	if (!(new_enemy = (enemy*) malloc(sizeof(enemy))))
 		return NULL;
 
-	printf("enemy\n");
 	new_enemy -> type = type;
 	new_enemy -> pos_x = pos_x;
 	new_enemy -> pos_y = pos_y;

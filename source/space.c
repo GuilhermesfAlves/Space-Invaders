@@ -42,7 +42,7 @@ space* create_board(unsigned char difficult, limits limits){
 	case 3:
 		rows = 13;
 		lines = 6;
-		qtd_obstacles = 3;
+		qtd_obstacles = 2;
 		vec[0] = 3; vec[1] = 3; vec[2] = 2; vec[3] = 2; vec[4] = 1; vec[5] = 1;
 		break;
 	default:
@@ -53,8 +53,8 @@ space* create_board(unsigned char difficult, limits limits){
 	for (int i = 0; i < lines; i++) 
 		for (int j = 0; j < rows; j++) 
 			board -> map[i][j] = add_enemy(i - lines + (limits.min_height + limits.max_height)/2, j - rows + (limits.min_width + limits.max_width)/2, vec[i]);
-
-	board -> obstacles = add_obstacles(difficult, limits.max_height, limits.max_width);
+	board -> qtd_obstacles = qtd_obstacles;
+	board -> obstacles = add_obstacles(qtd_obstacles, limits.max_height - limits.min_height, limits.max_width - limits.min_width);
 	board -> ship = add_ship((limits.max_width + limits.min_width)/2, limits.max_height - 100);
 	
 	return board;
@@ -77,7 +77,7 @@ void destroy_board(space* board){
 		free(board -> map[i]);
 
 	destroy_ship(board -> ship);
-	destroy_obstacles(board -> obstacles);
+	destroy_obstacles(board -> obstacles, board -> qtd_obstacles);
 	free(board -> map);
 	free(board);
 }

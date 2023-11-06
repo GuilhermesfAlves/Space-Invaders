@@ -8,10 +8,10 @@ typedef struct{
     int life;
     int pos_x;
     int pos_y;
-    ALLEGRO_BITMAP* img;
+    ALLEGRO_BITMAP** img;
 }obstacles;
 
-obstacles* add_obstacles(unsigned char level, int height, int width);
-void destroy_obstacles(obstacles* obstacles);
+obstacles** add_obstacles(unsigned char level, int height, int width);
+void destroy_obstacles(obstacles** obstacles, unsigned char qtd_obstacles);
 
 #endif //__OBSTACLES__

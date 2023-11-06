@@ -6,7 +6,7 @@
 #include "difficult.h"
 #include "game.h"
 
-#define ENEMIES 4
+#define ENEMIES 3
 
 typedef struct {
     ALLEGRO_BITMAP*** aliens; 
