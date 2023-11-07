@@ -7,18 +7,19 @@
 #include "obstacles.h"
 
 typedef struct{
-    int min_height;
-    int max_height;
     int min_width;
     int max_width;
+    int min_height;
+    int max_height;
 }limits;
 
 typedef struct {
-	enemy ***map;
 	int rows;
 	int lines;
 	ship *ship;
+	enemy ***map;
 	obstacles **obstacles;
+	shot_sentinel* shot_list;
 	unsigned char qtd_obstacles;
 } space;
 

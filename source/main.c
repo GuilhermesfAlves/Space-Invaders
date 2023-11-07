@@ -15,9 +15,11 @@
 /*     \_\ \__/\ \/\ \ \ \_/ |/\ \L\.\_/\ \L\ \/\  __/\ \ \//\__, `\*/
 /*     /\_____\ \_\ \_\ \___/ \ \__/.\_\ \___,_\ \____\\ \_\\/\____/*/
 /*     \/_____/\/_/\/_/\/__/   \/__/\/_/\/__,_ /\/____/ \/_/ \/___/ */
+#define SHIP_MOVE 5
 
  
 void update_joystick_menu(joystick* joystick, theme* theme, difficult* difficult){
+    
     if (joystick -> tab) {
         theme -> actual = (theme -> actual >= MAX_THEMES - 1)? 0 : theme -> actual + 1; 
         joystick_tab(joystick);
@@ -33,6 +35,21 @@ void update_joystick_menu(joystick* joystick, theme* theme, difficult* difficult
         joystick_right(joystick);
     }
 } 
+
+void update_joystick_game(joystick* joystick, ship* ship, shot_sentinel* shot_list, sprite_base* sprite_base){
+
+    if (joystick -> right){
+        ship -> pos_x += SHIP_MOVE;
+    }
+    if (joystick -> left){
+        ship -> pos_x -= SHIP_MOVE;
+    }
+    if (joystick -> space){
+        shot* shot = ship_straight_shoot(shot_list, ship);
+        if (shot)
+            set_shot_sprite(shot, sprite_base);
+    }
+}
 
 int main(){
     al_init();
@@ -84,8 +101,8 @@ int main(){
 
         if ((event.type == ALLEGRO_EVENT_TIMER) && (al_is_event_queue_empty(queue))){
             al_clear_to_color(theme -> vec[theme -> actual] -> back_theme);
-            al_draw_tinted_bitmap(alien, theme -> vec[theme -> actual] -> primary,(disp_data.width - al_get_bitmap_width(alien))/2, al_get_bitmap_height(logo) + 70 - move, 0);
             al_draw_bitmap(logo, (disp_data.width - al_get_bitmap_width(logo))/2, 108 - move, 0);
+            al_draw_tinted_bitmap(alien, theme -> vec[theme -> actual] -> primary,(disp_data.width - al_get_bitmap_width(alien))/2, al_get_bitmap_height(logo) + 108 + 20 - move, 0);
             show_themes(font, &disp_data, theme, move);
             show_difficulties(font, &disp_data, theme, difficult, move);
             show_START_ALERT(font, &disp_data, frame, move);
@@ -104,25 +121,39 @@ int main(){
     if (!exit){
         game = add_game(difficult -> actual, theme -> vec[theme -> actual], &disp_data);
 
-            printf("aqui\n");
-        sprite_base* sprite_base = get_sprite_base(game, disp);
-        while(1){
+        sprite_base* sprite_base = get_sprite_base(&game -> limits);
+        al_set_target_bitmap(al_get_backbuffer(disp));
+        set_game_sprites(game, sprite_base);
+        start_objects_position(game);
+        while(game -> space -> ship -> life){
             al_wait_for_event(queue, &event);
-            for (int i = 0; i < game -> space -> qtd_obstacles; i++)
-                set_obstacle_sprite(game -> space -> obstacles[i], sprite_base);
-            set_ship_sprite(game -> space -> ship, sprite_base);
-printf("aqui2\n");
-            for (int i = 0; i < game -> space -> qtd_obstacles; i++)
-                show_obstacles(game -> space -> obstacles[i], game -> theme);
-            show_ship(game -> space -> ship, game -> theme);
-            al_flip_display();
+            update_joystick_game(game -> joystick, game -> space -> ship, game -> space -> shot_list, sprite_base);
+            printf("aqui\n");
+            update_game(game);
+            printf("aqui2\n");
+            if (frame == 120)
+                frame = 0;
+            if (event.type == ALLEGRO_EVENT_TIMER){
+                al_clear_to_color(theme -> vec[theme -> actual] -> back_theme);
+                show_game(font, game, frame);
+                al_draw_filled_rectangle(disp_data.width/2 - 1, 0, disp_data.width/2 + 1, disp_data.height, game -> theme -> secondary);
+                al_draw_filled_rectangle(0, disp_data.height/2 -1, disp_data.width, disp_data.height/2 + 1, game -> theme -> secondary);
+                al_flip_display();
+            }
+            else if ((event.type == ALLEGRO_EVENT_KEY_DOWN) || (event.type == ALLEGRO_EVENT_KEY_UP)){
+                if (event.keyboard.keycode == ALLEGRO_KEY_SPACE) joystick_space(game -> joystick);
+                else if ((event.keyboard.keycode == ALLEGRO_KEY_LEFT) || (event.keyboard.keycode == ALLEGRO_KEY_A)) joystick_left(game -> joystick);
+                else if ((event.keyboard.keycode == ALLEGRO_KEY_RIGHT) || (event.keyboard.keycode == ALLEGRO_KEY_D)) joystick_right(game -> joystick);
+            }
+            else if (event.type == ALLEGRO_EVENT_DISPLAY_CLOSE){exit = 1; break;}
+            frame++;
         }
     }
     destroy_difficult(difficult);
     destroy_joystick(joystick);
     destroy_themes(theme);
     al_destroy_bitmap(logo);
-    al_destroy_bitmap(alien);
+    al_destroy_bitmap(alien); 
     al_destroy_font(font);
     al_destroy_display(disp);
     al_destroy_timer(timer);

@@ -11,7 +11,7 @@ typedef struct{
     ALLEGRO_BITMAP** img;
 }obstacles;
 
-obstacles** add_obstacles(unsigned char level, int height, int width);
+obstacles** add_obstacles(unsigned char level);
 void destroy_obstacles(obstacles** obstacles, unsigned char qtd_obstacles);
 
 #endif //__OBSTACLES__

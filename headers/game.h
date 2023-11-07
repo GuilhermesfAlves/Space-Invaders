@@ -5,6 +5,8 @@
 #include "joystick.h"
 #include "theme.h"
 
+#define SHOT_MOVE 3
+
 typedef struct{
     int points;
     unsigned char difficult;
@@ -16,5 +18,6 @@ typedef struct{
 
 game* add_game(unsigned char difficult, set_theme* theme, ALLEGRO_DISPLAY_MODE *disp_mode);
 void destroy_game(game* game);
+void update_game(game* game);
 
 #endif //__SI_GAME__
