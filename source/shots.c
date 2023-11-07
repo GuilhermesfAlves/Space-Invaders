@@ -15,17 +15,17 @@ shot_sentinel* create_shotlist(void){
 //IMPLEMENTAR!
 //	Remove os tiros da lista
 shot* destroy_shot(shot* current, shot* previous, shot_sentinel *list){
-	
+
 	if (current == list -> last)
 		list -> last = previous;
 
 	if (previous)
 		previous -> next = current -> next;
 	else
-		list -> first = current -> next;
+		list -> first = (shot*) current -> next;
 
 	free(current);
-	return (previous)? previous -> next: list -> first;
+	return (previous)? (shot*) previous -> next: list -> first;
 }
 
 void clean_shots(shot_sentinel *list){

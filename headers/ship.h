@@ -10,13 +10,13 @@ typedef struct{
     int life;
     int pos_x;
     int pos_y;
+    shot* shots;
     unsigned char move;
     ALLEGRO_BITMAP** img;
-    unsigned char can_shoot;
 }ship;
 
-shot* ship_straight_shoot(shot_sentinel *list, ship *shooter);
-
+shot* ship_straight_shoot(ship *ship);
+void* destroy_ship_shot(ship* ship);
 ship* add_ship();
 void destroy_ship(ship* ship);
 

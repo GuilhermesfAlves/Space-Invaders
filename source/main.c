@@ -36,7 +36,7 @@ void update_joystick_menu(joystick* joystick, theme* theme, difficult* difficult
     }
 } 
 
-void update_joystick_game(joystick* joystick, ship* ship, shot_sentinel* shot_list, sprite_base* sprite_base){
+void update_joystick_game(joystick* joystick, ship* ship, sprite_base* sprite_base){
 
     if (joystick -> right){
         ship -> pos_x += SHIP_MOVE;
@@ -45,9 +45,11 @@ void update_joystick_game(joystick* joystick, ship* ship, shot_sentinel* shot_li
         ship -> pos_x -= SHIP_MOVE;
     }
     if (joystick -> space){
-        shot* shot = ship_straight_shoot(shot_list, ship);
-        if (shot)
+        shot* shot = ship_straight_shoot(ship);
+        if (shot){
             set_shot_sprite(shot, sprite_base);
+            ship -> shots = shot;
+        }
     }
 }
 
@@ -127,7 +129,7 @@ int main(){
         start_objects_position(game);
         while(game -> space -> ship -> life){
             al_wait_for_event(queue, &event);
-            update_joystick_game(game -> joystick, game -> space -> ship, game -> space -> shot_list, sprite_base);
+            update_joystick_game(game -> joystick, game -> space -> ship, sprite_base);
             printf("aqui\n");
             update_game(game);
             printf("aqui2\n");

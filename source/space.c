@@ -1,4 +1,5 @@
 #include "../headers/space.h"
+
 space* generate_board(int lines, int rows){
 	space* new_board;
 	
@@ -86,11 +87,4 @@ void destroy_board(space* board){
 	destroy_obstacles(board -> obstacles, board -> qtd_obstacles);
 	free(board -> map);
 	free(board);
-}
-
-int in_limits(space* board, int pos_y, int pos_x){
-
-	return ((board -> rows < pos_x)\
-	 || (board -> rows < pos_y)\
-	 || (pos_y < 0) || (pos_x < 0))? 0: 1;
 }

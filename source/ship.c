@@ -1,9 +1,9 @@
 #include "../headers/ship.h"
 
-shot* ship_straight_shoot(shot_sentinel *list, ship *ship){
+shot* ship_straight_shoot(ship *ship){
 	shot* new_shot;
 
-	if (ship -> can_shoot)
+	if (ship -> shots)
 		return NULL;
 
 	if (!(new_shot = (shot*) malloc(sizeof(shot))))
@@ -15,15 +15,14 @@ shot* ship_straight_shoot(shot_sentinel *list, ship *ship){
 	new_shot -> type = SHIP_SHOT;
 	new_shot -> img1 = NULL;
 	new_shot -> img2 = NULL;
-	ship -> can_shoot = 0;
-
-	if (list -> last)
-		list -> last -> next = (struct shot*) new_shot;
-	list -> last = new_shot; 
-	if (!list -> first)
-		list -> first = new_shot;
 
 	return new_shot;	
+}
+
+void* destroy_ship_shot(ship* ship){
+
+	free(ship -> shots);
+	ship -> shots = NULL;
 }
 
 ship* add_ship(){

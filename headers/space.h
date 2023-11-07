@@ -28,6 +28,4 @@ space* create_board(unsigned char difficult, limits limits);
 void clean_board(space *board);
 void destroy_board(space *board);
 
-int in_limits(space* board, int pos_y, int pos_x);
-
 #endif
