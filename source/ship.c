@@ -9,9 +9,8 @@ shot* ship_straight_shoot(ship *ship){
 	if (!(new_shot = (shot*) malloc(sizeof(shot))))
         return NULL;
 	new_shot -> pos_x = ship -> pos_x;
-	new_shot -> pos_y = ship -> pos_y + UP - al_get_bitmap_height(*(ship) -> img)/2;
+	new_shot -> pos_y = ship -> pos_y;
 	new_shot -> next = NULL;
-	new_shot -> trajectory = UP;
 	new_shot -> type = SHIP_SHOT;
 	new_shot -> img1 = NULL;
 	new_shot -> img2 = NULL;
@@ -19,7 +18,7 @@ shot* ship_straight_shoot(ship *ship){
 	return new_shot;	
 }
 
-void* destroy_ship_shot(ship* ship){
+void destroy_ship_shot(ship* ship){
 
 	free(ship -> shots);
 	ship -> shots = NULL;
@@ -36,6 +35,7 @@ ship* add_ship(){
 	new_ship -> pos_y = 0;
     new_ship -> move = 0;
 	new_ship -> img = NULL;
+	new_ship -> shots = create_shotlist();
 
     return new_ship;
 }

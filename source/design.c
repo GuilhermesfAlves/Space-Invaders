@@ -119,9 +119,9 @@ sprite_base* get_sprite_base(limits* limits){
         for (int j = 0; j < 2; j++){
             sprintf(path, "img/%s%d_%d.bmp", name[1], i, j);
             unscaled = al_load_bitmap(path);
-            new_sprite_base -> shots[i][j] = al_create_bitmap((limits -> max_width - limits -> min_width)*al_get_bitmap_width(unscaled)/13000,(limits -> max_width - limits -> min_width)*al_get_bitmap_width(unscaled)/13000);
+            new_sprite_base -> shots[i][j] = al_create_bitmap((limits -> max_width - limits -> min_width)*al_get_bitmap_width(unscaled)/15000,(limits -> max_width - limits -> min_width)*al_get_bitmap_width(unscaled)/15000);
             al_set_target_bitmap(new_sprite_base -> shots[i][j]);
-            al_draw_scaled_bitmap(unscaled, 0, 0, al_get_bitmap_width(unscaled), al_get_bitmap_height(unscaled), 0, 0, (limits -> max_width - limits -> min_width)*al_get_bitmap_width(unscaled)/13000, (limits -> max_width - limits -> min_width)*al_get_bitmap_width(unscaled)/13000, 0);
+            al_draw_scaled_bitmap(unscaled, 0, 0, al_get_bitmap_width(unscaled), al_get_bitmap_height(unscaled), 0, 0, (limits -> max_width - limits -> min_width)*al_get_bitmap_width(unscaled)/15000, (limits -> max_width - limits -> min_width)*al_get_bitmap_width(unscaled)/15000, 0);
             al_destroy_bitmap(unscaled);
         }
     }
@@ -214,16 +214,20 @@ void show_points(int points, set_theme* theme, ALLEGRO_FONT* font, limits limits
 void show_game(ALLEGRO_FONT* font, game* game, int frame){
 
     for (int i = 0; i < game -> space -> rows; i++)
-        for (int j = 0; j < game -> space -> lines; j++){
+        for (int j = 0; j < game -> space -> lines; j++)
             show_alien(game -> space -> map[j][i], game -> theme, frame);
-        }
+        
     for (shot* shot_aux = game -> space -> shot_list -> first; shot_aux; shot_aux -> next)
         show_shots(shot_aux, game -> theme, frame);
 
+    if (game -> space -> ship -> shots)
+        show_shots(game -> space -> ship -> shots, game -> theme, frame);
+    
     for (int i = 0; i < game -> space -> qtd_obstacles; i++){
         show_obstacle(game -> space -> obstacles[i], game -> theme);
-}
-    show_ship(game -> space -> ship, game -> theme);
+    }
+    
+    show_ship(game -> space -> ship, game -> theme);    
 
     show_points(game -> points, game -> theme, font, game -> limits);
 }

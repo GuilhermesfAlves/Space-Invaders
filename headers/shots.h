@@ -15,8 +15,7 @@
 typedef struct{
 	int pos_x;
 	int pos_y;
-	int trajectory;
-	enum {SHIP_SHOT, ALIEN0_SHOT, ALIEN2_SHOT}type;
+	enum {SHIP_SHOT, ALIEN0_SHOT, ALIEN1_SHOT, ALIEN2_SHOT}type;
 	struct shot *next;
 	ALLEGRO_BITMAP** img1;
 	ALLEGRO_BITMAP** img2;

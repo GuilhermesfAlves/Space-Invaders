@@ -36,12 +36,12 @@ void update_joystick_menu(joystick* joystick, theme* theme, difficult* difficult
     }
 } 
 
-void update_joystick_game(joystick* joystick, ship* ship, sprite_base* sprite_base){
+void update_joystick_game(joystick* joystick, ship* ship, sprite_base* sprite_base, limits limits){
 
-    if (joystick -> right){
+    if ((joystick -> right) && (ship -> pos_x + SHIP_MOVE + al_get_bitmap_width(*(ship) -> img)/2 < limits.max_width)){
         ship -> pos_x += SHIP_MOVE;
     }
-    if (joystick -> left){
+    if ((joystick -> left) && (ship -> pos_x - SHIP_MOVE - al_get_bitmap_width(*(ship) -> img)/2 > limits.min_width)){
         ship -> pos_x -= SHIP_MOVE;
     }
     if (joystick -> space){
@@ -78,6 +78,7 @@ int main(){
     int move = 0;
     char start = 0;
     char exit = 0;
+    al_set_display_icon(disp, alien);
 
     al_set_target_bitmap(al_get_backbuffer(disp));
     al_register_event_source(queue, al_get_keyboard_event_source());
@@ -120,6 +121,7 @@ int main(){
         frame++;
     }
     joystick_space(joystick);
+    frame = 0;
     if (!exit){
         game = add_game(difficult -> actual, theme -> vec[theme -> actual], &disp_data);
 
@@ -129,17 +131,17 @@ int main(){
         start_objects_position(game);
         while(game -> space -> ship -> life){
             al_wait_for_event(queue, &event);
-            update_joystick_game(game -> joystick, game -> space -> ship, sprite_base);
+            update_joystick_game(game -> joystick, game -> space -> ship, sprite_base, game -> limits);
             printf("aqui\n");
             update_game(game);
-            printf("aqui2\n");
+            printf("aqui2 %d \n", frame);
             if (frame == 120)
                 frame = 0;
             if (event.type == ALLEGRO_EVENT_TIMER){
                 al_clear_to_color(theme -> vec[theme -> actual] -> back_theme);
                 show_game(font, game, frame);
-                al_draw_filled_rectangle(disp_data.width/2 - 1, 0, disp_data.width/2 + 1, disp_data.height, game -> theme -> secondary);
-                al_draw_filled_rectangle(0, disp_data.height/2 -1, disp_data.width, disp_data.height/2 + 1, game -> theme -> secondary);
+                // al_draw_filled_rectangle(disp_data.width/2 - 1, 0, disp_data.width/2 + 1, disp_data.height, game -> theme -> secondary);
+                // al_draw_filled_rectangle(0, disp_data.height/2 -1, disp_data.width, disp_data.height/2 + 1, game -> theme -> secondary);
                 al_flip_display();
             }
             else if ((event.type == ALLEGRO_EVENT_KEY_DOWN) || (event.type == ALLEGRO_EVENT_KEY_UP)){

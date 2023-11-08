@@ -15,6 +15,11 @@
         "difficult.h": "c",
         "game.h": "c",
         "color.h": "c",
-        "base.h": "c"
+        "base.h": "c",
+        "compare": "c",
+        "type_traits": "c",
+        "typeinfo": "c",
+        "joystick.h": "c",
+        "stdio.h": "c"
     }
 }

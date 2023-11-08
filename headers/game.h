@@ -5,7 +5,7 @@
 #include "joystick.h"
 #include "theme.h"
 
-#define SHOT_MOVE 3
+#define SHOT_MOVE 11
 
 typedef struct{
     int points;
