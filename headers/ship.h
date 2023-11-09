@@ -4,6 +4,7 @@
 #include <stdlib.h>
 #include "shots.h"
 
+#define ROW_SPACE 15
 #define SHIP_LIFES 3
 
 typedef struct{

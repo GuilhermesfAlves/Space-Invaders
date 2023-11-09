@@ -13,14 +13,18 @@ obstacles** add_obstacles(unsigned char qtd){
         new_obstacles[i] -> life = OBSTACLE_LIFES;
         new_obstacles[i] -> pos_x = 0;
         new_obstacles[i] -> pos_y = 0; 
-        new_obstacles[i] -> img = NULL;
     }
     return new_obstacles;
+}
+
+void* destroy_obstacle(obstacles* obstacle){
+    free(obstacle);
+    return NULL;
 }
 
 void destroy_obstacles(obstacles** obstacles, unsigned char qtd_obstacles){
 
     for (int i = 0; i < qtd_obstacles; i++)
-        free(obstacles[i]);
+        obstacles[i] = destroy_obstacle(obstacles[i]);
     free(obstacles);
 }

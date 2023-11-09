@@ -129,10 +129,13 @@ int main(){
         al_set_target_bitmap(al_get_backbuffer(disp));
         set_game_sprites(game, sprite_base);
         start_objects_position(game);
+        int mov_x = 1;
         while(game -> space -> ship -> life){
             al_wait_for_event(queue, &event);
             update_joystick_game(game -> joystick, game -> space -> ship, sprite_base, game -> limits);
             printf("aqui\n");
+            if (frame % 60 == 0)
+                mov_x = move_aliens(game -> space, game -> limits, mov_x);
             update_game(game);
             printf("frame %d \n", frame);
             if (frame == 120)

@@ -35,13 +35,9 @@ void update_game(game* game){
         hit_ship(game -> space -> ship, game -> space -> shot_list);
     }
     if (game -> space -> ship -> shots -> first){
-        printf("update\n");
         update_shots(game -> space -> ship -> shots, game -> limits.min_height);
-        printf("hit alien\n");
         game -> points += hit_aliens(game -> space -> map, game -> space -> lines, game -> space -> rows, game -> space -> ship -> shots);
-        printf("hit obstacles\n");
         hit_obstacles(game -> space -> obstacles, game -> space -> qtd_obstacles, game -> space -> ship -> shots);
-        printf("hit shots\n");
         hit_shots(game -> space -> ship -> shots, game -> space -> shot_list);
     }
 }

@@ -89,6 +89,55 @@ void destroy_board(space* board){
 	free(board);
 }
 
+int move_aliens(space* space, limits limits, int mov_x){
+	int most_x = 0;
+	int atual_x;
+	int most_y = 0;
+	int atual_y;
+	int sum_x = 0;
+	int sum_y = 0;
+
+	for (int i = 0; i < space -> lines; i++){
+		for (int j = 0; j < space -> rows; j++){
+			if (!space -> map[i][j])
+				continue;
+
+			if (!most_y){
+				most_x = (space -> map[i][j] -> pos_x + al_get_bitmap_width(*(space -> map[i][j]) -> img1)/2)*mov_x;
+				most_y = (space -> map[i][j] -> pos_y + al_get_bitmap_height(*(space -> map[i][j]) -> img1)/2);
+			}
+			atual_x = (space -> map[i][j] -> pos_x + al_get_bitmap_width(*(space -> map[i][j]) -> img1)/2)*mov_x;
+			atual_y = (space -> map[i][j] -> pos_y + al_get_bitmap_height(*(space -> map[i][j]) -> img1)/2);
+
+			if (atual_x > most_x)
+				most_x = atual_x;
+			if (atual_y > most_y)
+				most_y = atual_y;
+		}
+	}
+	if (!most_x)
+		return 0;
+	if ((mov_x == 1) && (most_x + ALIEN_STEP < limits.max_width))
+		sum_x = ALIEN_STEP;
+	else if (most_x - ALIEN_STEP*mov_x < limits.min_width*mov_x)
+		sum_x = -ALIEN_STEP;
+	else if (most_y + ALIEN_STEP < limits.max_height){
+		sum_y = ALIEN_STEP;
+		mov_x *= -1;
+	}
+
+	for (int i = 0; i < space -> lines; i++){
+		for (int j = 0; j < space -> rows; j++){
+			if (!space -> map[i][j])
+				continue;
+
+			space -> map[i][j] -> pos_x += sum_x;
+			space -> map[i][j] -> pos_y += sum_y;
+		}
+	}
+	return mov_x;
+}
+
 void hit_obstacles(obstacles** obstacles,unsigned char qtd_obstacles,shot_sentinel* shot_list){
 	shot* previous = NULL;
 	char alt;
@@ -96,13 +145,18 @@ void hit_obstacles(obstacles** obstacles,unsigned char qtd_obstacles,shot_sentin
 	for (shot* shot_aux = shot_list -> first; shot_aux; ){
 		alt = 0;
 		for (int i = 0; i < qtd_obstacles; i++){
-			if (((obstacles[i] -> pos_y + al_get_bitmap_height(*(obstacles[i]) -> img)/2) < shot_aux -> pos_y)\
-			&& ((obstacles[i] -> pos_y - al_get_bitmap_height(*(obstacles[i]) -> img)/2) > shot_aux -> pos_y)\
-			&& ((obstacles[i] -> pos_x - al_get_bitmap_width(*(obstacles[i]) -> img)/2) > shot_aux -> pos_x)\
-			&& ((obstacles[i] -> pos_x + al_get_bitmap_width(*(obstacles[i]) -> img)/2) < shot_aux -> pos_x)){
+			if (!obstacles[i])
+				continue;
+
+			if (((obstacles[i] -> pos_y + al_get_bitmap_height(*(obstacles[i]) -> img[obstacles[i] -> life -1])/2) > shot_aux -> pos_y)\
+			&& ((obstacles[i] -> pos_y - al_get_bitmap_height(*(obstacles[i]) -> img[obstacles[i] -> life -1])/2) < shot_aux -> pos_y)\
+			&& ((obstacles[i] -> pos_x - al_get_bitmap_width(*(obstacles[i]) -> img[obstacles[i] -> life -1])/2) < shot_aux -> pos_x)\
+			&& ((obstacles[i] -> pos_x + al_get_bitmap_width(*(obstacles[i]) -> img[obstacles[i] -> life -1])/2) > shot_aux -> pos_x)){
 				shot_aux = destroy_shot(shot_aux, previous, shot_list);
 				alt = 1;
 				obstacles[i] -> life--;
+				if (!obstacles[i] -> life)
+					obstacles[i] = destroy_obstacle(obstacles[i]);
 				if (!shot_aux)
 					return;				
 			}
@@ -133,7 +187,7 @@ short hit_aliens(enemy*** map, unsigned char lines, unsigned char rows,shot_sent
 				&& ((map[i][j] -> pos_x + al_get_bitmap_width(*(map[i][j]) -> img1)/2) > shot_aux -> pos_x)){
 					shot_aux = destroy_shot(shot_aux, previous, shot_list);
 					alt = 1;
-					sum += map[i][j] -> type*10;
+					sum += (map[i][j] -> type + 1)*10;
 					map[i][j] = destroy_enemy(map[i][j]);
 					if (!shot_aux)
 						return sum;
@@ -162,10 +216,10 @@ void hit_shots(shot_sentinel* ship_list, shot_sentinel* enemy_list){
 		alt_s = 0;
 		for (shot* shot_atual = enemy_list -> first; shot_atual; ){//bateu em shot
 			alt_e = 0;
-			if (((shot_atual -> pos_y + al_get_bitmap_height(*(shot_atual) -> img1)/2) < shot_aux -> pos_y)\
-			&& ((shot_atual -> pos_y - al_get_bitmap_height(*(shot_atual) -> img1)/2) > shot_aux -> pos_y)\
-			&& ((shot_atual -> pos_x - al_get_bitmap_width(*(shot_atual) -> img1)/2) > shot_aux -> pos_x)\
-			&& ((shot_atual -> pos_x + al_get_bitmap_width(*(shot_atual) -> img1)/2) < shot_aux -> pos_x)){
+			if (((shot_atual -> pos_y + al_get_bitmap_height(*(shot_atual) -> img1)/2) > shot_aux -> pos_y)\
+			&& ((shot_atual -> pos_y - al_get_bitmap_height(*(shot_atual) -> img1)/2) < shot_aux -> pos_y)\
+			&& ((shot_atual -> pos_x - al_get_bitmap_width(*(shot_atual) -> img1)/2) < shot_aux -> pos_x)\
+			&& ((shot_atual -> pos_x + al_get_bitmap_width(*(shot_atual) -> img1)/2) > shot_aux -> pos_x)){
 				shot_aux = destroy_shot(shot_aux, previous, ship_list);
 				shot_atual = destroy_shot(shot_atual, previous_aux, enemy_list);
 				alt_e = alt_s = 1;
@@ -195,13 +249,15 @@ void hit_ship(ship* ship, shot_sentinel* shot_list){
 
 	for (shot* shot_aux = shot_list -> first; shot_aux; ){//bateu em ship
         alt = 0;
-		if (((ship -> pos_y + al_get_bitmap_height(*(ship) -> img)/2) < shot_aux -> pos_y)\
-        && ((ship -> pos_y - al_get_bitmap_height(*(ship) -> img)/2) > shot_aux -> pos_y)\
-        && ((ship -> pos_x - al_get_bitmap_width(*(ship) -> img)/2) > shot_aux -> pos_x)\
-        && ((ship -> pos_x + al_get_bitmap_width(*(ship) -> img)/2) < shot_aux -> pos_x)){
+		if (((ship -> pos_y + al_get_bitmap_height(*(ship) -> img)/2) > shot_aux -> pos_y)\
+        && ((ship -> pos_y - al_get_bitmap_height(*(ship) -> img)/2) < shot_aux -> pos_y)\
+        && ((ship -> pos_x - al_get_bitmap_width(*(ship) -> img)/2) < shot_aux -> pos_x)\
+        && ((ship -> pos_x + al_get_bitmap_width(*(ship) -> img)/2) > shot_aux -> pos_x)){
             shot_aux = destroy_shot(shot_aux, previous, shot_list);
             alt = 1;
 			ship -> life--;
+			if (!shot_aux)
+				return;
         }
 		if ((!previous) || (shot_list -> first))
 			previous = shot_aux;
