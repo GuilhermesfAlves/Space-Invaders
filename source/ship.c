@@ -53,6 +53,6 @@ int shot_in_row(ship* ship){
 	for (shot* shot_aux = ship -> shots -> first; shot_aux; shot_aux = (shot*) shot_aux -> next)
 		if ((shot_aux -> pos_x + ROW_SPACE > ship -> pos_x) && (shot_aux -> pos_x - ROW_SPACE < ship -> pos_x))
 			return 1;
-	 
+	
 	return 0;
 }
