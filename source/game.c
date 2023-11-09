@@ -28,80 +28,20 @@ void destroy_game(game* game){
 }
 
 void update_game(game* game){
-    shot* previous = NULL;
-    ship* ship = game -> space -> ship;
 
-    //enemies shots
-    for (shot* shot_aux = game -> space -> shot_list -> first; shot_aux; ){
-        shot_aux -> pos_y += SHOT_MOVE;
-
-        if (shot_aux -> pos_y > game -> limits.max_height)//saiu do game
-            previous = destroy_shot(shot_aux, previous, game -> space -> shot_list);
-
-        for (int i = 0; i < game -> space -> qtd_obstacles; i++){//bateu em obstacle
-            if (((game -> space -> obstacles[i] -> pos_y + al_get_bitmap_height(*(game) -> space -> obstacles[i] -> img)/2) < shot_aux -> pos_y)\
-            && ((game -> space -> obstacles[i] -> pos_y - al_get_bitmap_height(*(game) -> space -> obstacles[i] -> img)/2) > shot_aux -> pos_y)\
-            && ((game -> space -> obstacles[i] -> pos_x - al_get_bitmap_width(*(game) -> space -> obstacles[i] -> img)/2) > shot_aux -> pos_x)\
-            && ((game -> space -> obstacles[i] -> pos_x + al_get_bitmap_width(*(game) -> space -> obstacles[i] -> img)/2) < shot_aux -> pos_x)){
-                previous = destroy_shot(shot_aux, previous, game -> space -> shot_list);
-                game -> space -> obstacles[i] -> life--;
-                break;
-            }
-        }
-        //bateu em ship
-        if (((ship -> pos_y + al_get_bitmap_height(*(game) -> space -> ship -> img)/2) < shot_aux -> pos_y)\
-        && ((ship -> pos_y - al_get_bitmap_height(*(game) -> space -> ship -> img)/2) > shot_aux -> pos_y)\
-        && ((ship -> pos_x - al_get_bitmap_width(*(game) -> space -> ship -> img)/2) > shot_aux -> pos_x)\
-        && ((ship -> pos_x + al_get_bitmap_width(*(game) -> space -> ship -> img)/2) < shot_aux -> pos_x)){
-            previous = destroy_shot(shot_aux, previous, game -> space -> shot_list);
-            ship -> life--;
-        }
+    if (game -> space -> shot_list -> first){
+        update_shots(game -> space -> shot_list, game -> limits.max_height);
+        hit_obstacles(game -> space -> obstacles, game -> space -> qtd_obstacles, game -> space -> shot_list);
+        hit_ship(game -> space -> ship, game -> space -> shot_list);
     }
-    //ship_shots
-    if (!ship -> shots)
-        return;
-
-    ship -> shots -> pos_y -= SHOT_MOVE;
- 
-    if (ship -> shots -> pos_y < game -> limits.min_height)
-        destroy_ship_shot(ship);
-
-    for (int i = 0; i < game -> space -> lines; i++){//bateu em enemies
-        for (int j = 0; j < game -> space -> rows; j++){
-            if (((game -> space -> map[i][j] -> pos_y + al_get_bitmap_height(*(game) -> space -> map[i][j] -> img1)/2) > ship -> shots -> pos_y)\
-            && ((game -> space -> map[i][j] -> pos_y - al_get_bitmap_height(*(game) -> space -> map[i][j] -> img1)/2) < ship -> shots -> pos_y)\
-            && ((game -> space -> map[i][j] -> pos_x - al_get_bitmap_width(*(game) -> space -> map[i][j] -> img1)/2) < ship -> shots -> pos_x)\
-            && ((game -> space -> map[i][j] -> pos_x + al_get_bitmap_width(*(game) -> space -> map[i][j] -> img1)/2) > ship -> shots -> pos_x)){
-                destroy_ship_shot(ship);
-                game -> points += (game -> space -> map[i][j] -> type + 1)*10;
-                destroy_enemy(game -> space -> map[i][j]);
-                return;
-            }
-        }
+    if (game -> space -> ship -> shots -> first){
+        printf("update\n");
+        update_shots(game -> space -> ship -> shots, game -> limits.min_height);
+        printf("hit alien\n");
+        game -> points += hit_aliens(game -> space -> map, game -> space -> lines, game -> space -> rows, game -> space -> ship -> shots);
+        printf("hit obstacles\n");
+        hit_obstacles(game -> space -> obstacles, game -> space -> qtd_obstacles, game -> space -> ship -> shots);
+        printf("hit shots\n");
+        hit_shots(game -> space -> ship -> shots, game -> space -> shot_list);
     }
- 
-    previous = NULL;
-    for (shot* shot_atual = game -> space -> shot_list -> first; shot_atual; shot_atual = (shot*) shot_atual -> next){//bateu em shot
-        if ((ship -> shots == shot_atual) || (ship -> shots -> trajectory == shot_atual -> trajectory))
-            continue;
-        if (((shot_atual -> pos_y + al_get_bitmap_height(*(shot_atual) -> img1)/2) < ship -> shots -> pos_y)\
-        && ((shot_atual -> pos_y - al_get_bitmap_height(*(shot_atual) -> img1)/2) > ship -> shots -> pos_y)\
-        && ((shot_atual -> pos_x - al_get_bitmap_width(*(shot_atual) -> img1)/2) > ship -> shots -> pos_x)\
-        && ((shot_atual -> pos_x + al_get_bitmap_width(*(shot_atual) -> img1)/2) < ship -> shots -> pos_x)){
-            destroy_ship_shot(ship);
-            previous = destroy_shot(shot_atual, previous, game -> space -> shot_list);
-            return;
-        }
-    
-
-    for (int i = 0; i < game -> space -> qtd_obstacles; i++)//bateu em obstacle
-        if (((game -> space -> obstacles[i] -> pos_y + al_get_bitmap_height(*(game) -> space -> obstacles[i] -> img)/2) < ship -> shots -> pos_y)\
-        && ((game -> space -> obstacles[i] -> pos_y - al_get_bitmap_height(*(game) -> space -> obstacles[i] -> img)/2) > ship -> shots -> pos_y)\
-        && ((game -> space -> obstacles[i] -> pos_x - al_get_bitmap_width(*(game) -> space -> obstacles[i] -> img)/2) > ship -> shots -> pos_x + al_get_bitmap_width(*(game) -> space -> ship -> img)/2)\
-        && ((game -> space -> obstacles[i] -> pos_x + al_get_bitmap_width(*(game) -> space -> obstacles[i] -> img)/2) < ship -> shots -> pos_x - al_get_bitmap_width(*(game) -> space -> ship -> img)/2)){
-            destroy_ship_shot(ship);
-            game -> space -> obstacles[i] -> life--;
-            return;
-        }
-    
 }

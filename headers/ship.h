@@ -16,8 +16,8 @@ typedef struct{
 }ship;
 
 shot* ship_straight_shoot(ship *ship);
-void destroy_ship_shot(ship* ship);
 ship* add_ship();
 void destroy_ship(ship* ship);
+int shot_in_row(ship* ship);
 
 #endif //__SHIP__

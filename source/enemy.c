@@ -10,10 +10,10 @@ shot* straight_shoot(shot_sentinel *list, enemy *shooter){
         return NULL;
 
 	new_shot -> pos_x = shooter -> pos_x;
-	new_shot -> pos_y = shooter -> pos_y + DOWN;
+	new_shot -> pos_y = shooter -> pos_y;
 	new_shot -> next = NULL;
+	new_shot -> type = shooter -> type + 1;
 	new_shot -> trajectory = DOWN;
-	new_shot -> type = (shooter -> type == 2)? ALIEN2_SHOT: ALIEN0_SHOT;
 	new_shot -> img1 = NULL;
 	new_shot -> img2 = NULL;
 
@@ -46,7 +46,8 @@ enemy* add_enemy(int type){
 
 //IMPLEMENTAR!
 //Remove um inimigo do tabuleiro. Essa tarefa inclui a desalocação do mesmo
-void destroy_enemy(enemy* enemy){
+enemy* destroy_enemy(enemy* enemy){
 
 	free(enemy);
+	return NULL;
 }

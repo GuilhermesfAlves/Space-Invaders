@@ -46,10 +46,10 @@ void update_joystick_game(joystick* joystick, ship* ship, sprite_base* sprite_ba
     }
     if (joystick -> space){
         shot* shot = ship_straight_shoot(ship);
-        if (shot){
+        if (shot)
             set_shot_sprite(shot, sprite_base);
-            ship -> shots = shot;
-        }
+        
+        joystick_space(joystick);
     }
 }
 
@@ -78,7 +78,7 @@ int main(){
     int move = 0;
     char start = 0;
     char exit = 0;
-    al_set_display_icon(disp, alien);
+    add_icon(disp);
 
     al_set_target_bitmap(al_get_backbuffer(disp));
     al_register_event_source(queue, al_get_keyboard_event_source());
@@ -134,18 +134,20 @@ int main(){
             update_joystick_game(game -> joystick, game -> space -> ship, sprite_base, game -> limits);
             printf("aqui\n");
             update_game(game);
-            printf("aqui2 %d \n", frame);
+            printf("frame %d \n", frame);
             if (frame == 120)
                 frame = 0;
             if (event.type == ALLEGRO_EVENT_TIMER){
                 al_clear_to_color(theme -> vec[theme -> actual] -> back_theme);
+                printf("antes show game\n");
                 show_game(font, game, frame);
+                printf("depois show game\n");
                 // al_draw_filled_rectangle(disp_data.width/2 - 1, 0, disp_data.width/2 + 1, disp_data.height, game -> theme -> secondary);
                 // al_draw_filled_rectangle(0, disp_data.height/2 -1, disp_data.width, disp_data.height/2 + 1, game -> theme -> secondary);
                 al_flip_display();
             }
             else if ((event.type == ALLEGRO_EVENT_KEY_DOWN) || (event.type == ALLEGRO_EVENT_KEY_UP)){
-                if (event.keyboard.keycode == ALLEGRO_KEY_SPACE) joystick_space(game -> joystick);
+                if ((event.keyboard.keycode == ALLEGRO_KEY_SPACE) && !(event.type == ALLEGRO_EVENT_KEY_UP)) joystick_space(game -> joystick);
                 else if ((event.keyboard.keycode == ALLEGRO_KEY_LEFT) || (event.keyboard.keycode == ALLEGRO_KEY_A)) joystick_left(game -> joystick);
                 else if ((event.keyboard.keycode == ALLEGRO_KEY_RIGHT) || (event.keyboard.keycode == ALLEGRO_KEY_D)) joystick_right(game -> joystick);
             }

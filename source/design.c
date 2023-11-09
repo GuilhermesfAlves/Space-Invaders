@@ -50,6 +50,12 @@ ALLEGRO_BITMAP* add_logo_alien(ALLEGRO_DISPLAY_MODE* disp_data){
     return ALIEN_REDIM;
 }
 
+void add_icon(ALLEGRO_DISPLAY* disp){
+    ALLEGRO_BITMAP *icon = al_load_bitmap("img/ICON.png");
+    al_set_display_icon(disp, icon);
+    al_destroy_bitmap(icon);
+}
+
 void set_alien_sprite(enemy* alien, sprite_base* sprite_base){
     
     alien -> img1 = &sprite_base -> aliens[alien -> type][0];
@@ -173,30 +179,42 @@ void destroy_sprite_base(sprite_base* sprite_base){
     free(sprite_base);
 }
 
-void show_alien(enemy* alien, set_theme* theme, int frame){
-    if (alien -> exploded){
-        if ((frame < 5) || (frame > 10))
-            al_draw_tinted_bitmap(*(alien) -> img1, theme -> primary, alien -> pos_x - al_get_bitmap_width(*(alien) -> img1)/2, alien -> pos_y - al_get_bitmap_height(*(alien) -> img1)/2, 0);
-        else 
-            al_draw_tinted_bitmap(*(alien) -> img2, theme -> primary, alien -> pos_x - al_get_bitmap_width(*(alien) -> img1)/2, alien -> pos_y - al_get_bitmap_height(*(alien) -> img1)/2, 0);
-        return;
+void show_aliens(space* space, set_theme* theme, int frame){
+    
+    for (int i = 0; i < space -> lines; i++){
+        for (int j = 0; j < space -> rows; j++){
+            if (!space -> map[i][j])
+                continue;
+
+            if (space -> map[i][j] -> exploded){
+                if ((frame < 5) || (frame > 10))
+                    al_draw_tinted_bitmap(*(space -> map[i][j]) -> img1, theme -> primary, space -> map[i][j] -> pos_x - al_get_bitmap_width(*(space -> map[i][j]) -> img1)/2, space -> map[i][j] -> pos_y - al_get_bitmap_height(*(space -> map[i][j]) -> img1)/2, 0);
+                else 
+                    al_draw_tinted_bitmap(*(space -> map[i][j]) -> img2, theme -> primary, space -> map[i][j] -> pos_x - al_get_bitmap_width(*(space -> map[i][j]) -> img1)/2, space -> map[i][j] -> pos_y - al_get_bitmap_height(*(space -> map[i][j]) -> img1)/2, 0);
+                return;
+            }
+            if (frame < 60)
+                al_draw_tinted_bitmap(*(space -> map[i][j]) -> img1, theme -> primary, space -> map[i][j] -> pos_x - al_get_bitmap_width(*(space -> map[i][j]) -> img1)/2, space -> map[i][j] -> pos_y - al_get_bitmap_height(*(space -> map[i][j]) -> img1)/2, 0);
+            else 
+                al_draw_tinted_bitmap(*(space -> map[i][j]) -> img2, theme -> primary, space -> map[i][j] -> pos_x - al_get_bitmap_width(*(space -> map[i][j]) -> img1)/2, space -> map[i][j] -> pos_y - al_get_bitmap_height(*(space -> map[i][j]) -> img1)/2, 0);
+        }
     }
-    if (frame < 60)
-        al_draw_tinted_bitmap(*(alien) -> img1, theme -> primary, alien -> pos_x - al_get_bitmap_width(*(alien) -> img1)/2, alien -> pos_y - al_get_bitmap_height(*(alien) -> img1)/2, 0);
-    else 
-        al_draw_tinted_bitmap(*(alien) -> img2, theme -> primary, alien -> pos_x - al_get_bitmap_width(*(alien) -> img1)/2, alien -> pos_y - al_get_bitmap_height(*(alien) -> img1)/2, 0);
 }
 
-void show_shots(shot* shot, set_theme* theme, int frame){
-    if ((frame < 5) || (frame > 10))
-        al_draw_tinted_bitmap(*(shot) -> img1, theme -> secondary, shot -> pos_x - al_get_bitmap_width(*(shot) -> img1)/2, shot -> pos_y - al_get_bitmap_height(*(shot) -> img1)/2, 0);
-    else 
-        al_draw_tinted_bitmap(*(shot) -> img2, theme -> secondary, shot -> pos_x - al_get_bitmap_width(*(shot) -> img2)/2, shot -> pos_y - al_get_bitmap_height(*(shot) -> img2)/2, 0);
+void show_shots(shot_sentinel* shot_list, set_theme* theme, int frame){
+   for (shot* shot_aux = shot_list -> first; shot_aux; shot_aux = (shot*) shot_aux -> next){
+        if ((frame < 5) || (frame > 10))
+            al_draw_tinted_bitmap(*(shot_aux) -> img1, theme -> secondary, shot_aux -> pos_x - al_get_bitmap_width(*(shot_aux) -> img1)/2, shot_aux -> pos_y - al_get_bitmap_height(*(shot_aux) -> img1)/2, 0);
+        else 
+            al_draw_tinted_bitmap(*(shot_aux) -> img2, theme -> secondary, shot_aux -> pos_x - al_get_bitmap_width(*(shot_aux) -> img2)/2, shot_aux -> pos_y - al_get_bitmap_height(*(shot_aux) -> img2)/2, 0);
+    }
 }
 
-void show_obstacle(obstacles* obstacle, set_theme* theme){
-
-    al_draw_tinted_bitmap(*(obstacle) -> img, theme -> primary, obstacle -> pos_x - (al_get_bitmap_width(*(obstacle) -> img)/2), obstacle -> pos_y, 0);
+void show_obstacles(space* space, set_theme* theme){
+    
+    for (int i = 0; i < space -> qtd_obstacles; i++){
+        al_draw_tinted_bitmap(*(space -> obstacles[i]) -> img, theme -> primary, space -> obstacles[i] -> pos_x - (al_get_bitmap_width(*(space -> obstacles[i]) -> img)/2), space -> obstacles[i] -> pos_y, 0);
+    }
 }
 
 void show_ship(ship* ship, set_theme* theme){
@@ -213,20 +231,10 @@ void show_points(int points, set_theme* theme, ALLEGRO_FONT* font, limits limits
 
 void show_game(ALLEGRO_FONT* font, game* game, int frame){
 
-    for (int i = 0; i < game -> space -> rows; i++)
-        for (int j = 0; j < game -> space -> lines; j++)
-            show_alien(game -> space -> map[j][i], game -> theme, frame);
-        
-    for (shot* shot_aux = game -> space -> shot_list -> first; shot_aux; shot_aux -> next)
-        show_shots(shot_aux, game -> theme, frame);
-
-    if (game -> space -> ship -> shots)
-        show_shots(game -> space -> ship -> shots, game -> theme, frame);
-    
-    for (int i = 0; i < game -> space -> qtd_obstacles; i++){
-        show_obstacle(game -> space -> obstacles[i], game -> theme);
-    }
-    
+    show_aliens(game -> space, game -> theme, frame);
+    show_shots(game -> space -> shot_list, game -> theme, frame);
+    show_shots(game -> space -> ship -> shots, game -> theme, frame);    
+    show_obstacles(game -> space, game -> theme);
     show_ship(game -> space -> ship, game -> theme);    
 
     show_points(game -> points, game -> theme, font, game -> limits);

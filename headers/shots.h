@@ -6,6 +6,7 @@
 #define RIGHT 1
 #define LEFT -1
 #define STAY 0
+#define SHOT_MOVE 11
 #include <stdlib.h>
 
 #include <allegro5/allegro5.h>
@@ -15,8 +16,9 @@
 typedef struct{
 	int pos_x;
 	int pos_y;
-	enum {SHIP_SHOT, ALIEN0_SHOT, ALIEN1_SHOT, ALIEN2_SHOT}type;
+	enum {SHIP_SHOT, ALIEN0_SHOT, ALIEN1_SHOT, ALIEN2_SHOT} type;
 	struct shot *next;
+	char trajectory;
 	ALLEGRO_BITMAP** img1;
 	ALLEGRO_BITMAP** img2;
 }shot;
@@ -29,6 +31,6 @@ typedef struct{
 shot_sentinel* create_shotlist(void);
 void clean_shots(shot_sentinel *list);
 shot* destroy_shot(shot* current, shot* previous, shot_sentinel *list);
-// void update_shots(space *board, shot_sentinel *list);
+void update_shots(shot_sentinel* shot_list, short lim_y);
 
 #endif //__SHOTS__

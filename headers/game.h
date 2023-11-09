@@ -5,8 +5,6 @@
 #include "joystick.h"
 #include "theme.h"
 
-#define SHOT_MOVE 11
-
 typedef struct{
     int points;
     unsigned char difficult;

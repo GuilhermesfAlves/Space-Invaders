@@ -14,6 +14,6 @@ typedef struct{
 
 shot* enemy_straight_shoot(shot_sentinel *list, enemy *shooter);
 enemy* add_enemy(int type);
-void destroy_enemy(enemy* enemy);
+enemy* destroy_enemy(enemy* enemy);
 
 #endif

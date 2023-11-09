@@ -1,5 +1,5 @@
 #include "../headers/shots.h"
- 
+ #include <stdio.h>
 shot_sentinel* create_shotlist(void){
 	shot_sentinel* list; 
 	
@@ -25,7 +25,7 @@ shot* destroy_shot(shot* current, shot* previous, shot_sentinel *list){
 		list -> first = (shot*) current -> next;
 
 	free(current);
-	return (previous)? (shot*) previous -> next: list -> first;
+	return (previous)? (shot*) previous: list -> first;
 }
 
 void clean_shots(shot_sentinel *list){
@@ -39,41 +39,24 @@ void clean_shots(shot_sentinel *list){
 		p = destroy_shot(p, q, list);
 }
 
-//IMPLEMENTAR!
-//Os tiros presentes no tabuleiro devem ser atualizados
-//  Se o tiro acertar um alvo, ou sair do tabuleiro, ele deve ser removido da lista
-//  Caso contrário, ele deve "andar" uma casa (sqm) à frente
-// void update_shots(space *board, shot_sentinel *list){
-// 	shot* prev;
-// 	shot* aux;
-// 	int i = 0;
+void update_shots(shot_sentinel* shot_list, short lim_y){
+	shot* previous = NULL;
+	char alt;
 
-// 	aux = list -> first;
-// 	prev = NULL;
+	for (shot* shot_aux = shot_list -> first; shot_aux; ){
+		alt = 0;
+		shot_aux -> pos_y += SHOT_MOVE*shot_aux -> trajectory;
 
-// 	while (aux){
-// 		if (aux -> pos_y + aux -> trajectory > board -> max_y)
-// 			aux = remove_shot(aux, prev, list);
-// 		else if (board -> map[aux -> pos_y + aux -> trajectory][aux -> pos_x].type == OBSTACLE){
-// 			// board -> map[aux -> pos_y + aux -> trajectory][aux -> pos_x].type DIMINUI A VIDA
-// 			//CONFERE SE AINDA HÁ VIDA
-// 			aux = remove_shot(aux, prev, list);
-// 		}
-// 		else if (board -> map[aux -> pos_y + aux -> trajectory][aux -> pos_x].type == SHIP){
-// 			//board -> map[aux -> pos_y + aux -> trajectory][aux -> pos_x].entity DIMINUI VIDA
-// 			//CONFERE SE AINDA HÁ VIDA
-// 			aux = remove_shot(aux, prev, list);
-// 		}
-// 		else{
-// 			aux -> pos_y++;
-// 			aux = aux -> next;
-// 		}
+		if (shot_aux -> pos_y*shot_aux -> trajectory > lim_y*shot_aux -> trajectory){
+			alt = 1;
+			shot_aux = destroy_shot(shot_aux, previous, shot_list);
+		}
 
-// 		if ((!prev) && (list -> first != aux))
-// 			prev = list -> first;
-// 		else if (prev)
-// 			prev = prev -> next;
-		
-// 		i++;
-// 	}
-// }
+		if ((!previous) || (shot_list -> first == shot_aux))
+			previous = shot_aux;
+		else if (previous)
+			previous = (shot*) previous -> next;
+		if ((shot_aux) && (!alt))
+			shot_aux = (shot*) shot_aux -> next;
+	}
+}

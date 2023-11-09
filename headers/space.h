@@ -28,4 +28,9 @@ space* create_board(unsigned char difficult, limits limits);
 void clean_board(space *board);
 void destroy_board(space *board);
 
+void hit_obstacles(obstacles** obstacles, unsigned char qtd_obstaclees, shot_sentinel* shot_list);
+short hit_aliens(enemy*** map, unsigned char lines, unsigned char rows, shot_sentinel* shot_list);
+void hit_shots(shot_sentinel* ship_list, shot_sentinel* enemy_list);
+void hit_ship(ship* ship, shot_sentinel* shot_list);
+
 #endif
