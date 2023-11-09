@@ -13,6 +13,7 @@ shot* ship_straight_shoot(ship *ship){
 	new_shot -> pos_y = ship -> pos_y;
 	new_shot -> next = NULL;
 	new_shot -> type = SHIP_SHOT;
+	new_shot -> damage = 1;
 	new_shot -> trajectory = UP;
 	new_shot -> img1 = NULL;
 	new_shot -> img2 = NULL;

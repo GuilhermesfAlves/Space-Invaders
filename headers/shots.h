@@ -19,6 +19,7 @@ typedef struct{
 	enum {SHIP_SHOT, ALIEN0_SHOT, ALIEN1_SHOT, ALIEN2_SHOT} type;
 	struct shot *next;
 	char trajectory;
+	unsigned char damage;
 	ALLEGRO_BITMAP** img1;
 	ALLEGRO_BITMAP** img2;
 }shot;

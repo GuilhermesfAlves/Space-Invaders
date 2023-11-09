@@ -24,6 +24,7 @@ ALLEGRO_BITMAP* add_logo(ALLEGRO_DISPLAY_MODE* disp_data);
 ALLEGRO_BITMAP* add_logo_alien(ALLEGRO_DISPLAY_MODE* disp_data);
 void add_icon(ALLEGRO_DISPLAY* disp);
 
+void set_aliens_sprites(game* game, sprite_base* sprite_base);
 void set_game_sprites(game* game, sprite_base* sprite_base);
 void set_shot_sprite(shot* shot, sprite_base* sprite_base);
 

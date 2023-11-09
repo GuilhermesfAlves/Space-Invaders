@@ -28,7 +28,7 @@ void destroy_game(game* game){
 }
 
 void update_game(game* game){
-
+    
     if (game -> space -> shot_list -> first){
         update_shots(game -> space -> shot_list, game -> limits.max_height);
         hit_obstacles(game -> space -> obstacles, game -> space -> qtd_obstacles, game -> space -> shot_list);

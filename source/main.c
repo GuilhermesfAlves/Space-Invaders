@@ -65,7 +65,7 @@ int main(){
     ALLEGRO_EVENT_QUEUE* queue = al_create_event_queue();
     ALLEGRO_DISPLAY_MODE disp_data;
     al_get_display_mode(al_get_num_video_adapters() - 1, &disp_data);
-    disp_data.height -= 73;
+    disp_data.height -= 70;
     ALLEGRO_DISPLAY* disp = al_create_display(disp_data.width, disp_data.height);
     ALLEGRO_FONT* font = al_create_builtin_font();
     ALLEGRO_BITMAP *logo = add_logo(&disp_data);
@@ -128,23 +128,44 @@ int main(){
         sprite_base* sprite_base = get_sprite_base(&game -> limits);
         al_set_target_bitmap(al_get_backbuffer(disp));
         set_game_sprites(game, sprite_base);
+            // printf("aqui\n");
         start_objects_position(game);
         int mov_x = 1;
         while(game -> space -> ship -> life){
             al_wait_for_event(queue, &event);
             update_joystick_game(game -> joystick, game -> space -> ship, sprite_base, game -> limits);
-            printf("aqui\n");
             if (frame % 60 == 0)
                 mov_x = move_aliens(game -> space, game -> limits, mov_x);
+        
+            if (!has_alien(game -> space)){
+                clean_shots(game -> space -> shot_list);
+                clean_shots(game -> space -> ship -> shots);
+                char vec[6];
+                set_formation(&game -> space -> rows, &game -> space -> lines, &game -> difficult, &game -> space -> qtd_obstacles, vec);
+                add_aliens(game -> space, vec);
+                set_aliens_sprites(game, sprite_base);
+                int between_x;
+                int between_y;
+
+                for (int i = 0; i < game -> space -> lines; i++) 
+                    for (int j = 0; j < game -> space -> rows; j++){
+                        between_x = (game -> limits.max_width*0.57 - game -> limits.min_width)/(game -> space -> rows);
+                        between_y = (game -> limits.max_height*0.5 - game -> limits.min_height)/(game -> space -> lines);
+                        game -> space -> map[i][j] -> pos_x = game -> limits.min_width + between_x/2 + j*between_x;
+                        game -> space -> map[i][j] -> pos_y =  game -> limits.min_height + 30 + between_y/2 + i*between_y;
+                    }
+                mov_x = 1;
+            }
+        
             update_game(game);
-            printf("frame %d \n", frame);
+            // printf("frame %d \n", frame);
             if (frame == 120)
                 frame = 0;
             if (event.type == ALLEGRO_EVENT_TIMER){
                 al_clear_to_color(theme -> vec[theme -> actual] -> back_theme);
-                printf("antes show game\n");
+                // printf("antes show game\n");
                 show_game(font, game, frame);
-                printf("depois show game\n");
+                // printf("depois show game\n");
                 // al_draw_filled_rectangle(disp_data.width/2 - 1, 0, disp_data.width/2 + 1, disp_data.height, game -> theme -> secondary);
                 // al_draw_filled_rectangle(0, disp_data.height/2 -1, disp_data.width, disp_data.height/2 + 1, game -> theme -> secondary);
                 al_flip_display();

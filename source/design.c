@@ -56,10 +56,13 @@ void add_icon(ALLEGRO_DISPLAY* disp){
     al_destroy_bitmap(icon);
 }
 
-void set_alien_sprite(enemy* alien, sprite_base* sprite_base){
+void set_aliens_sprites(game* game, sprite_base* sprite_base){
     
-    alien -> img1 = &sprite_base -> aliens[alien -> type][0];
-    alien -> img2 = &sprite_base -> aliens[alien -> type][1];
+    for (int i = 0; i < game -> space -> lines; i++)
+        for (int j = 0; j < game -> space -> rows; j++){
+            game -> space -> map[i][j] -> img1 = &sprite_base -> aliens[game -> space -> map[i][j] -> type][0];
+            game -> space -> map[i][j] -> img2 = &sprite_base -> aliens[game -> space -> map[i][j] -> type][1];
+    }
 }
 
 void set_shot_sprite(shot* shot, sprite_base* sprite_base){
@@ -68,10 +71,11 @@ void set_shot_sprite(shot* shot, sprite_base* sprite_base){
     shot -> img2 = &sprite_base -> shots[shot -> type][1];
 }
 
-void set_obstacle_sprite(obstacles *obstacle, sprite_base* sprite_base){
+void set_obstacles_sprites(obstacles **obstacle, unsigned char qtd_obstacles, sprite_base* sprite_base){
 
-    for (int i = 0; i < OBSTACLE_LIFES; i++)
-        obstacle -> img[i] = &sprite_base -> obstacles[i];
+    for (int i = 0; i < qtd_obstacles; i++) 
+        for (int j = 0; j < OBSTACLE_LIFES; j++)
+            obstacle[i] -> img[j] = &sprite_base -> obstacles[j];
 }
 
 void set_ship_sprite(ship* ship, sprite_base* sprite_base){
@@ -81,15 +85,9 @@ void set_ship_sprite(ship* ship, sprite_base* sprite_base){
 
 void set_game_sprites(game* game, sprite_base* sprite_base){
     
-    for (int i = 0; i < game -> space -> rows; i++)
-        for (int j = 0; j < game -> space -> lines; j++)
-            set_alien_sprite(game -> space -> map[j][i], sprite_base);
-
-    for (int i = 0; i < game -> space -> qtd_obstacles; i++)
-        set_obstacle_sprite(game -> space -> obstacles[i], sprite_base);
-    
+    set_aliens_sprites(game, sprite_base);
+    set_obstacles_sprites(game -> space -> obstacles, game -> space -> qtd_obstacles, sprite_base); 
     set_ship_sprite(game -> space -> ship, sprite_base);
-
 }
 
 sprite_base* get_sprite_base(limits* limits){
@@ -151,7 +149,6 @@ sprite_base* get_sprite_base(limits* limits){
     al_set_target_bitmap(new_sprite_base -> ship);
     al_draw_scaled_bitmap(unscaled, 0, 0, al_get_bitmap_width(unscaled), al_get_bitmap_height(unscaled), 0, 0, (limits -> max_width - limits -> min_width)*al_get_bitmap_width(unscaled)/29000, (limits -> max_width - limits -> min_width)*al_get_bitmap_width(unscaled)/29000, 0);
     al_destroy_bitmap(unscaled);
-
     return new_sprite_base;
 }
 

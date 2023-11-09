@@ -13,6 +13,7 @@ shot* straight_shoot(shot_sentinel *list, enemy *shooter){
 	new_shot -> pos_y = shooter -> pos_y;
 	new_shot -> next = NULL;
 	new_shot -> type = shooter -> type + 1;
+	new_shot -> damage = (shooter -> type == HARD)? 2: 1;
 	new_shot -> trajectory = DOWN;
 	new_shot -> img1 = NULL;
 	new_shot -> img2 = NULL;

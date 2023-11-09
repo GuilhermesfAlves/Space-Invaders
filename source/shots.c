@@ -30,13 +30,11 @@ shot* destroy_shot(shot* current, shot* previous, shot_sentinel *list){
 
 void clean_shots(shot_sentinel *list){
 	shot *p;
-	shot *q;
 
-	p = (shot*) list -> first;
-	q = NULL;
+	p = list -> first;
 	
 	while (p)
-		p = destroy_shot(p, q, list);
+		p = destroy_shot(p, NULL, list);
 }
 
 void update_shots(shot_sentinel* shot_list, short lim_y){
