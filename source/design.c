@@ -1,14 +1,14 @@
 #include "../headers/design.h"
 #include <stdio.h>
-void show_START_ALERT(ALLEGRO_FONT* font, ALLEGRO_DISPLAY_MODE *disp_data, int frame, int move){
+void show_START_ALERT(ALLEGRO_FONT* font, ALLEGRO_DISPLAY_MODE *disp_data, int frame, int move, set_theme* theme){
 
     if ((!move) && ((frame < 40) || ((frame > 80) && (frame < 120)) || ((frame > 160) && (frame < 200))))
-        al_draw_text(font, al_map_rgb(255, 255, 255), disp_data -> width/2, disp_data -> height - 25 - move, ALLEGRO_ALIGN_CENTRE, "Press SPACE to Start!");
+        al_draw_text(font, theme -> primary, disp_data -> width/2, disp_data -> height - 25 - move, ALLEGRO_ALIGN_CENTRE, "Press SPACE to Start!");
 }
 
 void show_themes(ALLEGRO_FONT* font, ALLEGRO_DISPLAY_MODE *disp_data, theme* theme, int move){
 
-    al_draw_text(font, al_map_rgb(255,255,255), disp_data -> width/2, disp_data -> height - 400 - move, ALLEGRO_ALIGN_CENTRE, "Press TAB to change color");
+    al_draw_text(font, theme -> vec[theme -> actual] -> secondary, disp_data -> width/2, disp_data -> height - 400 - move, ALLEGRO_ALIGN_CENTRE, "Press TAB to change color");
     for (unsigned char i = 0; i < MAX_THEMES; i++){
         if (theme -> actual == i){
             al_draw_filled_circle((disp_data -> width/2) + (i - 4)*35, disp_data -> height - 370 - move , 15, theme -> vec[i] -> primary);
@@ -22,10 +22,10 @@ void show_themes(ALLEGRO_FONT* font, ALLEGRO_DISPLAY_MODE *disp_data, theme* the
     al_draw_text(font, theme -> vec[theme -> actual] -> primary, disp_data -> width/2, disp_data -> height - 320 - move, ALLEGRO_ALIGN_CENTRE, theme -> vec[theme -> actual] -> name);
 }
 
-void show_difficulties(ALLEGRO_FONT* font, ALLEGRO_DISPLAY_MODE* disp_data, theme* theme, difficult* difficult, int move){
+void show_difficulties(ALLEGRO_FONT* font, ALLEGRO_DISPLAY_MODE* disp_data, set_theme* theme, difficult* difficult, int move){
 
-    al_draw_text(font, theme -> vec[theme -> actual] -> primary, disp_data -> width/2, disp_data -> height - 300 - move, ALLEGRO_ALIGN_CENTRE, "Press ENTER to show historic");
-    al_draw_text(font, theme -> vec[theme -> actual] -> primary, disp_data -> width/2, disp_data -> height - 250 - move, ALLEGRO_ALIGN_CENTRE, difficult -> vec[difficult -> actual] -> name);
+    al_draw_text(font, theme -> secondary, disp_data -> width/2, disp_data -> height - 300 - move, ALLEGRO_ALIGN_CENTRE, "Press ENTER to show historic");
+    al_draw_text(font, theme -> primary, disp_data -> width/2, disp_data -> height - 250 - move, ALLEGRO_ALIGN_CENTRE, difficult -> vec[difficult -> actual] -> name);
 }   
 
 ALLEGRO_BITMAP* add_logo(ALLEGRO_DISPLAY_MODE* disp_data){
@@ -40,7 +40,7 @@ ALLEGRO_BITMAP* add_logo(ALLEGRO_DISPLAY_MODE* disp_data){
 }
 
 ALLEGRO_BITMAP* add_logo_alien(ALLEGRO_DISPLAY_MODE* disp_data){
-    ALLEGRO_BITMAP *ALIEN = al_load_bitmap("img/ALIEN1_0.bmp");
+    ALLEGRO_BITMAP *ALIEN = al_load_bitmap("img/ALIEN1_0.png");
     ALLEGRO_BITMAP *ALIEN_REDIM = al_create_bitmap(disp_data -> width*0.12, disp_data -> width*0.087272727);
     
     al_set_target_bitmap(ALIEN_REDIM);
@@ -105,11 +105,11 @@ sprite_base* get_sprite_base(limits* limits){
             return NULL;
 
         for (int j = 0; j < 2; j++){
-            sprintf(path, "img/%s%d_%d.bmp", name[0], i, j);
+            sprintf(path, "img/%s%d_%d.png", name[0], i, j);
             unscaled = al_load_bitmap(path);
-            new_sprite_base -> aliens[i][j] = al_create_bitmap((limits -> max_width - limits -> min_width)*al_get_bitmap_width(unscaled)/25000,(limits -> max_width - limits -> min_width)*al_get_bitmap_width(unscaled)/25000);
+            new_sprite_base -> aliens[i][j] = al_create_bitmap((limits -> max_width - limits -> min_width)*al_get_bitmap_width(unscaled)/285,(limits -> max_width - limits -> min_width)*al_get_bitmap_width(unscaled)/285);
             al_set_target_bitmap(new_sprite_base -> aliens[i][j]);
-            al_draw_scaled_bitmap(unscaled, 0, 0, al_get_bitmap_width(unscaled), al_get_bitmap_height(unscaled), 0, 0, (limits -> max_width - limits -> min_width)*al_get_bitmap_width(unscaled)/25000, (limits -> max_width - limits -> min_width)*al_get_bitmap_height(unscaled)/25000, 0);
+            al_draw_scaled_bitmap(unscaled, 0, 0, al_get_bitmap_width(unscaled), al_get_bitmap_height(unscaled), 0, 0, (limits -> max_width - limits -> min_width)*al_get_bitmap_width(unscaled)/285, (limits -> max_width - limits -> min_width)*al_get_bitmap_height(unscaled)/285, 0);
             al_destroy_bitmap(unscaled);
         } 
     } 
@@ -122,15 +122,15 @@ sprite_base* get_sprite_base(limits* limits){
             return NULL;
 
         for (int j = 0; j < 2; j++){
-            sprintf(path, "img/%s%d_%d.bmp", name[1], i, j);
+            sprintf(path, "img/%s%d_%d.png", name[1], i, j);
             unscaled = al_load_bitmap(path);
-            new_sprite_base -> shots[i][j] = al_create_bitmap((limits -> max_width - limits -> min_width)*al_get_bitmap_width(unscaled)/15000,(limits -> max_width - limits -> min_width)*al_get_bitmap_width(unscaled)/15000);
+            new_sprite_base -> shots[i][j] = al_create_bitmap((limits -> max_width - limits -> min_width)*al_get_bitmap_width(unscaled)/230,(limits -> max_width - limits -> min_width)*al_get_bitmap_height(unscaled)/230);
             al_set_target_bitmap(new_sprite_base -> shots[i][j]);
-            al_draw_scaled_bitmap(unscaled, 0, 0, al_get_bitmap_width(unscaled), al_get_bitmap_height(unscaled), 0, 0, (limits -> max_width - limits -> min_width)*al_get_bitmap_width(unscaled)/15000, (limits -> max_width - limits -> min_width)*al_get_bitmap_width(unscaled)/15000, 0);
+            al_draw_scaled_bitmap(unscaled, 0, 0, al_get_bitmap_width(unscaled), al_get_bitmap_height(unscaled), 0, 0, (limits -> max_width - limits -> min_width)*al_get_bitmap_width(unscaled)/230, (limits -> max_width - limits -> min_width)*al_get_bitmap_height(unscaled)/230, 0);
             al_destroy_bitmap(unscaled);
         }
     }
-
+    
     if (!(new_sprite_base -> obstacles = (ALLEGRO_BITMAP**) malloc(OBSTACLE_LIFES*sizeof(ALLEGRO_BITMAP*))))
         return NULL;
 
@@ -143,11 +143,11 @@ sprite_base* get_sprite_base(limits* limits){
         al_destroy_bitmap(unscaled);
     }
 
-    sprintf(path, "img/%s.bmp", name[3]);
+    sprintf(path, "img/%s.png", name[3]); 
     unscaled = al_load_bitmap(path);
-    new_sprite_base -> ship = al_create_bitmap((limits -> max_width - limits -> min_width)*al_get_bitmap_width(unscaled)/29000,(limits -> max_width - limits -> min_width)*al_get_bitmap_width(unscaled)/29000);
+    new_sprite_base -> ship = al_create_bitmap((limits -> max_width - limits -> min_width)*al_get_bitmap_width(unscaled)/270,(limits -> max_width - limits -> min_width)*al_get_bitmap_width(unscaled)/270*0.6);
     al_set_target_bitmap(new_sprite_base -> ship);
-    al_draw_scaled_bitmap(unscaled, 0, 0, al_get_bitmap_width(unscaled), al_get_bitmap_height(unscaled), 0, 0, (limits -> max_width - limits -> min_width)*al_get_bitmap_width(unscaled)/29000, (limits -> max_width - limits -> min_width)*al_get_bitmap_width(unscaled)/29000, 0);
+    al_draw_scaled_bitmap(unscaled, 0, 0, al_get_bitmap_width(unscaled), al_get_bitmap_height(unscaled), 0, 0, (limits -> max_width - limits -> min_width)*al_get_bitmap_width(unscaled)/270, (limits -> max_width - limits -> min_width)*al_get_bitmap_width(unscaled)/270*0.6, 0);
     al_destroy_bitmap(unscaled);
     return new_sprite_base;
 }
@@ -239,24 +239,14 @@ void show_game(ALLEGRO_FONT* font, game* game, int frame){
     show_points(game -> points, game -> theme, font, game -> limits);
 }
 
-void start_objects_position(game* game){
-    int between_x;
-    int between_y;
-
-	for (int i = 0; i < game -> space -> lines; i++) 
-		for (int j = 0; j < game -> space -> rows; j++){
-			between_x = (game -> limits.max_width*0.57 - game -> limits.min_width)/(game -> space -> rows);
-			between_y = (game -> limits.max_height*0.5 - game -> limits.min_height)/(game -> space -> lines);
-			game -> space -> map[i][j] -> pos_x = game -> limits.min_width + between_x/2 + j*between_x;
-            game -> space -> map[i][j] -> pos_y =  game -> limits.min_height + 30 + between_y/2 + i*between_y;
-		}
-
-    for (int i = 0; i < game -> space -> qtd_obstacles; i++){
-        between_x = (game -> limits.max_width - game -> limits.min_width)/game -> space -> qtd_obstacles;
-        game -> space -> obstacles[i] -> pos_x = between_x*i + between_x/2 + 50;
-        game -> space -> obstacles[i] -> pos_y = (game -> limits.max_height - game -> limits.min_height)*0.75;
-    }
-	
-    game -> space -> ship -> pos_x = (game -> limits.max_width + game -> limits.min_width)/2;
-    game -> space -> ship -> pos_y = game -> limits.max_height*0.97;
+char restart_round(game* game, sprite_base* sprite_base){
+    char vec[6];
+    
+    clean_shots(game -> space -> shot_list);
+    clean_shots(game -> space -> ship -> shots);
+    set_formation(&game -> space -> rows, &game -> space -> lines, &game -> difficult, &game -> space -> qtd_obstacles, vec);
+    add_aliens(game -> space, vec);
+    set_aliens_sprites(game, sprite_base);
+    start_alien_position(game -> space, game -> limits);
+    return 1;
 }

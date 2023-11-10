@@ -41,3 +41,36 @@ void update_game(game* game){
         hit_shots(game -> space -> ship -> shots, game -> space -> shot_list);
     }
 }
+
+void start_alien_position(space* space, limits limits){
+    int between_x = (limits.max_width*0.65 - limits.min_width)/(space -> rows);
+    int between_y = (limits.max_height*0.5 - limits.min_height)/(space -> lines);
+	
+    for (int i = 0; i < space -> lines; i++) 
+		for (int j = 0; j < space -> rows; j++){
+			space -> map[i][j] -> pos_x = limits.min_width + between_x/2 + j*between_x;
+            space -> map[i][j] -> pos_y =  limits.min_height + 30 + between_y/2 + i*between_y;
+		}
+}
+
+void start_obstacles_position(space* space, limits limits){
+    int between_x = (limits.max_width - limits.min_width)/space -> qtd_obstacles;
+
+    for (int i = 0; i < space -> qtd_obstacles; i++){
+        space -> obstacles[i] -> pos_x = between_x*i + between_x/2 + 50;
+        space -> obstacles[i] -> pos_y = (limits.max_height - limits.min_height)*0.75;
+    }
+}
+
+void start_ship_position(ship* ship, limits limits){
+
+    ship -> pos_x = (limits.max_width + limits.min_width)/2;
+    ship -> pos_y = limits.max_height*0.97;
+}
+
+void start_objects_position(game* game){
+
+    start_alien_position(game -> space -> map, game -> limits);
+    start_obstacles_position(game -> space, game -> limits);
+    start_ship_position(game -> space -> ship, game -> limits);
+}

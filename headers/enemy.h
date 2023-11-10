@@ -12,7 +12,6 @@ typedef struct{
 	ALLEGRO_BITMAP** img2;
 } enemy;
 
-shot* enemy_straight_shoot(shot_sentinel *list, enemy *shooter);
 enemy* add_enemy(int type);
 enemy* destroy_enemy(enemy* enemy);
 

@@ -1,5 +1,5 @@
 #include "../headers/shots.h"
- #include <stdio.h>
+
 shot_sentinel* create_shotlist(void){
 	shot_sentinel* list; 
 	
@@ -11,6 +11,34 @@ shot_sentinel* create_shotlist(void){
 	
 	return list;
 }
+
+shot* straight_shoot(shot_sentinel *list, unsigned char damage, char trajectory, short pos_x, short pos_y, unsigned char type){
+	shot* new_shot;
+
+	if ((type != 2) && (has_shot_in_row(list, pos_x)))
+		return NULL;
+		
+	if (!(new_shot = (shot*) malloc(sizeof(shot))))
+        return NULL;
+
+	new_shot -> pos_x = pos_x;
+	new_shot -> pos_y = pos_y;
+	new_shot -> next = NULL;
+	new_shot -> type = type;
+	new_shot -> damage = damage;
+	new_shot -> trajectory = trajectory;
+	new_shot -> img1 = NULL;
+	new_shot -> img2 = NULL;
+
+	if (list -> last)
+		list -> last -> next = (struct shot*) new_shot;
+	list -> last = new_shot;
+	if (!list -> first)
+		list -> first = new_shot;
+
+	return new_shot;
+}
+
 
 //IMPLEMENTAR!
 //	Remove os tiros da lista
@@ -57,4 +85,13 @@ void update_shots(shot_sentinel* shot_list, short lim_y){
 		if ((shot_aux) && (!alt))
 			shot_aux = (shot*) shot_aux -> next;
 	}
+}
+
+int has_shot_in_row(shot_sentinel* shot_list, short pos_x){
+
+	for (shot* shot_aux = shot_list -> first; shot_aux; shot_aux = (shot*) shot_aux -> next)
+		if ((shot_aux -> pos_x + ROW_SPACE > pos_x) && (shot_aux -> pos_x - ROW_SPACE < pos_x))
+			return 1;
+	
+	return 0;
 }

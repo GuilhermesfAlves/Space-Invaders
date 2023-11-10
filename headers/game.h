@@ -17,5 +17,8 @@ typedef struct{
 game* add_game(unsigned char difficult, set_theme* theme, ALLEGRO_DISPLAY_MODE *disp_mode);
 void destroy_game(game* game);
 void update_game(game* game);
+void start_alien_position(space* space, limits limits);
+void start_ship_position(ship* ship, limits limits);
+void start_objects_position(game* game);
 
 #endif //__SI_GAME__

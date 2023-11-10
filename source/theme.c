@@ -42,8 +42,8 @@ theme* create_themes(){
     new_theme -> vec[5] -> secondary = al_map_rgb(135,75,20);
     new_theme -> vec[5] -> back_theme = al_map_rgb(53,51,51);
     new_theme -> vec[6] -> name = strdup("BLUE & WHITE");
-    new_theme -> vec[6] -> primary = al_map_rgb(0,146,146);
-    new_theme -> vec[6] -> secondary = al_map_rgb(0,255,255);
+    new_theme -> vec[6] -> primary = al_map_rgb(33,186,235);
+    new_theme -> vec[6] -> secondary = al_map_rgb(20,124,157);
     new_theme -> vec[6] -> back_theme = al_map_rgb(239,239,239);
     new_theme -> vec[7] -> name = strdup("RED & WHITE");
     new_theme -> vec[7] -> primary = al_map_rgb(150,47,47);

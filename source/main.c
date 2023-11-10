@@ -15,8 +15,6 @@
 /*     \_\ \__/\ \/\ \ \ \_/ |/\ \L\.\_/\ \L\ \/\  __/\ \ \//\__, `\*/
 /*     /\_____\ \_\ \_\ \___/ \ \__/.\_\ \___,_\ \____\\ \_\\/\____/*/
 /*     \/_____/\/_/\/_/\/__/   \/__/\/_/\/__,_ /\/____/ \/_/ \/___/ */
-#define SHIP_MOVE 5
-
  
 void update_joystick_menu(joystick* joystick, theme* theme, difficult* difficult){
     
@@ -45,7 +43,7 @@ void update_joystick_game(joystick* joystick, ship* ship, sprite_base* sprite_ba
         ship -> pos_x -= SHIP_MOVE;
     }
     if (joystick -> space){
-        shot* shot = ship_straight_shoot(ship);
+        shot* shot = straight_shoot(ship -> shots, 1, UP, ship -> pos_x, ship -> pos_y, SHIP_SHOT);
         if (shot)
             set_shot_sprite(shot, sprite_base);
         
@@ -107,8 +105,8 @@ int main(){
             al_draw_bitmap(logo, (disp_data.width - al_get_bitmap_width(logo))/2, 108 - move, 0);
             al_draw_tinted_bitmap(alien, theme -> vec[theme -> actual] -> primary,(disp_data.width - al_get_bitmap_width(alien))/2, al_get_bitmap_height(logo) + 108 + 20 - move, 0);
             show_themes(font, &disp_data, theme, move);
-            show_difficulties(font, &disp_data, theme, difficult, move);
-            show_START_ALERT(font, &disp_data, frame, move);
+            show_difficulties(font, &disp_data, theme -> vec[theme -> actual], difficult, move);
+            show_START_ALERT(font, &disp_data, frame, move, theme -> vec[theme -> actual]);
             al_flip_display();
         }
         else if ((event.type == ALLEGRO_EVENT_KEY_DOWN) && (!move)){
@@ -137,25 +135,8 @@ int main(){
             if (frame % 60 == 0)
                 mov_x = move_aliens(game -> space, game -> limits, mov_x);
         
-            if (!has_alien(game -> space)){
-                clean_shots(game -> space -> shot_list);
-                clean_shots(game -> space -> ship -> shots);
-                char vec[6];
-                set_formation(&game -> space -> rows, &game -> space -> lines, &game -> difficult, &game -> space -> qtd_obstacles, vec);
-                add_aliens(game -> space, vec);
-                set_aliens_sprites(game, sprite_base);
-                int between_x;
-                int between_y;
-
-                for (int i = 0; i < game -> space -> lines; i++) 
-                    for (int j = 0; j < game -> space -> rows; j++){
-                        between_x = (game -> limits.max_width*0.57 - game -> limits.min_width)/(game -> space -> rows);
-                        between_y = (game -> limits.max_height*0.5 - game -> limits.min_height)/(game -> space -> lines);
-                        game -> space -> map[i][j] -> pos_x = game -> limits.min_width + between_x/2 + j*between_x;
-                        game -> space -> map[i][j] -> pos_y =  game -> limits.min_height + 30 + between_y/2 + i*between_y;
-                    }
-                mov_x = 1;
-            }
+            if (!has_alien(game -> space))
+                mov_x = restart_round(game, sprite_base);
         
             update_game(game);
             // printf("frame %d \n", frame);
