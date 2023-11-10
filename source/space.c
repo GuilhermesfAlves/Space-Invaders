@@ -109,11 +109,11 @@ int move_aliens(space* space, limits limits, int mov_x){
 				continue;
 
 			if (!most_y){
-				most_x = (space -> map[i][j] -> pos_x + al_get_bitmap_width(*(space -> map[i][j]) -> img1)/2)*mov_x;
-				most_y = (space -> map[i][j] -> pos_y + al_get_bitmap_height(*(space -> map[i][j]) -> img1)/2);
+				most_x = (space -> map[i][j] -> pos_x + al_get_bitmap_width(*(space -> map[i][j] -> alive))/2)*mov_x;
+				most_y = (space -> map[i][j] -> pos_y + al_get_bitmap_height(*(space -> map[i][j] -> alive))/2);
 			}
-			atual_x = (space -> map[i][j] -> pos_x + al_get_bitmap_width(*(space -> map[i][j]) -> img1)/2)*mov_x;
-			atual_y = (space -> map[i][j] -> pos_y + al_get_bitmap_height(*(space -> map[i][j]) -> img1)/2);
+			atual_x = (space -> map[i][j] -> pos_x + al_get_bitmap_width(*(space -> map[i][j] -> alive))/2)*mov_x;
+			atual_y = (space -> map[i][j] -> pos_y + al_get_bitmap_height(*(space -> map[i][j] -> alive))/2);
 
 			if (atual_x > most_x)
 				most_x = atual_x;
@@ -198,10 +198,10 @@ short hit_aliens(enemy*** map, unsigned char lines, unsigned char rows,shot_sent
 			for (int j = 0; j < rows; j++){
 				if (!map[i][j])
 					continue;
-				if (((map[i][j] -> pos_y + al_get_bitmap_height(*(map[i][j]) -> img1)/2) > shot_aux -> pos_y)\
-				&& ((map[i][j] -> pos_y - al_get_bitmap_height(*(map[i][j]) -> img1)/2) < shot_aux -> pos_y)\
-				&& ((map[i][j] -> pos_x - al_get_bitmap_width(*(map[i][j]) -> img1)/2) < shot_aux -> pos_x + al_get_bitmap_width(*(shot_aux) -> img1)/2)\
-				&& ((map[i][j] -> pos_x + al_get_bitmap_width(*(map[i][j]) -> img1)/2) > shot_aux -> pos_x - al_get_bitmap_width(*(shot_aux) -> img1)/2)){
+				if (((map[i][j] -> pos_y + al_get_bitmap_height(*(map[i][j] -> alive))/2) > shot_aux -> pos_y)\
+				&& ((map[i][j] -> pos_y - al_get_bitmap_height(*(map[i][j] -> alive))/2) < shot_aux -> pos_y)\
+				&& ((map[i][j] -> pos_x - al_get_bitmap_width(*(map[i][j] -> alive))/2) < shot_aux -> pos_x + al_get_bitmap_width(*(shot_aux) -> img1)/2)\
+				&& ((map[i][j] -> pos_x + al_get_bitmap_width(*(map[i][j] -> alive))/2) > shot_aux -> pos_x - al_get_bitmap_width(*(shot_aux) -> img1)/2)){
 					shot_aux = destroy_shot(shot_aux, previous, shot_list);
 					alt = 1;
 					sum += (map[i][j] -> type + 1)*10;

@@ -8,11 +8,11 @@ typedef struct{
 	int pos_x;
 	int pos_y;
 	unsigned char exploded;
-	ALLEGRO_BITMAP** img1;
-	ALLEGRO_BITMAP** img2;
+	ALLEGRO_BITMAP** alive;
+	ALLEGRO_BITMAP** dead;
 } enemy;
 
 enemy* add_enemy(int type);
-enemy* destroy_enemy(enemy* enemy);
+void* destroy_enemy(enemy* enemy);
 
 #endif

@@ -121,12 +121,12 @@ int main(){
     joystick_space(joystick);
     frame = 0;
     if (!exit){
+        printf("sprite base\n");
         game = add_game(difficult -> actual, theme -> vec[theme -> actual], &disp_data);
-
         sprite_base* sprite_base = get_sprite_base(&game -> limits);
         al_set_target_bitmap(al_get_backbuffer(disp));
         set_game_sprites(game, sprite_base);
-            // printf("aqui\n");
+            printf("aqui\n");
         start_objects_position(game);
         int mov_x = 1;
         while(game -> space -> ship -> life){

@@ -70,7 +70,7 @@ void start_ship_position(ship* ship, limits limits){
 
 void start_objects_position(game* game){
 
-    start_alien_position(game -> space -> map, game -> limits);
+    start_alien_position(game -> space, game -> limits);
     start_obstacles_position(game -> space, game -> limits);
     start_ship_position(game -> space -> ship, game -> limits);
 }

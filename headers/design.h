@@ -9,10 +9,11 @@
 #define ENEMIES 3
 
 typedef struct {
-    ALLEGRO_BITMAP*** aliens; 
+    ALLEGRO_BITMAP*** aliens;
     ALLEGRO_BITMAP*** shots;
     ALLEGRO_BITMAP** obstacles;
     ALLEGRO_BITMAP* ship;
+    ALLEGRO_BITMAP** explosion;
 }sprite_base;
 
 
@@ -24,7 +25,7 @@ ALLEGRO_BITMAP* add_logo(ALLEGRO_DISPLAY_MODE* disp_data);
 ALLEGRO_BITMAP* add_logo_alien(ALLEGRO_DISPLAY_MODE* disp_data);
 void add_icon(ALLEGRO_DISPLAY* disp);
 
-void set_aliens_sprites(game* game, sprite_base* sprite_base);
+void set_aliens_sprites(space* space, sprite_base* sprite_base);
 void set_game_sprites(game* game, sprite_base* sprite_base);
 void set_shot_sprite(shot* shot, sprite_base* sprite_base);
 
