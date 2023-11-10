@@ -21,8 +21,7 @@ typedef struct{
 	struct shot *next;
 	char trajectory;
 	unsigned char damage;
-	ALLEGRO_BITMAP** img1;
-	ALLEGRO_BITMAP** img2;
+	ALLEGRO_BITMAP** img;
 }shot;
 
 typedef struct{

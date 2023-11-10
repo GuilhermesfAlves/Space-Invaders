@@ -61,14 +61,13 @@ void set_aliens_sprites(space* space, sprite_base* sprite_base){
     for (int i = 0; i < space -> lines; i++)
         for (int j = 0; j < space -> rows; j++){
             space -> map[i][j] -> alive = sprite_base -> aliens[space -> map[i][j] -> type];
-            // space -> map[i][j] -> dead = &sprite_base -> aliens[space -> map[i][j] -> type];
+            space -> map[i][j] -> dead = sprite_base -> explosion;
     }
 }
 
 void set_shot_sprite(shot* shot, sprite_base* sprite_base){
 
-    shot -> img1 = &sprite_base -> shots[shot -> type][0];
-    shot -> img2 = &sprite_base -> shots[shot -> type][1];
+    shot -> img = sprite_base -> shots[shot -> type];
 }
 
 void set_obstacles_sprites(obstacles **obstacle, unsigned char qtd_obstacles, sprite_base* sprite_base){
@@ -93,7 +92,7 @@ void set_game_sprites(game* game, sprite_base* sprite_base){
 sprite_base* get_sprite_base(limits* limits){
     sprite_base* new_sprite_base;
     ALLEGRO_BITMAP* unscaled;
-    char* name[4] = {"ALIEN", "SHOT", "OBSTACLE", "SHIP"};
+    char* name[5] = {"ALIEN", "SHOT", "OBSTACLE", "SHIP", "EXPLOSION"};
     char path[25];
 
     if (!(new_sprite_base = (sprite_base*) malloc(sizeof(sprite_base))))
@@ -104,7 +103,7 @@ sprite_base* get_sprite_base(limits* limits){
         if (!(new_sprite_base -> aliens[i] = (ALLEGRO_BITMAP**) malloc(2*sizeof(ALLEGRO_BITMAP*))))
             return NULL;
 
-        for (int j = 0; j < 2; j++){
+        for (int j = 0; j < ENEMIES_SPRITES; j++){
             sprintf(path, "img/%s%d_%d.png", name[0], i, j);
             unscaled = al_load_bitmap(path);
             new_sprite_base -> aliens[i][j] = al_create_bitmap((limits -> max_width - limits -> min_width)*al_get_bitmap_width(unscaled)/285,(limits -> max_width - limits -> min_width)*al_get_bitmap_width(unscaled)/285);
@@ -121,7 +120,7 @@ sprite_base* get_sprite_base(limits* limits){
         if (!(new_sprite_base -> shots[i] = (ALLEGRO_BITMAP**) malloc(2*sizeof(ALLEGRO_BITMAP*))))
             return NULL;
 
-        for (int j = 0; j < 2; j++){
+        for (int j = 0; j < SHOT_SPRITES; j++){
             sprintf(path, "img/%s%d_%d.png", name[1], i, j);
             unscaled = al_load_bitmap(path);
             new_sprite_base -> shots[i][j] = al_create_bitmap((limits -> max_width - limits -> min_width)*al_get_bitmap_width(unscaled)/230,(limits -> max_width - limits -> min_width)*al_get_bitmap_height(unscaled)/230);
@@ -139,6 +138,15 @@ sprite_base* get_sprite_base(limits* limits){
         unscaled = al_load_bitmap(path);
         new_sprite_base -> obstacles[i] = al_create_bitmap((limits -> max_width - limits -> min_width)*al_get_bitmap_width(unscaled)/300,(limits -> max_width - limits -> min_width)*al_get_bitmap_width(unscaled)/300);
         al_set_target_bitmap(new_sprite_base -> obstacles[i]);
+        al_draw_scaled_bitmap(unscaled, 0, 0, al_get_bitmap_width(unscaled), al_get_bitmap_height(unscaled), 0, 0, (limits -> max_width - limits -> min_width)*al_get_bitmap_width(unscaled)/300, (limits -> max_width - limits -> min_width)*al_get_bitmap_width(unscaled)/300, 0);
+        al_destroy_bitmap(unscaled);
+    }
+    for (int i = 0; i < 2; i++){
+        sprintf(path, "img/%s%d.png", name[4], i);
+        unscaled = al_load_bitmap(path);
+        new_sprite_base -> explosion[i] = al_create_bitmap((limits -> max_width - limits -> min_width)*al_get_bitmap_width(unscaled)/300,(limits -> max_width - limits -> min_width)*al_get_bitmap_width(unscaled)/300);
+    printf("aqui\n");
+        al_set_target_bitmap(new_sprite_base -> explosion[i]);
         al_draw_scaled_bitmap(unscaled, 0, 0, al_get_bitmap_width(unscaled), al_get_bitmap_height(unscaled), 0, 0, (limits -> max_width - limits -> min_width)*al_get_bitmap_width(unscaled)/300, (limits -> max_width - limits -> min_width)*al_get_bitmap_width(unscaled)/300, 0);
         al_destroy_bitmap(unscaled);
     }
@@ -185,22 +193,17 @@ void show_aliens(space* space, set_theme* theme, int frame){
                 continue;
 
             if (space -> map[i][j] -> exploded){
-                printf("aqui\n");
-                al_draw_tinted_bitmap((space -> map[i][j] -> dead)[(frame / 5) % 2], theme -> primary, space -> map[i][j] -> pos_x - al_get_bitmap_width(*(space -> map[i][j]) -> alive)/2, space -> map[i][j] -> pos_y - al_get_bitmap_height(*(space -> map[i][j]) -> alive)/2, 0);
-                printf("depois\n");
+                al_draw_tinted_bitmap((space -> map[i][j] -> dead)[(frame / 5) % ENEMIES_SPRITES], theme -> primary, space -> map[i][j] -> pos_x - al_get_bitmap_width(*(space -> map[i][j]) -> dead)/2, space -> map[i][j] -> pos_y - al_get_bitmap_height(*(space -> map[i][j]) -> dead)/2, 0);
                 continue;
             }
-            al_draw_tinted_bitmap((space -> map[i][j] -> alive)[(frame / 60) % 2], theme -> primary, space -> map[i][j] -> pos_x - al_get_bitmap_width(*(space -> map[i][j]) -> alive)/2, space -> map[i][j] -> pos_y - al_get_bitmap_height(*(space -> map[i][j]) -> alive)/2, 0);
+            al_draw_tinted_bitmap((space -> map[i][j] -> alive)[(frame / 60) % ENEMIES_SPRITES], theme -> primary, space -> map[i][j] -> pos_x - al_get_bitmap_width(*(space -> map[i][j]) -> alive)/2, space -> map[i][j] -> pos_y - al_get_bitmap_height(*(space -> map[i][j]) -> alive)/2, 0);
         }
     }
 }
 
 void show_shots(shot_sentinel* shot_list, set_theme* theme, int frame){
    for (shot* shot_aux = shot_list -> first; shot_aux; shot_aux = (shot*) shot_aux -> next){
-        if ((frame < 5) || (frame > 10))
-            al_draw_tinted_bitmap(*(shot_aux) -> img1, theme -> secondary, shot_aux -> pos_x - al_get_bitmap_width(*(shot_aux) -> img1)/2, shot_aux -> pos_y - al_get_bitmap_height(*(shot_aux) -> img1)/2, 0);
-        else 
-            al_draw_tinted_bitmap(*(shot_aux) -> img2, theme -> secondary, shot_aux -> pos_x - al_get_bitmap_width(*(shot_aux) -> img2)/2, shot_aux -> pos_y - al_get_bitmap_height(*(shot_aux) -> img2)/2, 0);
+        al_draw_tinted_bitmap((shot_aux) -> img[(frame / 5) % SHOT_SPRITES], theme -> secondary, shot_aux -> pos_x - al_get_bitmap_width(*(shot_aux) -> img)/2, shot_aux -> pos_y - al_get_bitmap_height(*(shot_aux) -> img)/2, 0);
     }
 }
 
@@ -217,6 +220,13 @@ void show_ship(ship* ship, set_theme* theme){
     al_draw_tinted_bitmap(*(ship) -> img, theme -> primary, ship -> pos_x - (al_get_bitmap_width(*(ship) -> img))/2, ship -> pos_y - al_get_bitmap_height(*(ship) -> img)/2, 0);
 }
 
+void show_lifes(ALLEGRO_FONT* font, ship* ship, set_theme* theme, limits limits){
+
+    al_draw_text(font, theme -> primary, limits.max_width - 450, limits.min_height + 20,ALLEGRO_ALIGN_RIGHT, "LIFES: ");
+    for (int i = ship ->life - 1; i > -1; i--)
+       al_draw_tinted_scaled_bitmap(*ship -> img, theme -> secondary, 0,0 ,al_get_bitmap_width(*ship -> img),al_get_bitmap_height(*ship -> img), limits.max_width - 150 - (140*i),limits.min_height - 25, al_get_bitmap_width(*ship -> img)*1.22, al_get_bitmap_height(*ship -> img)*1.22,0);
+}
+
 void show_points(int points, set_theme* theme, ALLEGRO_FONT* font, limits limits){
     char line[20];
 
@@ -231,8 +241,8 @@ void show_game(ALLEGRO_FONT* font, game* game, int frame){
     show_shots(game -> space -> ship -> shots, game -> theme, frame); 
     show_obstacles(game -> space, game -> theme);
     show_ship(game -> space -> ship, game -> theme);    
-
     show_points(game -> points, game -> theme, font, game -> limits);
+    show_lifes(font, game -> space -> ship, game -> theme, game -> limits);
 }
 
 char restart_round(game* game, sprite_base* sprite_base){

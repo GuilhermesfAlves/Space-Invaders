@@ -27,8 +27,7 @@ shot* straight_shoot(shot_sentinel *list, unsigned char damage, char trajectory,
 	new_shot -> type = type;
 	new_shot -> damage = damage;
 	new_shot -> trajectory = trajectory;
-	new_shot -> img1 = NULL;
-	new_shot -> img2 = NULL;
+	new_shot -> img = NULL;
 
 	if (list -> last)
 		list -> last -> next = (struct shot*) new_shot;

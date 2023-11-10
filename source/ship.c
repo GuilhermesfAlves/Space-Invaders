@@ -15,8 +15,7 @@ shot* ship_straight_shoot(ship *ship){
 	new_shot -> type = SHIP_SHOT;
 	new_shot -> damage = 1;
 	new_shot -> trajectory = UP;
-	new_shot -> img1 = NULL;
-	new_shot -> img2 = NULL;
+	new_shot -> img = NULL;
 
 	if (ship -> shots -> last)
 		ship -> shots -> last -> next = (struct shot*) new_shot;

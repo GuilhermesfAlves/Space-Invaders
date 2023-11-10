@@ -6,6 +6,8 @@
 #include "difficult.h"
 #include "game.h"
 
+#define ENEMIES_SPRITES 2
+#define SHOT_SPRITES 2
 #define ENEMIES 3
 
 typedef struct {
