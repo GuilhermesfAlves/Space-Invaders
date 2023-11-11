@@ -72,7 +72,7 @@ int main(){
     joystick* joystick = add_joystick();
     difficult* difficult = add_difficult();
     game* game;
-    int frame = 0;
+    unsigned int frame = 0;
     int move = 0;
     char start = 0;
     char exit = 0;
@@ -87,8 +87,6 @@ int main(){
     while(1) {
         al_wait_for_event(queue, &event);
         update_joystick_menu(joystick, theme, difficult);
-        if (frame == 240)
-            frame = 0;
         
         if (joystick -> space)
             move += 30;
@@ -122,11 +120,11 @@ int main(){
     frame = 0;
     if (!exit){
         game = add_game(difficult -> actual, theme -> vec[theme -> actual], &disp_data);
-        printf("sprite base\n");
+        // printf("sprite base\n");
         sprite_base* sprite_base = get_sprite_base(&game -> limits);
         al_set_target_bitmap(al_get_backbuffer(disp));
         set_game_sprites(game, sprite_base);
-            printf("aqui\n");
+            // printf("aqui1\n");
         start_objects_position(game);
         int mov_x = 1;
         while(game -> space -> ship -> life){
@@ -137,15 +135,14 @@ int main(){
         
             if (!has_alien(game -> space))
                 mov_x = restart_round(game, sprite_base);
-        
+            // printf("game\n");   
             update_game(game);
             // printf("frame %d \n", frame);
-            if (frame == 120)
-                frame = 0;
             if (event.type == ALLEGRO_EVENT_TIMER){
                 al_clear_to_color(theme -> vec[theme -> actual] -> back_theme);
                 // printf("antes show game\n");
                 show_game(font, game, frame);
+                
                 // printf("depois show game\n");
                 // al_draw_filled_rectangle(disp_data.width/2 - 1, 0, disp_data.width/2 + 1, disp_data.height, game -> theme -> secondary);
                 // al_draw_filled_rectangle(0, disp_data.height/2 -1, disp_data.width, disp_data.height/2 + 1, game -> theme -> secondary);

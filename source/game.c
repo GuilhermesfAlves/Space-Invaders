@@ -29,17 +29,16 @@ void destroy_game(game* game){
 
 void update_game(game* game){
     
+    get_exploded(game -> space -> map, game -> space -> lines, game -> space -> rows);
     if (game -> space -> shot_list -> first){
         update_shots(game -> space -> shot_list, game -> limits.max_height);
         hit_obstacles(game -> space -> obstacles, game -> space -> qtd_obstacles, game -> space -> shot_list);
         hit_ship(game -> space -> ship, game -> space -> shot_list);
     }
-    if (game -> space -> ship -> shots -> first){
-        update_shots(game -> space -> ship -> shots, game -> limits.min_height);
-        game -> points += hit_aliens(game -> space -> map, game -> space -> lines, game -> space -> rows, game -> space -> ship -> shots);
-        hit_obstacles(game -> space -> obstacles, game -> space -> qtd_obstacles, game -> space -> ship -> shots);
-        hit_shots(game -> space -> ship -> shots, game -> space -> shot_list);
-    }
+    update_shots(game -> space -> ship -> shots, game -> limits.min_height);
+    game -> points += hit_aliens(game -> space -> map, game -> space -> lines, game -> space -> rows, game -> space -> ship -> shots);
+    hit_obstacles(game -> space -> obstacles, game -> space -> qtd_obstacles, game -> space -> ship -> shots);
+    hit_shots(game -> space -> ship -> shots, game -> space -> shot_list);
 }
 
 void start_alien_position(space* space, limits limits){

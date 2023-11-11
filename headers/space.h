@@ -35,6 +35,7 @@ void destroy_board(space *board);
 int move_aliens(space* space, limits limits, int mov_x);
 int has_alien(space* space);
 
+void get_exploded(enemy***map, unsigned char lines, unsigned char rows);
 void hit_obstacles(obstacles** obstacles, unsigned char qtd_obstaclees, shot_sentinel* shot_list);
 short hit_aliens(enemy*** map, unsigned char lines, unsigned char rows, shot_sentinel* shot_list);
 void hit_shots(shot_sentinel* ship_list, shot_sentinel* enemy_list);

@@ -121,6 +121,7 @@ int move_aliens(space* space, limits limits, int mov_x){
 				most_y = atual_y;
 		}
 	}
+	
 	if (!most_x)
 		return 0;
 	if ((mov_x == 1) && (most_x + ALIEN_STEP < limits.max_width))
@@ -165,10 +166,10 @@ void hit_obstacles(obstacles** obstacles,unsigned char qtd_obstacles,shot_sentin
 			if (!obstacles[i])
 				continue;
 
-			if (((obstacles[i] -> pos_y + al_get_bitmap_height(*(obstacles[i]) -> img[obstacles[i] -> life -1])/2) > shot_aux -> pos_y)\
-			&& ((obstacles[i] -> pos_y - al_get_bitmap_height(*(obstacles[i]) -> img[obstacles[i] -> life -1])/2) < shot_aux -> pos_y)\
-			&& ((obstacles[i] -> pos_x - al_get_bitmap_width(*(obstacles[i]) -> img[obstacles[i] -> life -1])/2) < shot_aux -> pos_x + al_get_bitmap_width(*(shot_aux) -> img)/2)\
-			&& ((obstacles[i] -> pos_x + al_get_bitmap_width(*(obstacles[i]) -> img[obstacles[i] -> life -1])/2) > shot_aux -> pos_x - al_get_bitmap_width(*(shot_aux) -> img)/2)){
+			if (((obstacles[i] -> pos_y + al_get_bitmap_height(obstacles[i] -> img[obstacles[i] -> life -1])/2) > shot_aux -> pos_y)\
+			&& ((obstacles[i] -> pos_y - al_get_bitmap_height(obstacles[i] -> img[obstacles[i] -> life -1])/2) < shot_aux -> pos_y)\
+			&& ((obstacles[i] -> pos_x - al_get_bitmap_width(obstacles[i] -> img[obstacles[i] -> life -1])/2) < shot_aux -> pos_x + al_get_bitmap_width(*(shot_aux) -> img)/2)\
+			&& ((obstacles[i] -> pos_x + al_get_bitmap_width(obstacles[i] -> img[obstacles[i] -> life -1])/2) > shot_aux -> pos_x - al_get_bitmap_width(*(shot_aux) -> img)/2)){
 				alt = 1;
 				obstacles[i] -> life -= shot_aux -> damage;
 				shot_aux = destroy_shot(shot_aux, previous, shot_list);
@@ -204,10 +205,7 @@ short hit_aliens(enemy*** map, unsigned char lines, unsigned char rows,shot_sent
 				&& ((map[i][j] -> pos_x + al_get_bitmap_width(*(map[i][j] -> alive))/2) > shot_aux -> pos_x - al_get_bitmap_width(*(shot_aux) -> img)/2)){
 					shot_aux = destroy_shot(shot_aux, previous, shot_list);
 					alt = 1;
-					sum += (map[i][j] -> type + 1)*10;					
-					if (map[i][j] -> exploded == 15)
-						map[i][j] = destroy_enemy(map[i][j]);
-					map[i][j] -> dead++;
+					map[i][j] -> exploded++;
 					if (!shot_aux)
 						return sum;
 				}
@@ -224,6 +222,22 @@ short hit_aliens(enemy*** map, unsigned char lines, unsigned char rows,shot_sent
 
 	return sum;
 }
+
+void get_exploded(enemy***map, unsigned char lines, unsigned char rows){
+
+	for (int i = 0; i < lines; i++){
+		for (int j = 0; j < rows; j++){
+			if (!((map[i][j]) && (map[i][j] -> exploded)))
+				continue;
+
+			if (map[i][j] -> exploded == 15){
+				map[i][j] = destroy_enemy(map[i][j]);
+			} else
+				map[i][j] -> exploded++;
+		}
+	}
+}
+
 
 void hit_shots(shot_sentinel* ship_list, shot_sentinel* enemy_list){
 	shot* previous = NULL;

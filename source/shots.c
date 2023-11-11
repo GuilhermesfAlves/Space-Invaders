@@ -66,23 +66,19 @@ void clean_shots(shot_sentinel *list){
 
 void update_shots(shot_sentinel* shot_list, short lim_y){
 	shot* previous = NULL;
-	char alt;
 
 	for (shot* shot_aux = shot_list -> first; shot_aux; ){
-		alt = 0;
 		shot_aux -> pos_y += SHOT_MOVE*shot_aux -> trajectory;
 
 		if (shot_aux -> pos_y*shot_aux -> trajectory > lim_y*shot_aux -> trajectory){
-			alt = 1;
 			shot_aux = destroy_shot(shot_aux, previous, shot_list);
-		}
+		} else
+			shot_aux = (shot*) shot_aux -> next;
 
 		if ((!previous) || (shot_list -> first == shot_aux))
 			previous = shot_aux;
 		else if (previous)
 			previous = (shot*) previous -> next;
-		if ((shot_aux) && (!alt))
-			shot_aux = (shot*) shot_aux -> next;
 	}
 }
 
