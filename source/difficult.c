@@ -59,7 +59,7 @@ difficulties* add_difficulties(char** actual, unsigned char type){
     return new_difficulties;
 }
 
-difficult* add_difficult(){
+difficult* add_difficult(unsigned char actual){
     difficult* new_difficult; 
     char* name[MAX_DIFFICULTIES] = {"Easy", "Normal", "Hard", "Extreme"};
     char** passed;
@@ -70,7 +70,7 @@ difficult* add_difficult(){
     if (!(new_difficult -> vec = (difficulties**) malloc(MAX_DIFFICULTIES*sizeof(difficulties*))))
         return NULL;
 
-    new_difficult -> actual = 0;
+    new_difficult -> actual = actual;
     new_difficult -> show = 0;
     for (int i = 0; i < MAX_DIFFICULTIES; i++)
         new_difficult -> vec[i] = add_difficulties(name, i);
@@ -92,4 +92,26 @@ void destroy_difficult(difficult* difficult){
     free(difficult);
 }
 
+char last_used_difficult(){
+    char ind;
 
+    FILE* LastUsed = fopen("database/LastUsedDifficult.txt", "r+"); 
+
+    if (!LastUsed)
+        return 0;
+
+    ind = fgetc(LastUsed);
+    fclose(LastUsed);
+
+    return atoi(&ind); 
+}
+
+void save_last_used_difficult(unsigned char actual){
+    FILE* LastUsed = fopen("database/LastUsedDifficult.txt", "w+"); 
+    
+    if (!LastUsed)
+        return;
+
+    fprintf(LastUsed, "%d", actual);
+    fclose(LastUsed);
+}

@@ -3,6 +3,7 @@
 
 #include <stdlib.h>
 #include <allegro5/allegro5.h>
+#include <stdio.h>
 
 #define MAX_THEMES 9
 
@@ -19,7 +20,9 @@ typedef struct{
     set_theme **vec;
 }theme;
 
-theme* create_themes();
+theme* create_themes(unsigned char actual);
 void destroy_themes(theme* theme);
+unsigned char last_used_theme();
+void save_last_used(unsigned char actual);
 
 #endif //__THEME__

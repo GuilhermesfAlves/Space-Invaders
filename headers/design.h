@@ -36,5 +36,6 @@ void destroy_sprite_base(sprite_base* sprite_base);
 
 void show_game(ALLEGRO_FONT* font, game* game, unsigned int frame);
 char restart_round(game* game, sprite_base* sprite_base);
+void show_game_over(ALLEGRO_FONT* font, ALLEGRO_DISPLAY_MODE* disp_mode, unsigned int frame, int points, set_theme* theme);
 
 #endif //__DESIGN__

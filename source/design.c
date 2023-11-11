@@ -232,11 +232,9 @@ void show_lifes(ALLEGRO_FONT* font, ship* ship, set_theme* theme, limits limits)
        al_draw_tinted_scaled_bitmap(*ship -> img, theme -> secondary, 0,0 ,al_get_bitmap_width(*ship -> img),al_get_bitmap_height(*ship -> img), limits.max_width - 150 - (140*i),limits.min_height - 25, al_get_bitmap_width(*ship -> img)*1.22, al_get_bitmap_height(*ship -> img)*1.22,0);
 }
 
-void show_points(int points, set_theme* theme, ALLEGRO_FONT* font, limits limits){
-    char line[20];
+void show_points(ALLEGRO_FONT* font, game* game){
 
-    sprintf(line, "POINTS: %d", points);
-    al_draw_text(font, theme -> primary, limits.min_width + 30, limits.min_height + 20, ALLEGRO_ALIGN_LEFT, line);
+    al_draw_textf(font, game -> theme -> primary, game -> limits.min_width + 30, game -> limits.min_height + 20, ALLEGRO_ALIGN_LEFT, "POINTS: %d", game -> points);
 }
 
 void show_game(ALLEGRO_FONT* font, game* game, unsigned int frame){
@@ -246,7 +244,7 @@ void show_game(ALLEGRO_FONT* font, game* game, unsigned int frame){
     show_shots(game -> space -> ship -> shots, game -> theme, frame); 
     show_obstacles(game -> space, game -> theme);
     show_ship(game -> space -> ship, game -> theme);    
-    show_points(game -> points, game -> theme, font, game -> limits);
+    show_points(font, game);
     show_lifes(font, game -> space -> ship, game -> theme, game -> limits);
 }
 
@@ -260,4 +258,16 @@ char restart_round(game* game, sprite_base* sprite_base){
     set_aliens_sprites(game -> space, sprite_base);
     start_alien_position(game -> space, game -> limits);
     return 1;
+}
+
+void show_game_over(ALLEGRO_FONT* font, ALLEGRO_DISPLAY_MODE* disp_mode, unsigned int frame, int points, set_theme* theme){
+    int centre_x = disp_mode -> width/2;
+    int centre_y = disp_mode -> height/2;
+
+    al_draw_filled_rounded_rectangle(centre_x - 400, centre_y - 400, centre_x + 400, centre_y + 400, 40, 40, theme -> secondary);
+    al_draw_filled_rounded_rectangle(centre_x - 380, centre_y - 380, centre_x + 380, centre_y + 380, 20, 20, theme -> back_theme);
+    al_draw_text(font, theme -> primary, centre_x, centre_y - 300, ALLEGRO_ALIGN_CENTRE, "GAME OVER");
+    al_draw_textf(font, theme -> primary, centre_x, centre_y, ALLEGRO_ALIGN_CENTRE, "POINTS: %d", points);
+    if ((frame / 60) % 2)
+        al_draw_text(font, theme -> primary, centre_x, centre_y + 300, ALLEGRO_ALIGN_CENTRE, "Press SPACE to exit");
 }

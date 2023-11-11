@@ -44,6 +44,7 @@ ship* add_ship(){
 
 void destroy_ship(ship* ship){
     
+	clean_shots(ship -> shots);
     free(ship);
 }
 

@@ -132,6 +132,8 @@ int move_aliens(space* space, limits limits, int mov_x){
 		sum_y = ALIEN_STEP;
 		mov_x *= -1;
 	}
+	else 
+		return 0;
 
 	for (int i = 0; i < space -> lines; i++){
 		for (int j = 0; j < space -> rows; j++){
@@ -205,6 +207,7 @@ short hit_aliens(enemy*** map, unsigned char lines, unsigned char rows,shot_sent
 				&& ((map[i][j] -> pos_x + al_get_bitmap_width(*(map[i][j] -> alive))/2) > shot_aux -> pos_x - al_get_bitmap_width(*(shot_aux) -> img)/2)){
 					shot_aux = destroy_shot(shot_aux, previous, shot_list);
 					alt = 1;
+					sum += (map[i][j] -> type + 1)*10;
 					map[i][j] -> exploded++;
 					if (!shot_aux)
 						return sum;

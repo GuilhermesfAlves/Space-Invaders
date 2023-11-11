@@ -30,7 +30,10 @@ historic_node* start_node(int points);
 void destroy_node(historic_node* node);
 historic_node* get_historic(FILE* arq);
 
-difficult* add_difficult();
+difficult* add_difficult(unsigned char actual);
 void destroy_difficult(difficult* difficult);
+
+char last_used_difficult();
+void save_last_used_difficult(unsigned char actual);
 
 #endif //__DIFFICULT__
