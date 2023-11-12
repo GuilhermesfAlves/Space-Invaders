@@ -20,6 +20,7 @@
         "type_traits": "c",
         "typeinfo": "c",
         "joystick.h": "c",
-        "stdio.h": "c"
+        "stdio.h": "c",
+        "allegro_font.h": "c"
     }
 }

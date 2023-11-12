@@ -10,6 +10,15 @@
 #define SHOT_SPRITES 3
 #define ALT_SPRITES 2
 
+typedef struct{
+    ALLEGRO_DISPLAY* disp;
+    ALLEGRO_DISPLAY_MODE disp_mode;
+    ALLEGRO_EVENT event;
+    ALLEGRO_EVENT_QUEUE* queue;
+    ALLEGRO_FONT* font;
+    ALLEGRO_TIMER* timer;
+}allegro_structures;
+
 typedef struct {
     ALLEGRO_BITMAP*** aliens;
     ALLEGRO_BITMAP*** shots;
@@ -18,6 +27,8 @@ typedef struct {
     ALLEGRO_BITMAP* ship;
 }sprite_base;
 
+allegro_structures* add_allegro_structures();
+void destroy_allegro_structures(allegro_structures* allegro_structures);
 
 void show_START_ALERT(ALLEGRO_FONT* font, ALLEGRO_DISPLAY_MODE *disp_data, unsigned int frame, int move, set_theme* theme);
 void show_themes(ALLEGRO_FONT* font, ALLEGRO_DISPLAY_MODE *disp_data, theme* theme, int move);

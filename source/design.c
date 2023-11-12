@@ -1,5 +1,30 @@
 #include "../headers/design.h"
 #include <stdio.h>
+
+allegro_structures* add_allegro_structures(){
+    allegro_structures* new_allegro_structures;
+
+    if (!(new_allegro_structures = (allegro_structures*) malloc(sizeof(allegro_structures))))
+        return NULL;
+
+    new_allegro_structures -> timer = al_create_timer(1.0 / 60.0);
+    new_allegro_structures -> queue = al_create_event_queue();
+    al_get_display_mode(al_get_num_video_adapters() - 1, &new_allegro_structures -> disp_mode);
+    new_allegro_structures -> disp_mode.height -= 70;
+    new_allegro_structures -> disp = al_create_display(new_allegro_structures -> disp_mode.width, new_allegro_structures -> disp_mode.height);
+    new_allegro_structures -> font = al_create_builtin_font();
+
+    return new_allegro_structures;
+}
+
+void destroy_allegro_structures(allegro_structures* allegro_structures){
+
+    al_destroy_font(allegro_structures -> font);
+    al_destroy_display(allegro_structures -> disp);
+    al_destroy_timer(allegro_structures -> timer);
+    al_destroy_event_queue(allegro_structures -> queue);
+}
+
 void show_START_ALERT(ALLEGRO_FONT* font, ALLEGRO_DISPLAY_MODE *disp_data, unsigned int frame, int move, set_theme* theme){
 
     if ((!move) && ((frame / 60) % 2))
