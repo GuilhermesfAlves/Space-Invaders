@@ -13,11 +13,12 @@
 #include <allegro5/allegro5.h>
 #include <allegro5/allegro_image.h>
 
+enum type_shot {SHIP_SHOT, ALIEN0_SHOT, ALIEN1_SHOT, ALIEN2_SHOT};
 
 typedef struct shot{
 	int pos_x;
 	int pos_y;
-	enum {SHIP_SHOT, ALIEN0_SHOT, ALIEN1_SHOT, ALIEN2_SHOT} type;
+	char type;
 	struct shot *next;
 	struct shot *prev;
 	char trajectory;

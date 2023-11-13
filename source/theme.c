@@ -23,7 +23,7 @@ theme* create_themes(unsigned char actual){
     new_theme -> vec[0] -> back_theme = al_map_rgb(0,0,0);
     new_theme -> vec[1] -> name = strdup("SYNTH_WAVE '84");
     new_theme -> vec[1] -> primary = al_map_rgb(255,44,132);
-    new_theme -> vec[1] -> secondary = al_map_rgb(135,21,69);
+    new_theme -> vec[1] -> secondary = al_map_rgb(51,203,187);
     new_theme -> vec[1] -> back_theme = al_map_rgb(38,0,55);
     new_theme -> vec[2] -> name = strdup("BLUE & BLACK");
     new_theme -> vec[2] -> primary = al_map_rgb(0,255,255);

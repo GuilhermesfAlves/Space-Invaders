@@ -1,30 +1,5 @@
 #include "../headers/ship.h"
 
-shot* ship_straight_shoot(ship *ship){
-	shot* new_shot;
-
-	if (shot_in_row(ship))
-		return NULL;
-	
-	if (!(new_shot = (shot*) malloc(sizeof(shot))))
-        return NULL;
-
-	new_shot -> pos_x = ship -> pos_x;
-	new_shot -> pos_y = ship -> pos_y;
-	new_shot -> next = NULL;
-	new_shot -> type = SHIP_SHOT;
-	new_shot -> damage = 1;
-	new_shot -> trajectory = UP;
-	new_shot -> img = NULL;
-
-	if (ship -> shots -> last)
-		ship -> shots -> last -> next = (struct shot*) new_shot;
-	ship -> shots -> last = new_shot; 
-	if (!ship -> shots -> first)
-		ship -> shots -> first = new_shot;
-
-	return new_shot;	
-}
 
 ship* add_ship(){
     ship* new_ship;

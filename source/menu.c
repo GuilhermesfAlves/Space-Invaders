@@ -1,5 +1,9 @@
 #include "../headers/menu.h"
 
+int time_to_start(unsigned int frame){
+    return (frame > 40)? 1:0;
+}
+
 void update_joystick_menu(joystick* joystick, theme* theme, difficult* difficult){
     
     if (joystick -> tab) {
@@ -41,7 +45,7 @@ char menu_part(theme* theme, difficult* difficult, allegro_structures* allegro_s
     joystick* joystick = add_joystick();
     unsigned int frame = 0;
     int move = 0;
-    char exit = __GAME_PART;
+    char exit = _GAME_PART;
 
     al_set_target_bitmap(al_get_backbuffer(allegro_structures -> disp));
 
@@ -72,7 +76,7 @@ char menu_part(theme* theme, difficult* difficult, allegro_structures* allegro_s
             else if ((allegro_structures -> event.keyboard.keycode == ALLEGRO_KEY_RIGHT) || (allegro_structures -> event.keyboard.keycode == ALLEGRO_KEY_D)) joystick_right(joystick);
         }
         else if (allegro_structures -> event.type == ALLEGRO_EVENT_DISPLAY_CLOSE)
-            exit = __EXIT;
+            exit = _EXIT;
 
         frame++;
     }
@@ -90,7 +94,7 @@ char game_part(int *points, difficult* difficult, set_theme* theme, allegro_stru
     unsigned int frame = 0;
     game* game;
     int mov_x;
-    char exit = __GAME_OVER_PART;
+    char exit = _GAME_OVER_PART;
 
     game = add_game(difficult -> actual, theme, &allegro_structures -> disp_mode);
     
@@ -101,7 +105,7 @@ char game_part(int *points, difficult* difficult, set_theme* theme, allegro_stru
     start_objects_position(game);
 
     mov_x = 1;
-    while((game -> space -> ship -> life > 0    ) && (mov_x) && (exit)){
+    while((game -> space -> ship -> life > 0) && (mov_x) && (exit)){
         al_wait_for_event(allegro_structures -> queue, &allegro_structures -> event);
         update_joystick_game(game -> joystick, game -> space -> ship, sprite_base, game -> limits);
     
@@ -110,26 +114,25 @@ char game_part(int *points, difficult* difficult, set_theme* theme, allegro_stru
     
         if (!has_alien(game -> space))
             mov_x = restart_round(game, sprite_base);
-        
-        update_game(game, frame);
-        set_shot_sprites(game -> space -> shot_list, sprite_base);
-        printf("game::seted sprites\n");
+    
+        if (time_to_start(frame)){
+            update_game(game, frame);
+    
+            set_shot_sprites(game -> space -> shot_list, sprite_base);
+            if ((allegro_structures -> event.type == ALLEGRO_EVENT_KEY_DOWN) || (allegro_structures -> event.type == ALLEGRO_EVENT_KEY_UP)){
+                if ((allegro_structures -> event.keyboard.keycode == ALLEGRO_KEY_SPACE) && !(allegro_structures -> event.type == ALLEGRO_EVENT_KEY_UP)) joystick_space(game -> joystick);
+                else if ((allegro_structures -> event.keyboard.keycode == ALLEGRO_KEY_LEFT) || (allegro_structures -> event.keyboard.keycode == ALLEGRO_KEY_A)) joystick_left(game -> joystick);
+                else if ((allegro_structures -> event.keyboard.keycode == ALLEGRO_KEY_RIGHT) || (allegro_structures -> event.keyboard.keycode == ALLEGRO_KEY_D)) joystick_right(game -> joystick);
+            }
+        } 
         if (allegro_structures -> event.type == ALLEGRO_EVENT_TIMER){
             al_clear_to_color(theme -> back_theme);
-            printf("game_part::show\n");
             show_game(allegro_structures -> font, game, frame);
-            printf("game::showed\n");
             al_flip_display();
         }
-        else if ((allegro_structures -> event.type == ALLEGRO_EVENT_KEY_DOWN) || (allegro_structures -> event.type == ALLEGRO_EVENT_KEY_UP)){
-            if ((allegro_structures -> event.keyboard.keycode == ALLEGRO_KEY_SPACE) && !(allegro_structures -> event.type == ALLEGRO_EVENT_KEY_UP)) joystick_space(game -> joystick);
-            else if ((allegro_structures -> event.keyboard.keycode == ALLEGRO_KEY_LEFT) || (allegro_structures -> event.keyboard.keycode == ALLEGRO_KEY_A)) joystick_left(game -> joystick);
-            else if ((allegro_structures -> event.keyboard.keycode == ALLEGRO_KEY_RIGHT) || (allegro_structures -> event.keyboard.keycode == ALLEGRO_KEY_D)) joystick_right(game -> joystick);
-        }
         else if (allegro_structures -> event.type == ALLEGRO_EVENT_DISPLAY_CLOSE)
-            exit = __EXIT;
+            exit = _EXIT;
         frame++;        
-        printf("frame %d\n", frame);
     }
     *points = game -> points;
     destroy_sprite_base(sprite_base);
@@ -139,7 +142,7 @@ char game_part(int *points, difficult* difficult, set_theme* theme, allegro_stru
 
 char game_over_part(set_theme* theme, int points, allegro_structures* allegro_structures){
     unsigned int frame = 0;
-    char exit = __MENU_PART;
+    char exit = _MENU_PART;
 
     while(exit){
         al_wait_for_event(allegro_structures -> queue, &allegro_structures -> event);
@@ -153,10 +156,10 @@ char game_over_part(set_theme* theme, int points, allegro_structures* allegro_st
             if (allegro_structures -> event.keyboard.keycode == ALLEGRO_KEY_SPACE)
                 break;
             if (allegro_structures -> event.keyboard.keycode == ALLEGRO_KEY_ESCAPE)
-                exit = __EXIT;
+                exit = _EXIT;
         }
         else if (allegro_structures -> event.type == ALLEGRO_EVENT_DISPLAY_CLOSE)
-            exit = __EXIT;
+            exit = _EXIT;
         frame++;
     }
 

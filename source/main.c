@@ -26,7 +26,7 @@ int main(){
     allegro_structures* allegro_structures = add_allegro_structures();
     theme* theme = create_themes(last_used_theme());
     difficult* difficult = add_difficult(last_used_difficult());
-    char mode = __MENU_PART;
+    char mode = _MENU_PART;
     int points = 0;
     add_icon(allegro_structures -> disp);
 
@@ -38,13 +38,13 @@ int main(){
 
     while (mode){
         switch (mode){
-        case __MENU_PART:
+        case _MENU_PART:
             mode = menu_part(theme, difficult, allegro_structures);
             break;
-        case __GAME_PART:
+        case _GAME_PART:
             mode = game_part(&points, difficult, theme -> vec[theme -> actual], allegro_structures); 
             break;
-        case __GAME_OVER_PART:
+        case _GAME_OVER_PART:
             mode = game_over_part(theme -> vec[theme -> actual], points, allegro_structures);
             break;
         default:

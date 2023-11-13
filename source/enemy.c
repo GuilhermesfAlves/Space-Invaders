@@ -52,7 +52,6 @@ void two_enemy_shots(int pos_x, int pos_y, short lines, short rows, enemy*** map
 			}
 		}
 	}
-	printf("shooting from %d:%d, %d:%d\n", closer[0] -> pos_x, closer[0] -> pos_y, closer[1] -> pos_x, closer[1] -> pos_y);
 
 	straight_shoot(shot_list, (closer[0] -> type == HARD)? 2:1, DOWN, closer[0] -> pos_x, closer[0] -> pos_y, closer[0] -> type + 1);
 	straight_shoot(shot_list, (closer[1] -> type == HARD)? 2:1, DOWN, closer[1] -> pos_x, closer[1] -> pos_y, closer[1] -> type + 1);
