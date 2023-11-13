@@ -7,7 +7,7 @@
 #include "game.h"
 
 #define ENEMIES_SPRITES 3
-#define SHOT_SPRITES 3
+#define SHOT_SPRITES 4
 #define ALT_SPRITES 2
 
 typedef struct{
@@ -41,6 +41,7 @@ void add_icon(ALLEGRO_DISPLAY* disp);
 void set_aliens_sprites(space* space, sprite_base* sprite_base);
 void set_game_sprites(game* game, sprite_base* sprite_base);
 void set_shot_sprite(shot* shot, sprite_base* sprite_base);
+void set_shot_sprites(shot_sentinel* shot_list, sprite_base* sprite_base);
 
 sprite_base* get_sprite_base(limits* limits);
 void destroy_sprite_base(sprite_base* sprite_base);

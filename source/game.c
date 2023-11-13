@@ -27,7 +27,7 @@ void destroy_game(game* game){
     free(game);
 }
 
-void update_game(game* game){
+void update_game(game* game, unsigned int frame){
     
     get_exploded(game -> space -> map, game -> space -> lines, game -> space -> rows);
     if (game -> space -> shot_list -> first){
@@ -39,6 +39,9 @@ void update_game(game* game){
     game -> points += hit_aliens(game -> space -> map, game -> space -> lines, game -> space -> rows, game -> space -> ship -> shots);
     hit_obstacles(game -> space -> obstacles, game -> space -> qtd_obstacles, game -> space -> ship -> shots);
     hit_shots(game -> space -> ship -> shots, game -> space -> shot_list);
+    if (frame % 120 == 0){
+        two_enemy_shots(game -> space -> ship -> pos_x, game -> space -> ship -> pos_y, game -> space -> lines, game -> space -> rows, game -> space -> map, game -> space -> shot_list);
+    }
 }
 
 void start_alien_position(space* space, limits limits){

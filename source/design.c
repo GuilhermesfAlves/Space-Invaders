@@ -91,7 +91,9 @@ void set_aliens_sprites(space* space, sprite_base* sprite_base){
 }
 
 void set_shot_sprite(shot* shot, sprite_base* sprite_base){
-
+    if (!shot)
+        printf("errou\n");
+        printf("shot type %d\n", shot -> type);
     shot -> img = sprite_base -> shots[shot -> type];
 }
 
@@ -135,7 +137,7 @@ sprite_base* get_sprite_base(limits* limits){
             al_draw_scaled_bitmap(unscaled, 0, 0, al_get_bitmap_width(unscaled), al_get_bitmap_height(unscaled), 0, 0, (limits -> max_width - limits -> min_width)*al_get_bitmap_width(unscaled)/285, (limits -> max_width - limits -> min_width)*al_get_bitmap_height(unscaled)/285, 0);
             al_destroy_bitmap(unscaled);
         } 
-    } 
+    }  
 
     if (!(new_sprite_base -> shots = (ALLEGRO_BITMAP***) malloc(SHOT_SPRITES*sizeof(ALLEGRO_BITMAP**))))
         return NULL;
@@ -233,8 +235,11 @@ void show_aliens(space* space, set_theme* theme, unsigned int frame){
 }
 
 void show_shots(shot_sentinel* shot_list, set_theme* theme, unsigned int frame){
-    for (shot* shot_aux = shot_list -> first; shot_aux; shot_aux = (shot*) shot_aux -> next)
+    for (shot* shot_aux = shot_list -> first; shot_aux; shot_aux = (shot*) shot_aux -> next){
+        printf("shot type: %d\n", shot_aux -> type);
         al_draw_tinted_bitmap((shot_aux) -> img[(frame / 5) % ALT_SPRITES], theme -> secondary, shot_aux -> pos_x - al_get_bitmap_width(*(shot_aux) -> img)/2, shot_aux -> pos_y - al_get_bitmap_height(*(shot_aux) -> img)/2, 0);
+        printf("ok\n");
+    }
 }
 
 void show_obstacles(space* space, set_theme* theme){
@@ -263,14 +268,21 @@ void show_points(ALLEGRO_FONT* font, game* game){
 }
 
 void show_game(ALLEGRO_FONT* font, game* game, unsigned int frame){
-
+    printf("al\n");
     show_aliens(game -> space, game -> theme, frame);
+    printf("sh e\n");
     show_shots(game -> space -> shot_list, game -> theme, frame);
+    printf("sh s\n");
     show_shots(game -> space -> ship -> shots, game -> theme, frame); 
+    printf("obs\n");
     show_obstacles(game -> space, game -> theme);
+    printf("sh\n");
     show_ship(game -> space -> ship, game -> theme);    
+    printf("poi\n");
     show_points(font, game);
+    printf("lif\n");
     show_lifes(font, game -> space -> ship, game -> theme, game -> limits);
+    ("ok\n");
 }
 
 char restart_round(game* game, sprite_base* sprite_base){
@@ -295,4 +307,13 @@ void show_game_over(ALLEGRO_FONT* font, ALLEGRO_DISPLAY_MODE* disp_mode, unsigne
     al_draw_textf(font, theme -> primary, centre_x, centre_y, ALLEGRO_ALIGN_CENTRE, "POINTS: %d", points);
     if ((frame / 60) % 2)
         al_draw_text(font, theme -> primary, centre_x, centre_y + 300, ALLEGRO_ALIGN_CENTRE, "Press SPACE to exit");
+}
+
+void set_shot_sprites(shot_sentinel* shot_list, sprite_base* sprite_base){
+    printf("setting sprites\n");
+    for (shot* shot_aux = shot_list -> first; shot_aux; shot_aux = (shot*) shot_aux -> next){
+        
+        set_shot_sprite(shot_aux, sprite_base);
+    }
+    printf("seted here\n");
 }

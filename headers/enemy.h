@@ -14,5 +14,6 @@ typedef struct{
 
 enemy* add_enemy(int type);
 void* destroy_enemy(enemy* enemy);
+void two_enemy_shots(int pos_x, int pos_y, short lines, short rows, enemy*** map, shot_sentinel* shot_list);
 
 #endif

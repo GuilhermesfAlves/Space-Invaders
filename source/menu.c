@@ -101,7 +101,7 @@ char game_part(int *points, difficult* difficult, set_theme* theme, allegro_stru
     start_objects_position(game);
 
     mov_x = 1;
-    while((game -> space -> ship -> life) && (mov_x) && (exit)){
+    while((game -> space -> ship -> life > 0    ) && (mov_x) && (exit)){
         al_wait_for_event(allegro_structures -> queue, &allegro_structures -> event);
         update_joystick_game(game -> joystick, game -> space -> ship, sprite_base, game -> limits);
     
@@ -111,11 +111,14 @@ char game_part(int *points, difficult* difficult, set_theme* theme, allegro_stru
         if (!has_alien(game -> space))
             mov_x = restart_round(game, sprite_base);
         
-        update_game(game);
-    
+        update_game(game, frame);
+        set_shot_sprites(game -> space -> shot_list, sprite_base);
+        printf("game::seted sprites\n");
         if (allegro_structures -> event.type == ALLEGRO_EVENT_TIMER){
             al_clear_to_color(theme -> back_theme);
+            printf("game_part::show\n");
             show_game(allegro_structures -> font, game, frame);
+            printf("game::showed\n");
             al_flip_display();
         }
         else if ((allegro_structures -> event.type == ALLEGRO_EVENT_KEY_DOWN) || (allegro_structures -> event.type == ALLEGRO_EVENT_KEY_UP)){
@@ -126,6 +129,7 @@ char game_part(int *points, difficult* difficult, set_theme* theme, allegro_stru
         else if (allegro_structures -> event.type == ALLEGRO_EVENT_DISPLAY_CLOSE)
             exit = __EXIT;
         frame++;        
+        printf("frame %d\n", frame);
     }
     *points = game -> points;
     destroy_sprite_base(sprite_base);

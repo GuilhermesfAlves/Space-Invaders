@@ -21,6 +21,7 @@
         "typeinfo": "c",
         "joystick.h": "c",
         "stdio.h": "c",
-        "allegro_font.h": "c"
+        "allegro_font.h": "c",
+        "menu.h": "c"
     }
 }

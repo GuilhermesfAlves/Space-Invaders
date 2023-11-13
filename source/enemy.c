@@ -1,5 +1,7 @@
 #include "../headers/enemy.h"
+#include <math.h>
 #include <stdio.h>
+
 //IMPLEMENTAR!
 //Adiciona um inimigo no tabuleiro. Essa tarefa inclui a alocação do mesmo
 enemy* add_enemy(int type){
@@ -24,4 +26,34 @@ void* destroy_enemy(enemy* enemy){
 
 	free(enemy);
 	return NULL;
+}
+
+void two_enemy_shots(int pos_x, int pos_y, short lines, short rows, enemy*** map, shot_sentinel* shot_list){
+	enemy* closer[2] = {NULL, NULL};
+	float distance;
+	float distance_closer;
+
+	for (int e = 0; e < 2; e++){
+		for (int i = 0; i < lines; i++){
+			for (int j = 0; j < rows; j++){
+				if ((!map[i][j]) || (map[i][j] -> exploded))
+					continue;
+
+				if (!closer[e]){
+					closer[e] = map[i][j];
+					distance_closer = sqrt(pow(map[i][j] -> pos_x - pos_x, 2) + pow(map[i][j] -> pos_y - pos_y, 2));
+				}
+				distance = sqrt(pow(map[i][j] -> pos_x - pos_x, 2) + pow(map[i][j] -> pos_y - pos_y, 2));
+				
+				if ((distance < distance_closer) && ((e == 0) || (closer[0] != map[i][j]))){
+					closer[e] = map[i][j];
+					distance_closer = distance;
+				}
+			}
+		}
+	}
+	printf("shooting from %d:%d, %d:%d\n", closer[0] -> pos_x, closer[0] -> pos_y, closer[1] -> pos_x, closer[1] -> pos_y);
+
+	straight_shoot(shot_list, (closer[0] -> type == HARD)? 2:1, DOWN, closer[0] -> pos_x, closer[0] -> pos_y, closer[0] -> type + 1);
+	straight_shoot(shot_list, (closer[1] -> type == HARD)? 2:1, DOWN, closer[1] -> pos_x, closer[1] -> pos_y, closer[1] -> type + 1);
 }

@@ -14,11 +14,12 @@
 #include <allegro5/allegro_image.h>
 
 
-typedef struct{
+typedef struct shot{
 	int pos_x;
 	int pos_y;
 	enum {SHIP_SHOT, ALIEN0_SHOT, ALIEN1_SHOT, ALIEN2_SHOT} type;
 	struct shot *next;
+	struct shot *prev;
 	char trajectory;
 	unsigned char damage;
 	ALLEGRO_BITMAP** img;
@@ -32,7 +33,7 @@ typedef struct{
 shot* straight_shoot(shot_sentinel *list, unsigned char damage, char trajectory, short pos_x, short pos_y, unsigned char type);
 shot_sentinel* create_shotlist(void);
 void clean_shots(shot_sentinel *list);
-shot* destroy_shot(shot* current, shot* previous, shot_sentinel *list);
+shot* destroy_shot(shot* current, shot_sentinel *list);
 void update_shots(shot_sentinel* shot_list, short lim_y);
 int has_shot_in_row(shot_sentinel* shot_list, short pos_x);
 

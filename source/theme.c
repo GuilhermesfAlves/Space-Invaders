@@ -3,7 +3,6 @@
 theme* create_themes(unsigned char actual){
     theme* new_theme;
 
-    printf("%d\n", actual);
     if (!(new_theme = (theme*)malloc(sizeof(theme))))
         return NULL;
 

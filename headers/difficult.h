@@ -2,7 +2,7 @@
 #define __SI_DIFFICULT__
 #include <allegro5/allegro5.h>
 #include <allegro5/allegro_primitives.h>
-#include <time.h>
+// #include <time.h>
 #include <stdio.h>
 
 #define MAX_DIFFICULTIES 4
