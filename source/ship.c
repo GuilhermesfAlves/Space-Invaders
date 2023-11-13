@@ -7,7 +7,7 @@ ship* add_ship(){
     if(!(new_ship = (ship*) malloc(sizeof(ship))))
         return NULL;
 
-    new_ship -> life = SHIP_LIFES;
+    new_ship -> life = SHIP_INICIAL_LIFES;
     new_ship -> pos_x = 0;
 	new_ship -> pos_y = 0;
     new_ship -> move = 0;

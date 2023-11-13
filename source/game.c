@@ -15,7 +15,7 @@ game* add_game(unsigned char difficult, set_theme *theme, ALLEGRO_DISPLAY_MODE *
     new_game -> joystick = add_joystick();
     new_game -> points = 0;
     new_game -> theme = theme;
-    new_game -> space = create_board(difficult, new_game -> limits);
+    new_game -> space = create_space(difficult, new_game -> limits);
 
     return new_game;
 }
@@ -23,24 +23,31 @@ game* add_game(unsigned char difficult, set_theme *theme, ALLEGRO_DISPLAY_MODE *
 void destroy_game(game* game){
 
     destroy_joystick(game -> joystick);
-    destroy_board(game -> space);
+    destroy_space(game -> space);
     free(game);
 }
 
 void update_game(game* game, unsigned int frame){
     
     get_exploded(game -> space -> map, game -> space -> lines, game -> space -> rows);
+    game -> space -> super_alien = get_explod(game -> space -> super_alien);
     if (game -> space -> shot_list -> first){
-        update_shots(game -> space -> shot_list, game -> limits.max_height);
+        update_shots(game -> space -> shot_list, game -> limits.max_height, game -> limits.max_width, game -> limits.min_width);
         hit_obstacles(game -> space -> obstacles, game -> space -> qtd_obstacles, game -> space -> shot_list);
         hit_ship(game -> space -> ship, game -> space -> shot_list);
     }
-    update_shots(game -> space -> ship -> shots, game -> limits.min_height);
+    update_shots(game -> space -> ship -> shots, game -> limits.min_height,  game -> limits.max_width, game -> limits.min_width);
     game -> points += hit_aliens(game -> space -> map, game -> space -> lines, game -> space -> rows, game -> space -> ship -> shots);
     hit_obstacles(game -> space -> obstacles, game -> space -> qtd_obstacles, game -> space -> ship -> shots);
     hit_shots(game -> space -> ship -> shots, game -> space -> shot_list);
-    if (frame % 120 == 0){
+    game -> points += hit_alien(game -> space -> super_alien, game -> space -> ship -> shots);
+    if (frame % 120 == 0)
         two_enemy_shots(game -> space -> ship -> pos_x, game -> space -> ship -> pos_y, game -> space -> lines, game -> space -> rows, game -> space -> map, game -> space -> shot_list);
+    if (game -> space -> super_shot){
+        update_shots(game -> space -> super_shot, game -> limits.max_height, game -> limits.max_width, game -> limits.min_width);
+        hit_obstacles(game -> space -> obstacles, game -> space -> qtd_obstacles, game -> space -> super_shot);
+        hit_shots(game -> space -> super_shot, game -> space -> ship -> shots);
+        hit_ship(game -> space -> ship, game -> space -> super_shot);
     }
 }
 

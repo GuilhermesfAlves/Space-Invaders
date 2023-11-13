@@ -15,7 +15,7 @@ typedef struct{
 
 typedef struct{
     char* name;
-    enum {Easy, Normal, Hard, Extreme} type;
+    char type;
     FILE* arq;
     historic_node* node;
 }difficulties;

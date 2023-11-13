@@ -5,7 +5,8 @@
 #include "shots.h"
 
 #define SHIP_MOVE 5
-#define SHIP_LIFES 3
+#define SHIP_INICIAL_LIFES 3
+#define SHIP_MAX_LIFES 5
 
 typedef struct{
     int life;

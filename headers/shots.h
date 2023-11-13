@@ -7,13 +7,13 @@
 #define LEFT -1
 #define STAY 0
 #define SHOT_MOVE 11
-#define ROW_SPACE 35
+#define ROW_SPACE 32
 #include <stdlib.h>
 
 #include <allegro5/allegro5.h>
 #include <allegro5/allegro_image.h>
 
-enum type_shot {SHIP_SHOT, ALIEN0_SHOT, ALIEN1_SHOT, ALIEN2_SHOT};
+enum type_shooter {SHIP, EASY, MEDIUM, HARD, SUPER};
 
 typedef struct shot{
 	int pos_x;
@@ -21,7 +21,8 @@ typedef struct shot{
 	char type;
 	struct shot *next;
 	struct shot *prev;
-	char trajectory;
+	char trajectory_x;
+	char trajectory_y;
 	unsigned char damage;
 	ALLEGRO_BITMAP** img;
 }shot;
@@ -31,11 +32,11 @@ typedef struct{
 	shot *last;
 } shot_sentinel;
 
-shot* straight_shoot(shot_sentinel *list, unsigned char damage, char trajectory, short pos_x, short pos_y, unsigned char type);
+shot* straight_shoot(shot_sentinel *list, unsigned char damage, char trajectory_x, char trajectory_y, short pos_x, short pos_y, unsigned char type);
 shot_sentinel* create_shotlist(void);
 void clean_shots(shot_sentinel *list);
 shot* destroy_shot(shot* current, shot_sentinel *list);
-void update_shots(shot_sentinel* shot_list, short lim_y);
+void update_shots(shot_sentinel* shot_list, short lim_y, short max_x, short min_x);
 int has_shot_in_row(shot_sentinel* shot_list, short pos_x);
 
 #endif //__SHOTS__

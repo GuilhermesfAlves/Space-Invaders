@@ -2,6 +2,7 @@
 #define __SI_OBSTACLES__
 #include <stdlib.h>
 #include <allegro5/allegro5.h>
+
 #define OBSTACLE_LIFES 10
 
 typedef struct{

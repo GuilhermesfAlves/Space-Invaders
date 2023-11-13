@@ -4,15 +4,17 @@
 #include "shots.h"
 
 typedef struct{
-	enum {EASY, MEDIUM, HARD} type;
+	char type;
 	int pos_x;
 	int pos_y;
+	char dir;
+	short points;
 	unsigned char exploded;
 	ALLEGRO_BITMAP** alive;
 	ALLEGRO_BITMAP** dead;
 } enemy;
 
-enemy* add_enemy(int type);
+enemy* add_enemy(int type, char dir);
 void* destroy_enemy(enemy* enemy);
 void two_enemy_shots(int pos_x, int pos_y, short lines, short rows, enemy*** map, shot_sentinel* shot_list);
 

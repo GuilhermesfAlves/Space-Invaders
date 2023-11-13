@@ -1,45 +1,45 @@
 #include "../headers/space.h"
 #include <stdio.h>
-space* generate_board(int lines, int rows){
-	space* new_board;
+space* generate_space(int lines, int rows){
+	space* new_space;
 	
-	new_board = (space*) malloc(sizeof(space));
-	new_board -> map = (enemy***) malloc (lines * sizeof(enemy*));
+	new_space = (space*) malloc(sizeof(space));
+	new_space -> map = (enemy***) malloc (lines * sizeof(enemy*));
 	for (int i = 0; i < lines; i++) 
-		new_board -> map[i] = (enemy**) calloc (rows, sizeof(enemy));
+		new_space -> map[i] = (enemy**) calloc (rows, sizeof(enemy));
 
-	new_board -> rows = rows;
-	new_board -> lines = lines;
-
-	return new_board;
+	new_space -> rows = rows;
+	new_space -> lines = lines;
+	new_space -> super_alien = NULL;
+	return new_space;
 }
 
 void set_formation(char* rows, char* lines, char* difficult, unsigned char* qtd_obstacles, char* vec){
 
 	switch (*difficult){
-	case 0:
+	case Easy:
 		*rows = 9;
 		*lines = 3;
 		*qtd_obstacles = 6;
-		vec[0] = 1; vec[1] = 0; vec[2] = 0; vec[3] = -1; vec[4] = -1; vec[5] = -1;
+		vec[0] = MEDIUM; vec[1] = EASY; vec[2] = EASY; vec[3] = -1; vec[4] = -1; vec[5] = -1;
 		break;
-	case 1:
+	case Normal:
 		*rows = 10;
 		*lines = 4;
 		*qtd_obstacles = 5;
-		vec[0] = 2; vec[1] = 1; vec[2] = 0; vec[3] = 0; vec[4] = -1; vec[5] = -1;
+		vec[0] = HARD; vec[1] = MEDIUM; vec[2] = EASY; vec[3] = EASY; vec[4] = -1; vec[5] = -1;
 		break;
-	case 2:
+	case Hard:
 		*rows = 11;
 		*lines = 5;
 		*qtd_obstacles = 4;
-		vec[0] = 2; vec[1] = 1; vec[2] = 1; vec[3] = 0; vec[4] = 0; vec[5] = -1;
+		vec[0] = HARD; vec[1] = MEDIUM; vec[2] = MEDIUM; vec[3] = EASY; vec[4] = EASY; vec[5] = -1;
 		break;
-	case 3:
+	case Extreme:
 		*rows = 13;
 		*lines = 6;
 		*qtd_obstacles = 2;
-		vec[0] = 2; vec[1] = 2; vec[2] = 1; vec[3] = 1; vec[4] = 0; vec[5] = 0;
+		vec[0] = HARD; vec[1] = HARD; vec[2] = MEDIUM; vec[3] = MEDIUM; vec[4] = EASY; vec[5] = EASY;
 		break;
 	default:
 		return;
@@ -50,49 +50,51 @@ void add_aliens(space* space, char* vec){
 
 	for (int i = 0; i < space -> lines; i++)
 		for (int j = 0; j < space -> rows; j++)
-			space -> map[i][j] = add_enemy(vec[i]);
+			space -> map[i][j] = add_enemy(vec[i], 0);
 }
 
-space* create_board(unsigned char difficult, limits limits){
-	space* board;
+
+space* create_space(unsigned char difficult, limits limits){
+	space* space;
 	char rows;
 	char lines;
 	char qtd_obstacles;
 	char vec[6];
 
 	set_formation(&rows, &lines, &difficult, &qtd_obstacles, vec);
-	board = generate_board(lines, rows);
-	add_aliens(board, vec);
+	space = generate_space(lines, rows);
+	add_aliens(space, vec);
+
+	space -> qtd_obstacles = qtd_obstacles;
+	space -> obstacles = add_obstacles(qtd_obstacles);
+	space -> shot_list = create_shotlist();
+	space -> super_shot = create_shotlist();
+	space -> ship = add_ship((limits.max_width + limits.min_width)/2, limits.max_height);
 	
-	board -> qtd_obstacles = qtd_obstacles;
-	board -> obstacles = add_obstacles(qtd_obstacles);
-	board -> shot_list = create_shotlist();
-	board -> ship = add_ship((limits.max_width + limits.min_width)/2, limits.max_height);
-	
-	return board;
+	return space;
 }
  
-void clean_board(space *board){
+void clean_space(space *space){
 	
-	for (int i = 0; i < board -> lines; i++)
-		for (int j = 0; j < board -> rows; j++){
-			if (!board -> map[i][j])
+	for (int i = 0; i < space -> lines; i++)
+		for (int j = 0; j < space -> rows; j++){
+			if (!space -> map[i][j])
 				continue;
-			free(board -> map[i][j]);
-			board -> map[i][j] = NULL;
+			free(space -> map[i][j]);
+			space -> map[i][j] = NULL;
 		}
 }
 
-void destroy_board(space* board){
+void destroy_space(space* space){
 
-	for (int i = 0; i < board -> lines; i++)
-		free(board -> map[i]);
+	for (int i = 0; i < space -> lines; i++)
+		free(space -> map[i]);
 
-	destroy_ship(board -> ship);
-	clean_shots(board -> shot_list);
-	destroy_obstacles(board -> obstacles, board -> qtd_obstacles);
-	free(board -> map);
-	free(board);
+	destroy_ship(space -> ship);
+	clean_shots(space -> shot_list);
+	destroy_obstacles(space -> obstacles, space -> qtd_obstacles);
+	free(space -> map);
+	free(space);
 }
 
 int move_aliens(space* space, limits limits, int mov_x){
@@ -185,6 +187,25 @@ void hit_obstacles(obstacles** obstacles,unsigned char qtd_obstacles,shot_sentin
 	}
 }
 
+short hit_alien(enemy* enemy, shot_sentinel* shot_list){
+	short sum = 0;
+
+	for (shot* shot_aux = shot_list -> first; shot_aux; shot_aux = shot_aux -> next){
+		if (!enemy)
+			return 0;
+
+		if (((enemy -> pos_y + al_get_bitmap_height(*(enemy) -> alive)/2) > shot_aux -> pos_y)\
+		&& ((enemy -> pos_y - al_get_bitmap_height(*(enemy) -> alive)/2) < shot_aux -> pos_y)\
+		&& ((enemy -> pos_x - al_get_bitmap_width(*(enemy) -> alive)/2) < shot_aux -> pos_x + al_get_bitmap_width(*(shot_aux) -> img)/2)\
+		&& ((enemy -> pos_x + al_get_bitmap_width(*(enemy) -> alive)/2) > shot_aux -> pos_x - al_get_bitmap_width(*(shot_aux) -> img)/2)){
+			shot_aux = destroy_shot(shot_aux, shot_list);
+			sum += enemy -> points;
+			enemy -> exploded++;
+			return sum;
+		}
+	}
+}
+
 short hit_aliens(enemy*** map, unsigned char lines, unsigned char rows,shot_sentinel* shot_list){
 	short sum = 0;
 	char alt;
@@ -201,7 +222,7 @@ short hit_aliens(enemy*** map, unsigned char lines, unsigned char rows,shot_sent
 				&& ((map[i][j] -> pos_x + al_get_bitmap_width(*(map[i][j] -> alive))/2) > shot_aux -> pos_x - al_get_bitmap_width(*(shot_aux) -> img)/2)){
 					shot_aux = destroy_shot(shot_aux, shot_list);
 					alt = 1;
-					sum += (map[i][j] -> type + 1)*10;
+					sum += map[i][j] -> points;
 					map[i][j] -> exploded++;
 					if (!shot_aux)
 						return sum;
@@ -229,6 +250,18 @@ void get_exploded(enemy***map, unsigned char lines, unsigned char rows){
 				map[i][j] -> exploded++;
 		}
 	}
+}
+
+void* get_explod(enemy* enemy){
+	
+	if (!((enemy) && (enemy -> exploded)))
+		return enemy;
+	
+	if (enemy -> exploded == 20)
+		return destroy_enemy(enemy);
+	else 
+		enemy -> exploded++;
+
 }
 
 

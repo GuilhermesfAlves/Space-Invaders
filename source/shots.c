@@ -12,10 +12,10 @@ shot_sentinel* create_shotlist(void){
 	return list;
 }
 
-shot* straight_shoot(shot_sentinel *list, unsigned char damage, char trajectory, short pos_x, short pos_y, unsigned char type){
+shot* straight_shoot(shot_sentinel *list, unsigned char damage, char trajectory_x, char trajectory_y, short pos_x, short pos_y, unsigned char type){
 	shot* new_shot;
 
-	if ((type != ALIEN2_SHOT) && (has_shot_in_row(list, pos_x)))
+	if ((type != HARD) && (has_shot_in_row(list, pos_x)))
 		return NULL;
 		
 	if (!(new_shot = (shot*) malloc(sizeof(shot))))
@@ -27,7 +27,8 @@ shot* straight_shoot(shot_sentinel *list, unsigned char damage, char trajectory,
 	new_shot -> prev = list -> last;
 	new_shot -> type = type;
 	new_shot -> damage = damage;
-	new_shot -> trajectory = trajectory;
+	new_shot -> trajectory_y = trajectory_y;
+	new_shot -> trajectory_x = trajectory_x;
 	new_shot -> img = NULL;
 
 	if (list -> last)
@@ -68,12 +69,19 @@ void clean_shots(shot_sentinel *list){
 		destroy_shot(p, list);
 }
 
-void update_shots(shot_sentinel* shot_list, short lim_y){
+void update_shots(shot_sentinel* shot_list, short lim_y, short max_x, short min_x){
+	short mid_x = (max_x + min_x)/2;
 
 	for (shot* shot_aux = shot_list -> first; shot_aux; ){
-		shot_aux -> pos_y += SHOT_MOVE*shot_aux -> trajectory;
+		shot_aux -> pos_y += SHOT_MOVE*shot_aux -> trajectory_y;
+		if (shot_aux -> trajectory_x){
+			shot_aux -> pos_x += SHOT_MOVE*shot_aux -> trajectory_x;
+			if (shot_aux -> pos_x*shot_aux -> trajectory_x > mid_x + shot_aux -> trajectory_x*max_x/2){
+				shot_aux -> trajectory_x *= -1;
+			}
+		}
 
-		if (shot_aux -> pos_y*shot_aux -> trajectory > lim_y*shot_aux -> trajectory)
+		if (shot_aux -> pos_y*shot_aux -> trajectory_y > lim_y*shot_aux -> trajectory_y)
 			shot_aux = destroy_shot(shot_aux, shot_list);
 		else
 			shot_aux = shot_aux -> next;

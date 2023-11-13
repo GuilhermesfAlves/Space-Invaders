@@ -7,11 +7,13 @@
 
 #define MAX_THEMES 9
 
+enum theme_set{RETRO, SYNTH_WAVE, RED_B, GREEN_B, BLUE_B, ORANG_W, RED_W, GREEN_W, BLUE_W};
+
 typedef struct{
     ALLEGRO_COLOR primary;
     ALLEGRO_COLOR secondary;
     ALLEGRO_COLOR back_theme;
-    enum {RETRO, SYNTH_WAVE, RED_B, GREEN_B, BLUE_B, ORANG_W, RED_W, GREEN_W, BLUE_W} set;
+    char set;
     char *name;
 }set_theme;
 
