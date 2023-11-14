@@ -20,6 +20,10 @@ void update_joystick_menu(joystick* joystick, theme* theme, difficult* difficult
             difficult -> actual ++;
         joystick_right(joystick);
     }
+    if (joystick -> enter){
+        difficult -> show ^= 1;
+        joystick_enter();
+    }
 }
 
 void update_joystick_game(joystick* joystick, ship* ship, sprite_base* sprite_base, limits limits){
@@ -66,6 +70,7 @@ char menu_part(theme* theme, difficult* difficult, allegro_structures* allegro_s
             show_themes(allegro_structures -> font, &allegro_structures -> disp_mode, theme, move);
             show_difficulties(allegro_structures -> font, &allegro_structures -> disp_mode, theme -> vec[theme -> actual], difficult, move);
             show_START_ALERT(allegro_structures -> font, &allegro_structures -> disp_mode, frame, move, theme -> vec[theme -> actual]);
+            show_historic(difficult, theme -> vec[theme -> actual], allegro_structures -> disp_mode.width, allegro_structures -> disp_mode.height);
             al_flip_display();
         }
         else if ((allegro_structures -> event.type == ALLEGRO_EVENT_KEY_DOWN) && (!move)){

@@ -27,6 +27,7 @@ typedef struct{
     difficulties vec[MAX_DIFFICULTIES];
 }difficult;
 
+void push_to_historic(int points, difficulties* difficulties);
 void get_historic(difficulties* difficulties);
 
 difficult* add_difficult(unsigned char actual);

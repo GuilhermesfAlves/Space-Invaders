@@ -51,7 +51,7 @@ void show_themes(ALLEGRO_FONT* font, ALLEGRO_DISPLAY_MODE *disp_data, theme* the
 void show_difficulties(ALLEGRO_FONT* font, ALLEGRO_DISPLAY_MODE* disp_data, set_theme* theme, difficult* difficult, int move){
 
     al_draw_text(font, theme -> secondary, disp_data -> width/2, disp_data -> height - 300 - move, ALLEGRO_ALIGN_CENTRE, "Press ENTER to show historic");
-    al_draw_text(font, theme -> primary, disp_data -> width/2, disp_data -> height - 250 - move, ALLEGRO_ALIGN_CENTRE, difficult -> vec[difficult -> actual] -> name);
+    al_draw_text(font, theme -> primary, disp_data -> width/2, disp_data -> height - 250 - move, ALLEGRO_ALIGN_CENTRE, difficult -> vec[difficult -> actual].name);
 }   
 
 ALLEGRO_BITMAP* add_logo(ALLEGRO_DISPLAY_MODE* disp_data){
@@ -330,4 +330,15 @@ void show_game_over(ALLEGRO_FONT* font, ALLEGRO_DISPLAY_MODE* disp_mode, unsigne
 void set_shot_sprites(shot_sentinel* shot_list, sprite_base* sprite_base){
     for (shot* shot_aux = shot_list -> first; shot_aux; shot_aux = (shot*) shot_aux -> next)
         set_shot_sprite(shot_aux, sprite_base);
+}
+
+void show_historic(difficult* difficult, set_theme* theme, int max_x, int max_y){
+    int mid_x = max_x*0.2;
+    int mid_y = max_y*0.5;
+
+    if (!difficult -> show)
+        return;
+
+    al_draw_filled_rounded_rectangle(max_x*0.05, max_y*0.05, max_x*0.4, max_y*0.95, 40, 40, theme -> primary);
+    al_draw_filled_rounded_rectangle(max_x*0.07, max_y*0.07, max_x*0.38, max_y*0.93, 38, 38, theme -> primary);
 }
