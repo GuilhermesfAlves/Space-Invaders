@@ -6,29 +6,28 @@
 #include <stdio.h>
 
 #define MAX_DIFFICULTIES 4
+#define QTD_P_HISTORIC 10
 
 typedef struct{
-    struct historic_node* next;
     int points;
     char* data;
-}historic_node;
+    char* time;
+}historic;
 
 typedef struct{
     char* name;
     char type;
-    FILE* arq;
-    historic_node* node;
+    char* arq;
+    historic historic[QTD_P_HISTORIC];
 }difficulties;
 
 typedef struct{
     unsigned char show;
     unsigned char actual;
-    difficulties** vec;
+    difficulties vec[MAX_DIFFICULTIES];
 }difficult;
 
-historic_node* start_node(int points);
-void destroy_node(historic_node* node);
-historic_node* get_historic(FILE* arq);
+void get_historic(difficulties* difficulties);
 
 difficult* add_difficult(unsigned char actual);
 void destroy_difficult(difficult* difficult);

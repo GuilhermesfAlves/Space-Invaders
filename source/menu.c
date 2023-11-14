@@ -99,6 +99,7 @@ char game_part(int *points, difficult* difficult, set_theme* theme, allegro_stru
 
     game = add_game(difficult -> actual, theme, &allegro_structures -> disp_mode);
     
+    srand(time(NULL));
     sprite_base = get_sprite_base(&game -> limits);
     al_set_target_bitmap(al_get_backbuffer(allegro_structures -> disp));
 
@@ -116,7 +117,7 @@ char game_part(int *points, difficult* difficult, set_theme* theme, allegro_stru
         if (!has_alien(game -> space))
             mov_x = restart_round(game, sprite_base);
         
-        if (time_to_start(frame))    
+        if (time_to_start(frame))
             update_game(game, frame);
         if ((frame % 1000 == 500) && (!game -> space -> super_alien)){
             game -> space -> super_alien = add_enemy(SUPER, mov_x);
@@ -124,7 +125,6 @@ char game_part(int *points, difficult* difficult, set_theme* theme, allegro_stru
             game -> space -> super_alien -> pos_x = mid + game -> limits.min_width - mov_x*mid;
             game -> space -> super_alien -> pos_y = game -> limits.min_height + 10;
             set_alien_sprite(game -> space -> super_alien, sprite_base);
-            srand(time(NULL));
             shot_pos = (rand() % (game -> limits.max_width - game -> limits.min_width)) + game -> limits.min_width;
         }
         if (game -> space -> super_alien){
