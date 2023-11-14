@@ -45,13 +45,14 @@ int main(){
             mode = game_part(&points, difficult, theme -> vec[theme -> actual], allegro_structures); 
             break;
         case _GAME_OVER_PART:
+            push_to_historic(points, &difficult -> vec[difficult -> actual]);
+            write_historic(&difficult -> vec[difficult -> actual]);
             mode = game_over_part(theme -> vec[theme -> actual], points, allegro_structures);
             break;
         default:
             break;
        }
     }    
-
     destroy_themes(theme);
     destroy_difficult(difficult);
     destroy_allegro_structures(allegro_structures);

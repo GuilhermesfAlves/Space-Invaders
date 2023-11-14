@@ -10,8 +10,8 @@
 
 typedef struct{
     int points;
-    char* data;
-    char* time;
+    char data[10];
+    char time[8];
 }historic;
 
 typedef struct{
@@ -27,6 +27,7 @@ typedef struct{
     difficulties vec[MAX_DIFFICULTIES];
 }difficult;
 
+void write_historic(difficulties* difficulties);
 void push_to_historic(int points, difficulties* difficulties);
 void get_historic(difficulties* difficulties);
 

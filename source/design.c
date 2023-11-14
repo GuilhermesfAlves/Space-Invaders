@@ -332,13 +332,18 @@ void set_shot_sprites(shot_sentinel* shot_list, sprite_base* sprite_base){
         set_shot_sprite(shot_aux, sprite_base);
 }
 
-void show_historic(difficult* difficult, set_theme* theme, int max_x, int max_y){
-    int mid_x = max_x*0.2;
+void show_historic(ALLEGRO_FONT* font, difficult* difficult, set_theme* theme, int max_x, int max_y){
+    int min_x = max_x*0.05;
+    int min_y = max_y*0.05;
+    max_x *= 0.3;
+    int mid_x = (min_x + max_x)/2;
     int mid_y = max_y*0.5;
+    int space_between = (-min_y - 50 + max_y - 30)*0.1;
 
     if (!difficult -> show)
         return;
-
-    al_draw_filled_rounded_rectangle(max_x*0.05, max_y*0.05, max_x*0.35, max_y*0.95, 40, 40, theme -> primary);
-    al_draw_filled_rounded_rectangle(max_x*0.07, max_y*0.07, max_x*0.32, max_y*0.93, 38, 38, theme -> back_theme);
+    al_draw_rounded_rectangle(min_x, max_y*0.05, max_x, max_y*0.95, 40, 40, theme -> primary, 10);
+    for (int i = 0; i < QTD_P_HISTORIC; i++){
+        al_draw_textf(font, theme -> secondary, mid_x, min_y*2.5 + i*space_between, ALLEGRO_ALIGN_CENTRE, "%d PTS    ||    %s - %s", difficult -> vec[difficult -> actual].historic[i].points, difficult -> vec[difficult -> actual].historic[i].data, difficult -> vec[difficult -> actual].historic[i].time);
+    }
 }

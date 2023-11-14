@@ -9,7 +9,7 @@ void get_historic(difficulties* difficulties){
     if (!(file = fopen(difficulties -> arq, "rb")))
         return;
 
-    fread(difficulties -> historic, sizeof(historic), QTD_P_HISTORIC, file);
+    if (!(fread(difficulties -> historic, sizeof(historic), QTD_P_HISTORIC, file)))
     fclose(file);
 }
 
@@ -22,6 +22,18 @@ void write_historic(difficulties* difficulties){
     
     fwrite(difficulties -> historic, sizeof(historic), QTD_P_HISTORIC, file);
     fclose(file);
+}
+
+void start_historic(difficulties* difficulties){
+    char data[10] = "00/00/00\0";
+    char time[8] = "00:00\0";
+
+    for (int i = 0; i < QTD_P_HISTORIC; i++){
+        strcpy(difficulties -> historic[i].data, data);
+        strcpy(difficulties -> historic[i].time, time);
+        difficulties -> historic[i].points = 0;
+    }
+    write_historic(difficulties);
 }
 
 void set_difficulties(difficulties* difficulties, unsigned char type){
@@ -60,9 +72,9 @@ void add_new_points(struct tm* time_info, historic* historic, int points){
 
     historic -> points = points;
     sprintf(line, "%d/%d/%d", time_info -> tm_mday, time_info -> tm_mon, time_info -> tm_year % 100);
-    historic -> data = strdup(line);
+    strcpy(historic -> data, line);
     sprintf(line, "%d:%d", time_info -> tm_hour, time_info -> tm_min);
-    historic -> data = strdup(line);
+    strcpy(historic -> time, line);
 }
 
 void push_to_historic(int points, difficulties* difficulties){
@@ -88,8 +100,8 @@ void push_to_historic(int points, difficulties* difficulties){
         return;
 
     for (int j = QTD_P_HISTORIC - 1; j > set; j--){
-        difficulties -> historic[j].data = difficulties -> historic[j - 1].data;
-        difficulties -> historic[j].time = difficulties -> historic[j - 1].time;
+        strcpy(difficulties -> historic[j].data, difficulties -> historic[j - 1].data);
+        strcpy(difficulties -> historic[j].time, difficulties -> historic[j - 1].time);
         difficulties -> historic[j].points = difficulties -> historic[j - 1]. points;
     }
     add_new_points(time_info, &difficulties -> historic[set], points);
