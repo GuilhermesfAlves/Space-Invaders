@@ -18,7 +18,6 @@ void write_historic(difficulties* difficulties){
 
     if (!(file = fopen(difficulties -> arq, "wb")))
         return;
-    printf("escrito\n");
     
     fwrite(difficulties -> historic, sizeof(historic), QTD_P_HISTORIC, file);
     fclose(file);
@@ -48,13 +47,13 @@ void set_difficulties(difficulties* difficulties, unsigned char type){
     get_historic(difficulties);
 }
 
-difficult* add_difficult(unsigned char actual){
+difficult* add_difficult(unsigned char current){
     difficult* new_difficult; 
 
     if (!(new_difficult = (difficult*) malloc(sizeof(difficult))))
         return NULL;
 
-    new_difficult -> actual = actual;
+    new_difficult -> current = current;
     new_difficult -> show = 0;
     for (int i = 0; i < MAX_DIFFICULTIES; i++)
         set_difficulties(&new_difficult -> vec[i], i);
@@ -71,9 +70,9 @@ void add_new_points(struct tm* time_info, historic* historic, int points){
     char line[15];
 
     historic -> points = points;
-    sprintf(line, "%d/%d/%d", time_info -> tm_mday, time_info -> tm_mon, time_info -> tm_year % 100);
+    sprintf(line, "%2d/%2d/%2d", time_info -> tm_mday, time_info -> tm_mon, time_info -> tm_year % 100);
     strcpy(historic -> data, line);
-    sprintf(line, "%d:%d", time_info -> tm_hour, time_info -> tm_min);
+    sprintf(line, "%2d:%2d", time_info -> tm_hour, time_info -> tm_min);
     strcpy(historic -> time, line);
 }
 
@@ -121,12 +120,12 @@ char last_used_difficult(){
     return atoi(&ind); 
 }
 
-void save_last_used_difficult(unsigned char actual){
+void save_last_used_difficult(unsigned char current){
     FILE* LastUsed = fopen("database/LastUsedDifficult.txt", "w+"); 
     
     if (!LastUsed)
         return;
 
-    fprintf(LastUsed, "%d", actual);
+    fprintf(LastUsed, "%d", current);
     fclose(LastUsed);
 }

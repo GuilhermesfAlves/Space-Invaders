@@ -7,17 +7,17 @@ int time_to_start(unsigned int frame){
 void update_joystick_menu(joystick* joystick, theme* theme, difficult* difficult){
     
     if (joystick -> tab) {
-        theme -> actual = (theme -> actual + 1) % MAX_THEMES; 
+        theme -> current = (theme -> current + 1) % MAX_THEMES; 
         joystick_tab(joystick);
     }
     if (joystick -> left){
-        if (difficult -> actual > 0)
-            difficult -> actual--;
+        if (difficult -> current > 0)
+            difficult -> current--;
         joystick_left(joystick);
     }
     if (joystick -> right){
-        if (difficult -> actual < MAX_DIFFICULTIES - 1)
-            difficult -> actual ++;
+        if (difficult -> current < MAX_DIFFICULTIES - 1)
+            difficult -> current ++;
         joystick_right(joystick);
     }
     if (joystick -> enter){
@@ -64,13 +64,13 @@ char menu_part(theme* theme, difficult* difficult, allegro_structures* allegro_s
             break;
 
         if ((allegro_structures -> event.type == ALLEGRO_EVENT_TIMER) && (al_is_event_queue_empty(allegro_structures -> queue))){
-            al_clear_to_color(theme -> vec[theme -> actual] -> back_theme);
+            al_clear_to_color(theme -> vec[theme -> current] -> back_theme);
             al_draw_bitmap(logo, (allegro_structures -> disp_mode.width - al_get_bitmap_width(logo))/2, 108 - move, 0);
-            al_draw_tinted_bitmap(alien, theme -> vec[theme -> actual] -> primary,(allegro_structures -> disp_mode.width - al_get_bitmap_width(alien))/2, al_get_bitmap_height(logo) + 108 + 20 - move, 0);
+            al_draw_tinted_bitmap(alien, theme -> vec[theme -> current] -> primary,(allegro_structures -> disp_mode.width - al_get_bitmap_width(alien))/2, al_get_bitmap_height(logo) + 108 + 20 - move, 0);
             show_themes(allegro_structures -> font, &allegro_structures -> disp_mode, theme, move);
-            show_difficulties(allegro_structures -> font, &allegro_structures -> disp_mode, theme -> vec[theme -> actual], difficult, move);
-            show_START_ALERT(allegro_structures -> font, &allegro_structures -> disp_mode, frame, move, theme -> vec[theme -> actual]);
-            show_historic(allegro_structures -> font, difficult, theme -> vec[theme -> actual], allegro_structures -> disp_mode.width, allegro_structures -> disp_mode.height);
+            show_difficulties(allegro_structures -> font, &allegro_structures -> disp_mode, theme -> vec[theme -> current], difficult, move);
+            show_START_ALERT(allegro_structures -> font, &allegro_structures -> disp_mode, frame, move, theme -> vec[theme -> current]);
+            show_historic(allegro_structures -> font, difficult, theme -> vec[theme -> current], allegro_structures -> disp_mode.width, allegro_structures -> disp_mode.height, move);
             al_flip_display();
         }
         else if ((allegro_structures -> event.type == ALLEGRO_EVENT_KEY_DOWN) && (!move)){
@@ -85,8 +85,8 @@ char menu_part(theme* theme, difficult* difficult, allegro_structures* allegro_s
 
         frame++;
     }
-    save_last_used(theme -> actual);
-    save_last_used_difficult(difficult -> actual);
+    save_last_used(theme -> current);
+    save_last_used_difficult(difficult -> current);
     destroy_joystick(joystick);
     al_destroy_bitmap(logo);
     al_destroy_bitmap(alien);
@@ -102,7 +102,7 @@ char game_part(int *points, difficult* difficult, set_theme* theme, allegro_stru
     char exit = _GAME_OVER_PART;
     int shot_pos;
 
-    game = add_game(difficult -> actual, theme, &allegro_structures -> disp_mode);
+    game = add_game(difficult -> current, theme, &allegro_structures -> disp_mode);
     
     srand(time(NULL));
     sprite_base = get_sprite_base(&game -> limits);

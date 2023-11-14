@@ -3,7 +3,6 @@
 
 #include <allegro5/allegro_font.h>
 #include <allegro5/allegro_primitives.h>
-#include "difficult.h"
 #include "game.h"
 
 #define ENEMIES_SPRITES 4
@@ -33,7 +32,7 @@ void destroy_allegro_structures(allegro_structures* allegro_structures);
 void show_START_ALERT(ALLEGRO_FONT* font, ALLEGRO_DISPLAY_MODE *disp_data, unsigned int frame, int move, set_theme* theme);
 void show_themes(ALLEGRO_FONT* font, ALLEGRO_DISPLAY_MODE *disp_data, theme* theme, int move);
 void show_difficulties(ALLEGRO_FONT* font, ALLEGRO_DISPLAY_MODE* disp_data, set_theme* theme, difficult* difficult, int move);
-void show_historic(ALLEGRO_FONT* font, difficult* difficult, set_theme* theme, int max_x, int max_y);
+void show_historic(ALLEGRO_FONT* font, difficult* difficult, set_theme* theme, int max_x, int max_y, int move);
 
 ALLEGRO_BITMAP* add_logo(ALLEGRO_DISPLAY_MODE* disp_data);
 ALLEGRO_BITMAP* add_logo_alien(ALLEGRO_DISPLAY_MODE* disp_data);

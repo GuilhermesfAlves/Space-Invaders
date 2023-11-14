@@ -18,13 +18,13 @@ typedef struct{
 }set_theme;
 
 typedef struct{
-    unsigned char actual;
+    unsigned char current;
     set_theme **vec;
 }theme;
 
-theme* create_themes(unsigned char actual);
+theme* create_themes(unsigned char current);
 void destroy_themes(theme* theme);
 unsigned char last_used_theme();
-void save_last_used(unsigned char actual);
+void save_last_used(unsigned char current);
 
 #endif //__THEME__

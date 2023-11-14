@@ -195,6 +195,9 @@ short hit_alien(enemy* enemy, shot_sentinel* shot_list){
 		if (!enemy)
 			return 0;
 
+		if (enemy -> exploded)
+			return 0;
+
 		if (((enemy -> pos_y + al_get_bitmap_height(*(enemy) -> alive)/2) > shot_aux -> pos_y)\
 		&& ((enemy -> pos_y - al_get_bitmap_height(*(enemy) -> alive)/2) < shot_aux -> pos_y)\
 		&& ((enemy -> pos_x - al_get_bitmap_width(*(enemy) -> alive)/2) < shot_aux -> pos_x + al_get_bitmap_width(*(shot_aux) -> img)/2)\

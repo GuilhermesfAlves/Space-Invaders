@@ -34,9 +34,9 @@ void show_START_ALERT(ALLEGRO_FONT* font, ALLEGRO_DISPLAY_MODE *disp_data, unsig
 
 void show_themes(ALLEGRO_FONT* font, ALLEGRO_DISPLAY_MODE *disp_data, theme* theme, int move){
 
-    al_draw_text(font, theme -> vec[theme -> actual] -> secondary, disp_data -> width/2, disp_data -> height - 400 - move, ALLEGRO_ALIGN_CENTRE, "Press TAB to change color");
+    al_draw_text(font, theme -> vec[theme -> current] -> secondary, disp_data -> width/2, disp_data -> height - 400 - move, ALLEGRO_ALIGN_CENTRE, "Press TAB to change color");
     for (unsigned char i = 0; i < MAX_THEMES; i++){
-        if (theme -> actual == i){
+        if (theme -> current == i){
             al_draw_filled_circle((disp_data -> width/2) + (i - 4)*35, disp_data -> height - 370 - move , 15, theme -> vec[i] -> primary);
             al_draw_filled_circle((disp_data -> width/2) + (i - 4)*35, disp_data -> height - 370 - move, 10, theme -> vec[i] -> back_theme);
         }
@@ -45,13 +45,13 @@ void show_themes(ALLEGRO_FONT* font, ALLEGRO_DISPLAY_MODE *disp_data, theme* the
             al_draw_filled_circle((disp_data -> width/2) + (i - 4)*35, disp_data -> height - 370 - move, 5, theme -> vec[i] -> primary);
         }
     }
-    al_draw_text(font, theme -> vec[theme -> actual] -> primary, disp_data -> width/2, disp_data -> height - 320 - move, ALLEGRO_ALIGN_CENTRE, theme -> vec[theme -> actual] -> name);
+    al_draw_text(font, theme -> vec[theme -> current] -> primary, disp_data -> width/2, disp_data -> height - 320 - move, ALLEGRO_ALIGN_CENTRE, theme -> vec[theme -> current] -> name);
 }
 
 void show_difficulties(ALLEGRO_FONT* font, ALLEGRO_DISPLAY_MODE* disp_data, set_theme* theme, difficult* difficult, int move){
 
     al_draw_text(font, theme -> secondary, disp_data -> width/2, disp_data -> height - 300 - move, ALLEGRO_ALIGN_CENTRE, "Press ENTER to show historic");
-    al_draw_text(font, theme -> primary, disp_data -> width/2, disp_data -> height - 250 - move, ALLEGRO_ALIGN_CENTRE, difficult -> vec[difficult -> actual].name);
+    al_draw_text(font, theme -> primary, disp_data -> width/2, disp_data -> height - 250 - move, ALLEGRO_ALIGN_CENTRE, difficult -> vec[difficult -> current].name);
 }   
 
 ALLEGRO_BITMAP* add_logo(ALLEGRO_DISPLAY_MODE* disp_data){
@@ -332,7 +332,7 @@ void set_shot_sprites(shot_sentinel* shot_list, sprite_base* sprite_base){
         set_shot_sprite(shot_aux, sprite_base);
 }
 
-void show_historic(ALLEGRO_FONT* font, difficult* difficult, set_theme* theme, int max_x, int max_y){
+void show_historic(ALLEGRO_FONT* font, difficult* difficult, set_theme* theme, int max_x, int max_y, int move){
     int min_x = max_x*0.05;
     int min_y = max_y*0.05;
     max_x *= 0.3;
@@ -342,8 +342,9 @@ void show_historic(ALLEGRO_FONT* font, difficult* difficult, set_theme* theme, i
 
     if (!difficult -> show)
         return;
-    al_draw_rounded_rectangle(min_x, max_y*0.05, max_x, max_y*0.95, 40, 40, theme -> primary, 10);
+    al_draw_textf(font, theme -> primary, mid_x, min_y + 10 + (space_between >> 2) - move, ALLEGRO_ALIGN_CENTRE, "HISTORIC - %s", difficult -> vec[difficult -> current].name);
+    al_draw_rounded_rectangle(min_x, min_y - move, max_x, (max_y*0.95) - move, 40, 40, theme -> primary, 10);
     for (int i = 0; i < QTD_P_HISTORIC; i++){
-        al_draw_textf(font, theme -> secondary, mid_x, min_y*2.5 + i*space_between, ALLEGRO_ALIGN_CENTRE, "%d PTS    ||    %s - %s", difficult -> vec[difficult -> actual].historic[i].points, difficult -> vec[difficult -> actual].historic[i].data, difficult -> vec[difficult -> actual].historic[i].time);
+        al_draw_textf(font, theme -> secondary, mid_x, (min_y*2.5) - move + i*space_between, ALLEGRO_ALIGN_CENTRE, "%d PTS    ||    %s - %s", difficult -> vec[difficult -> current].historic[i].points, difficult -> vec[difficult -> current].historic[i].data, difficult -> vec[difficult -> current].historic[i].time);
     }
 }

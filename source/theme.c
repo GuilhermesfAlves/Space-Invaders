@@ -1,6 +1,6 @@
 #include "../headers/theme.h"
 
-theme* create_themes(unsigned char actual){
+theme* create_themes(unsigned char current){
     theme* new_theme;
 
     if (!(new_theme = (theme*)malloc(sizeof(theme))))
@@ -16,7 +16,7 @@ theme* create_themes(unsigned char actual){
         new_theme -> vec[i] -> set = i;
     }
 
-    new_theme -> actual = actual;
+    new_theme -> current = current;
     new_theme -> vec[0] -> name = strdup("RETRO");
     new_theme -> vec[0] -> primary = al_map_rgb(0,255,0);
     new_theme -> vec[0] -> secondary = al_map_rgb(0,146,0);
@@ -78,13 +78,13 @@ unsigned char last_used_theme(){
     return atoi(&ind); 
 }
 
-void save_last_used(unsigned char actual){
+void save_last_used(unsigned char current){
 
     FILE* LastUsed = fopen("database/LastUsedTheme.txt","w+"); 
     
     if (!LastUsed)
         return;
 
-    fprintf(LastUsed, "%d", actual);
+    fprintf(LastUsed, "%d", current);
     fclose(LastUsed);
 }

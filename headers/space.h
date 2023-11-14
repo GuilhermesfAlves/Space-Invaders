@@ -5,11 +5,10 @@
 #include "enemy.h"
 #include "ship.h"
 #include "obstacles.h"
+#include "difficult.h"
 
 #define ALIEN_STEP 30
 #define SUPER_ALIEN_STEP 4
-
-enum diff_mode {Easy, Normal, Hard, Extreme};
 
 typedef struct{
     int min_width;
