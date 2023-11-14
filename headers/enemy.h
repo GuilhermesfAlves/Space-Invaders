@@ -12,6 +12,7 @@ typedef struct{
 	unsigned char exploded;
 	ALLEGRO_BITMAP** alive;
 	ALLEGRO_BITMAP** dead;
+	ALLEGRO_BITMAP** shot;
 } enemy;
 
 enemy* add_enemy(int type, char dir);

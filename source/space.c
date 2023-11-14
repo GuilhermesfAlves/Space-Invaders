@@ -11,6 +11,7 @@ space* generate_space(int lines, int rows){
 	new_space -> rows = rows;
 	new_space -> lines = lines;
 	new_space -> super_alien = NULL;
+		
 	return new_space;
 }
 
@@ -208,51 +209,22 @@ short hit_alien(enemy* enemy, shot_sentinel* shot_list){
 
 short hit_aliens(enemy*** map, unsigned char lines, unsigned char rows,shot_sentinel* shot_list){
 	short sum = 0;
-	char alt;
 
-	for (shot* shot_aux = shot_list -> first; shot_aux; ){
-		alt = 0;
-		for (int i = 0; i < lines; i++){
-			for (int j = 0; j < rows; j++){
-				if (!((map[i][j]) && (!map[i][j] -> exploded)))
-					continue;
-				if (((map[i][j] -> pos_y + al_get_bitmap_height(*(map[i][j] -> alive))/2) > shot_aux -> pos_y)\
-				&& ((map[i][j] -> pos_y - al_get_bitmap_height(*(map[i][j] -> alive))/2) < shot_aux -> pos_y)\
-				&& ((map[i][j] -> pos_x - al_get_bitmap_width(*(map[i][j] -> alive))/2) < shot_aux -> pos_x + al_get_bitmap_width(*(shot_aux) -> img)/2)\
-				&& ((map[i][j] -> pos_x + al_get_bitmap_width(*(map[i][j] -> alive))/2) > shot_aux -> pos_x - al_get_bitmap_width(*(shot_aux) -> img)/2)){
-					shot_aux = destroy_shot(shot_aux, shot_list);
-					alt = 1;
-					sum += map[i][j] -> points;
-					map[i][j] -> exploded++;
-					if (!shot_aux)
-						return sum;
-				}
-			}
-		}			
-
-		if (!alt)
-			shot_aux = shot_aux -> next;
-	}
+	for (int i = 0; i < lines; i++)
+		for (int j = 0; j < rows; j++)
+			sum += hit_alien(map[i][j], shot_list);
 
 	return sum;
 }
 
 void get_exploded(enemy***map, unsigned char lines, unsigned char rows){
 
-	for (int i = 0; i < lines; i++){
-		for (int j = 0; j < rows; j++){
-			if (!((map[i][j]) && (map[i][j] -> exploded)))
-				continue;
-
-			if (map[i][j] -> exploded == 15){
-				map[i][j] = destroy_enemy(map[i][j]);
-			} else
-				map[i][j] -> exploded++;
-		}
-	}
+	for (int i = 0; i < lines; i++) 
+		for (int j = 0; j < rows; j++)
+			map[i][j] = get_explod(map[i][j]);
 }
 
-void* get_explod(enemy* enemy){
+enemy* get_explod(enemy* enemy){
 	
 	if (!((enemy) && (enemy -> exploded)))
 		return enemy;
@@ -263,7 +235,6 @@ void* get_explod(enemy* enemy){
 		enemy -> exploded++;
 
 }
-
 
 void hit_shots(shot_sentinel* ship_list, shot_sentinel* enemy_list){
 	char alt_s;
@@ -291,12 +262,14 @@ void hit_shots(shot_sentinel* ship_list, shot_sentinel* enemy_list){
 void hit_ship(ship* ship, shot_sentinel* shot_list){
 
 	for (shot* shot_aux = shot_list -> first; shot_aux; ){//bateu em ship
-		if (((ship -> pos_y + al_get_bitmap_height(*(ship) -> img)/2) > shot_aux -> pos_y)\
-        && ((ship -> pos_y - al_get_bitmap_height(*(ship) -> img)/2) < shot_aux -> pos_y)\
-        && ((ship -> pos_x - al_get_bitmap_width(*(ship) -> img)/2) < shot_aux -> pos_x + al_get_bitmap_width(*(shot_aux) -> img)/2)\
-        && ((ship -> pos_x + al_get_bitmap_width(*(ship) -> img)/2) > shot_aux -> pos_x - al_get_bitmap_width(*(shot_aux) -> img)/2)){
+		if (((ship -> pos_y + al_get_bitmap_height(*(ship) -> alive)/2) > shot_aux -> pos_y)\
+        && ((ship -> pos_y - al_get_bitmap_height(*(ship) -> alive)/2) < shot_aux -> pos_y)\
+        && ((ship -> pos_x - al_get_bitmap_width(*(ship) -> alive)/2) < shot_aux -> pos_x + al_get_bitmap_width(*(shot_aux) -> img)/2)\
+        && ((ship -> pos_x + al_get_bitmap_width(*(ship) -> alive)/2) > shot_aux -> pos_x - al_get_bitmap_width(*(shot_aux) -> img)/2)){
             shot_aux = destroy_shot(shot_aux, shot_list);
 			ship -> life--;
+			if (!ship -> life)
+				ship -> exploded = 1;
 		} else 
 			shot_aux = shot_aux -> next;
 	}

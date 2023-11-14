@@ -11,7 +11,10 @@ ship* add_ship(){
     new_ship -> pos_x = 0;
 	new_ship -> pos_y = 0;
     new_ship -> move = 0;
-	new_ship -> img = NULL;
+    new_ship -> exploded = 0;
+	new_ship -> alive = NULL;
+    new_ship -> dead = NULL;
+    new_ship -> shot_img = NULL;
 	new_ship -> shots = create_shotlist();
 
     return new_ship;

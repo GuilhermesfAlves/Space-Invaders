@@ -13,8 +13,11 @@ typedef struct{
     int pos_x;
     int pos_y;
     unsigned char move;
+    unsigned char exploded;
     shot_sentinel* shots;
-    ALLEGRO_BITMAP** img;
+    ALLEGRO_BITMAP** alive;
+    ALLEGRO_BITMAP** dead;
+    ALLEGRO_BITMAP** shot_img;
 }ship;
 
 shot* ship_straight_shoot(ship *ship);

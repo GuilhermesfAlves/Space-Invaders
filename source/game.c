@@ -30,6 +30,8 @@ void destroy_game(game* game){
 void update_game(game* game, unsigned int frame){
     
     get_exploded(game -> space -> map, game -> space -> lines, game -> space -> rows);
+    if (game -> space -> ship -> exploded)
+        game -> space -> ship -> exploded++;
     game -> space -> super_alien = get_explod(game -> space -> super_alien);
     if (game -> space -> shot_list -> first){
         update_shots(game -> space -> shot_list, game -> limits.max_height, game -> limits.max_width, game -> limits.min_width);

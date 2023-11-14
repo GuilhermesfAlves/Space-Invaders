@@ -40,7 +40,7 @@ void destroy_space(space *space);
 int move_aliens(space* space, limits limits, int mov_x);
 int has_alien(space* space);
 
-void* get_explod(enemy* enemy);
+enemy* get_explod(enemy* enemy);
 void get_exploded(enemy***map, unsigned char lines, unsigned char rows);
 void hit_obstacles(obstacles** obstacles, unsigned char qtd_obstaclees, shot_sentinel* shot_list);
 short hit_alien(enemy* enemy, shot_sentinel* shot_list);

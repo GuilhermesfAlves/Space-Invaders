@@ -24,10 +24,10 @@ void update_joystick_menu(joystick* joystick, theme* theme, difficult* difficult
 
 void update_joystick_game(joystick* joystick, ship* ship, sprite_base* sprite_base, limits limits){
 
-    if ((joystick -> right) && (ship -> pos_x + SHIP_MOVE + al_get_bitmap_width(*(ship) -> img)/2 < limits.max_width)){
+    if ((joystick -> right) && (ship -> pos_x + SHIP_MOVE + al_get_bitmap_width(*(ship) -> alive)/2 < limits.max_width)){
         ship -> pos_x += SHIP_MOVE;
     }
-    if ((joystick -> left) && (ship -> pos_x - SHIP_MOVE - al_get_bitmap_width(*(ship) -> img)/2 > limits.min_width)){
+    if ((joystick -> left) && (ship -> pos_x - SHIP_MOVE - al_get_bitmap_width(*(ship) -> alive)/2 > limits.min_width)){
         ship -> pos_x -= SHIP_MOVE; 
     }
     if (joystick -> space){
@@ -105,8 +105,8 @@ char game_part(int *points, difficult* difficult, set_theme* theme, allegro_stru
     set_game_sprites(game, sprite_base);
     start_objects_position(game);
 
-    mov_x = 1;
-    while((game -> space -> ship -> life > 0) && (mov_x) && (exit)){
+    mov_x = RIGHT;
+    while((game -> space -> ship -> exploded != 20) && (mov_x) && (exit)){
         al_wait_for_event(allegro_structures -> queue, &allegro_structures -> event);
         update_joystick_game(game -> joystick, game -> space -> ship, sprite_base, game -> limits);
     
@@ -124,23 +124,20 @@ char game_part(int *points, difficult* difficult, set_theme* theme, allegro_stru
             game -> space -> super_alien -> pos_x = mid + game -> limits.min_width - mov_x*mid;
             game -> space -> super_alien -> pos_y = game -> limits.min_height + 10;
             set_alien_sprite(game -> space -> super_alien, sprite_base);
-            srand();
+            srand(time(NULL));
             shot_pos = (rand() % (game -> limits.max_width - game -> limits.min_width)) + game -> limits.min_width;
         }
         if (game -> space -> super_alien){
-            if (shot_pos < game -> space -> super_alien -> pos_x){
+            if ((!game -> space -> super_shot -> first) && (shot_pos*game -> space -> super_alien -> dir < game -> space -> super_alien -> pos_x*game -> space -> super_alien -> dir)){
                 shot* shot = straight_shoot(game -> space -> super_shot, 1, mov_x, DOWN, game -> space -> super_alien -> pos_x, game -> space -> super_alien -> pos_y, SUPER);
                 set_shot_sprite(shot, sprite_base);
-                shot_pos = game -> limits.max_width + 10;
+                shot_pos = 5000*shot -> trajectory_x;
             }
             game -> space -> super_alien -> pos_x += game -> space -> super_alien -> dir*SUPER_ALIEN_STEP;
-            if (game -> space -> super_alien -> pos_x > game -> limits. max_width)
+            if (game -> space -> super_alien -> pos_x > game -> limits.max_width)
                 game -> space -> super_alien = destroy_enemy(game -> space -> super_alien);
         }
-        if (game -> space -> super_shot){
-            
-        }
-        set_shot_sprites(game -> space -> shot_list, sprite_base);
+
         if ((allegro_structures -> event.type == ALLEGRO_EVENT_KEY_DOWN) || (allegro_structures -> event.type == ALLEGRO_EVENT_KEY_UP)){
             if ((allegro_structures -> event.keyboard.keycode == ALLEGRO_KEY_SPACE) && !(allegro_structures -> event.type == ALLEGRO_EVENT_KEY_UP) && time_to_start(frame)) joystick_space(game -> joystick);
             else if ((allegro_structures -> event.keyboard.keycode == ALLEGRO_KEY_LEFT) || (allegro_structures -> event.keyboard.keycode == ALLEGRO_KEY_A)) joystick_left(game -> joystick);
@@ -153,7 +150,7 @@ char game_part(int *points, difficult* difficult, set_theme* theme, allegro_stru
         }
         else if (allegro_structures -> event.type == ALLEGRO_EVENT_DISPLAY_CLOSE)
             exit = _EXIT;
-        frame++;        
+        frame++;
     }
     *points = game -> points;
     destroy_sprite_base(sprite_base);

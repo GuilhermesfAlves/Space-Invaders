@@ -86,18 +86,19 @@ void set_alien_sprite(enemy* enemy, sprite_base* sprite_base){
 
     enemy -> alive = sprite_base -> aliens[enemy -> type];
     enemy -> dead = sprite_base -> explosion;
+    enemy -> shot = sprite_base -> shots[enemy -> type + 1];
 }
 
 void set_aliens_sprites(space* space, sprite_base* sprite_base){
     
     for (int i = 0; i < space -> lines; i++)
-        for (int j = 0; j < space -> rows; j++){
-            space -> map[i][j] -> alive = sprite_base -> aliens[space -> map[i][j] -> type];
-            space -> map[i][j] -> dead = sprite_base -> explosion;
-        }
+        for (int j = 0; j < space -> rows; j++)
+            set_alien_sprite(space -> map[i][j], sprite_base);
+        
 }
 
 void set_shot_sprite(shot* shot, sprite_base* sprite_base){
+
     shot -> img = sprite_base -> shots[shot -> type];
 }
 
@@ -109,7 +110,9 @@ void set_obstacles_sprites(obstacles **obstacle, unsigned char qtd_obstacles, sp
 
 void set_ship_sprite(ship* ship, sprite_base* sprite_base){
 
-    ship -> img = &sprite_base -> ship;
+    ship -> alive = &sprite_base -> ship;
+    ship -> dead = sprite_base -> explosion;
+    ship -> shot_img = sprite_base -> shots[SHIP];
 }
 
 void set_game_sprites(game* game, sprite_base* sprite_base){
@@ -264,16 +267,19 @@ void show_obstacles(space* space, set_theme* theme){
     }
 }
 
-void show_ship(ship* ship, set_theme* theme){
+void show_ship(ship* ship, set_theme* theme, unsigned int frame){
 
-    al_draw_tinted_bitmap(*(ship) -> img, theme -> primary, ship -> pos_x - (al_get_bitmap_width(*(ship) -> img))/2, ship -> pos_y - al_get_bitmap_height(*(ship) -> img)/2, 0);
+    if (ship -> exploded)
+        al_draw_tinted_bitmap(ship -> dead[(frame / 7) % ALT_SPRITES], theme -> primary, ship -> pos_x - (al_get_bitmap_width(*(ship) -> dead))/2, ship -> pos_y - al_get_bitmap_height(*(ship) -> dead)/2, 0);
+    else 
+        al_draw_tinted_bitmap(*(ship) -> alive, theme -> primary, ship -> pos_x - (al_get_bitmap_width(*(ship) -> alive))/2, ship -> pos_y - al_get_bitmap_height(*(ship) -> alive)/2, 0);
 }
 
 void show_lifes(ALLEGRO_FONT* font, ship* ship, set_theme* theme, limits limits){
 
-    al_draw_text(font, theme -> primary, limits.max_width - 450, limits.min_height + 20,ALLEGRO_ALIGN_RIGHT, "LIFES: ");
+    al_draw_text(font, theme -> primary, limits.max_width - 450, limits.min_height + 20, ALLEGRO_ALIGN_RIGHT, "LIFES: ");
     for (int i = ship ->life - 1; i > -1; i--)
-       al_draw_tinted_scaled_bitmap(*ship -> img, theme -> secondary, 0,0 ,al_get_bitmap_width(*ship -> img),al_get_bitmap_height(*ship -> img), limits.max_width - 150 - (75*i),limits.min_height - 13, al_get_bitmap_width(*ship -> img)*0.75, al_get_bitmap_height(*ship -> img)*0.75,0);
+       al_draw_tinted_scaled_bitmap(*ship -> alive, theme -> secondary, 0,0 ,al_get_bitmap_width(*ship -> alive),al_get_bitmap_height(*ship -> alive), limits.max_width - 150 - (75*i),limits.min_height - 13, al_get_bitmap_width(*ship -> alive)*0.75, al_get_bitmap_height(*ship -> alive)*0.75,0);
 }
 
 void show_points(ALLEGRO_FONT* font, game* game){
@@ -287,7 +293,7 @@ void show_game(ALLEGRO_FONT* font, game* game, unsigned int frame){
     show_shots(game -> space -> shot_list, game -> theme, frame);
     show_shots(game -> space -> ship -> shots, game -> theme, frame); 
     show_obstacles(game -> space, game -> theme);
-    show_ship(game -> space -> ship, game -> theme);    
+    show_ship(game -> space -> ship, game -> theme, frame);    
     show_points(font, game);
     show_lifes(font, game -> space -> ship, game -> theme, game -> limits);
     show_alien(font, game -> space -> super_alien, game -> theme, frame);
