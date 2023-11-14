@@ -339,6 +339,6 @@ void show_historic(difficult* difficult, set_theme* theme, int max_x, int max_y)
     if (!difficult -> show)
         return;
 
-    al_draw_filled_rounded_rectangle(max_x*0.05, max_y*0.05, max_x*0.4, max_y*0.95, 40, 40, theme -> primary);
-    al_draw_filled_rounded_rectangle(max_x*0.07, max_y*0.07, max_x*0.38, max_y*0.93, 38, 38, theme -> primary);
+    al_draw_filled_rounded_rectangle(max_x*0.05, max_y*0.05, max_x*0.35, max_y*0.95, 40, 40, theme -> primary);
+    al_draw_filled_rounded_rectangle(max_x*0.07, max_y*0.07, max_x*0.32, max_y*0.93, 38, 38, theme -> back_theme);
 }

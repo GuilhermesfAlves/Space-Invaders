@@ -22,7 +22,7 @@ void update_joystick_menu(joystick* joystick, theme* theme, difficult* difficult
     }
     if (joystick -> enter){
         difficult -> show ^= 1;
-        joystick_enter();
+        joystick_enter(joystick);
     }
 }
 
