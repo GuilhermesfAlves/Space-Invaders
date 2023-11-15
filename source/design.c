@@ -24,6 +24,9 @@ void destroy_allegro_structures(allegro_structures* allegro_structures){
     al_destroy_display(allegro_structures -> disp);
     al_destroy_timer(allegro_structures -> timer);
     al_destroy_event_queue(allegro_structures -> queue);
+    al_shutdown_font_addon();
+    al_shutdown_image_addon();
+    al_shutdown_primitives_addon();
 }
 
 void show_START_ALERT(ALLEGRO_FONT* font, ALLEGRO_DISPLAY_MODE *disp_data, unsigned int frame, int move, set_theme* theme){

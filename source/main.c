@@ -42,12 +42,12 @@ int main(){
             mode = menu_part(theme, difficult, allegro_structures);
             break;
         case _GAME_PART:
-            mode = game_part(&points, difficult, theme -> vec[theme -> actual], allegro_structures); 
+            mode = game_part(&points, difficult, theme -> vec[theme -> current], allegro_structures); 
             break;
         case _GAME_OVER_PART:
-            push_to_historic(points, &difficult -> vec[difficult -> actual]);
-            write_historic(&difficult -> vec[difficult -> actual]);
-            mode = game_over_part(theme -> vec[theme -> actual], points, allegro_structures);
+            push_to_historic(points, &difficult -> vec[difficult -> current]);
+            write_historic(&difficult -> vec[difficult -> current]);
+            mode = game_over_part(theme -> vec[theme -> current], points, allegro_structures);
             break;
         default:
             break;

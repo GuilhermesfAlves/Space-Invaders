@@ -45,7 +45,7 @@ void update_game(game* game, unsigned int frame){
     game -> points += hit_alien(game -> space -> super_alien, game -> space -> ship -> shots);
     if (frame % 120 == 0)
         two_enemy_shots(game -> space -> ship -> pos_x, game -> space -> ship -> pos_y, game -> space -> lines, game -> space -> rows, game -> space -> map, game -> space -> shot_list);
-    if (game -> space -> super_shot){
+    if (game -> space -> super_shot -> first){
         update_shots(game -> space -> super_shot, game -> limits.max_height, game -> limits.max_width, game -> limits.min_width);
         hit_obstacles(game -> space -> obstacles, game -> space -> qtd_obstacles, game -> space -> super_shot);
         hit_shots(game -> space -> super_shot, game -> space -> ship -> shots);
