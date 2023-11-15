@@ -3,6 +3,8 @@
 
 #include <allegro5/allegro_font.h>
 #include <allegro5/allegro_primitives.h>
+#include <allegro5/allegro_audio.h>
+#include <allegro5/allegro_acodec.h>
 #include "game.h"
 
 #define ENEMIES_SPRITES 4
@@ -16,6 +18,8 @@ typedef struct{
     ALLEGRO_EVENT_QUEUE* queue;
     ALLEGRO_FONT* font;
     ALLEGRO_TIMER* timer;
+    ALLEGRO_SAMPLE *sample;
+    ALLEGRO_SAMPLE_INSTANCE* song_instance;
 }allegro_structures;
 
 typedef struct {

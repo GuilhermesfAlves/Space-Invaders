@@ -10,9 +10,10 @@ typedef struct{
 	char dir;
 	short points;
 	unsigned char exploded;
-	ALLEGRO_BITMAP** alive;
-	ALLEGRO_BITMAP** dead;
-	ALLEGRO_BITMAP** shot;
+	ALLEGRO_BITMAP** alive_img;
+	ALLEGRO_BITMAP** dead_img;
+	ALLEGRO_BITMAP** shot_img;
+	ALLEGRO_SAMPLE* death_s;
 } enemy;
 
 enemy* add_enemy(int type, char dir);

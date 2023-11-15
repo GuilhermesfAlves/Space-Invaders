@@ -24,6 +24,8 @@
         "allegro_font.h": "c",
         "menu.h": "c",
         "limits": "c",
-        "new": "c"
+        "new": "c",
+        "sound.h": "c",
+        "allegro_acodec.h": "c"
     }
 }

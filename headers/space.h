@@ -7,6 +7,9 @@
 #include "obstacles.h"
 #include "difficult.h"
 
+#include <allegro5/allegro_audio.h>
+#include <allegro5/allegro_acodec.h>
+
 #define ALIEN_STEP 30
 #define SUPER_ALIEN_STEP 4
 

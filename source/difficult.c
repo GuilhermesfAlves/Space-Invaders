@@ -70,9 +70,9 @@ void add_new_points(struct tm* time_info, historic* historic, int points){
     char line[15];
 
     historic -> points = points;
-    sprintf(line, "%2d/%2d/%2d", time_info -> tm_mday, time_info -> tm_mon, time_info -> tm_year % 100);
+    sprintf(line, "%02d/%02d/%02d", time_info -> tm_mday, time_info -> tm_mon, time_info -> tm_year % 100);
     strcpy(historic -> data, line);
-    sprintf(line, "%2d:%2d", time_info -> tm_hour, time_info -> tm_min);
+    sprintf(line, "%02d:%02d", time_info -> tm_hour, time_info -> tm_min);
     strcpy(historic -> time, line);
 }
 

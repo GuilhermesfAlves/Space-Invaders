@@ -81,12 +81,14 @@ void clean_space(space *space){
 		for (int j = 0; j < space -> rows; j++){
 			if (!space -> map[i][j])
 				continue;
-			free(space -> map[i][j]);
-			space -> map[i][j] = NULL;
+			
+			space -> map[i][j] = destroy_enemy(space -> map[i][j]);
 		}
 }
 
 void destroy_space(space* space){
+
+	clean_space(space);
 
 	for (int i = 0; i < space -> lines; i++)
 		free(space -> map[i]);
@@ -112,11 +114,11 @@ int move_aliens(space* space, limits limits, int mov_x){
 				continue;
 
 			if (!most_y){
-				most_x = (space -> map[i][j] -> pos_x + mov_x*al_get_bitmap_width(*(space -> map[i][j] -> alive))/2)*mov_x;
-				most_y = (space -> map[i][j] -> pos_y + al_get_bitmap_height(*(space -> map[i][j] -> alive))/2);
+				most_x = (space -> map[i][j] -> pos_x + mov_x*al_get_bitmap_width(*(space -> map[i][j] -> alive_img))/2)*mov_x;
+				most_y = (space -> map[i][j] -> pos_y + al_get_bitmap_height(*(space -> map[i][j] -> alive_img))/2);
 			}
-			atual_x = (space -> map[i][j] -> pos_x + mov_x*al_get_bitmap_width(*(space -> map[i][j] -> alive))/2)*mov_x;
-			atual_y = (space -> map[i][j] -> pos_y + al_get_bitmap_height(*(space -> map[i][j] -> alive))/2);
+			atual_x = (space -> map[i][j] -> pos_x + mov_x*al_get_bitmap_width(*(space -> map[i][j] -> alive_img))/2)*mov_x;
+			atual_y = (space -> map[i][j] -> pos_y + al_get_bitmap_height(*(space -> map[i][j] -> alive_img))/2);
 
 			if (atual_x > most_x)
 				most_x = atual_x;
@@ -198,11 +200,12 @@ short hit_alien(enemy* enemy, shot_sentinel* shot_list){
 		if (enemy -> exploded)
 			return 0;
 
-		if (((enemy -> pos_y + al_get_bitmap_height(*(enemy) -> alive)/2) > shot_aux -> pos_y)\
-		&& ((enemy -> pos_y - al_get_bitmap_height(*(enemy) -> alive)/2) < shot_aux -> pos_y)\
-		&& ((enemy -> pos_x - al_get_bitmap_width(*(enemy) -> alive)/2) < shot_aux -> pos_x + al_get_bitmap_width(*(shot_aux) -> img)/2)\
-		&& ((enemy -> pos_x + al_get_bitmap_width(*(enemy) -> alive)/2) > shot_aux -> pos_x - al_get_bitmap_width(*(shot_aux) -> img)/2)){
+		if (((enemy -> pos_y + al_get_bitmap_height(*(enemy) -> alive_img)/2) > shot_aux -> pos_y)\
+		&& ((enemy -> pos_y - al_get_bitmap_height(*(enemy) -> alive_img)/2) < shot_aux -> pos_y)\
+		&& ((enemy -> pos_x - al_get_bitmap_width(*(enemy) -> alive_img)/2) < shot_aux -> pos_x + al_get_bitmap_width(*(shot_aux) -> img)/2)\
+		&& ((enemy -> pos_x + al_get_bitmap_width(*(enemy) -> alive_img)/2) > shot_aux -> pos_x - al_get_bitmap_width(*(shot_aux) -> img)/2)){
 			shot_aux = destroy_shot(shot_aux, shot_list);
+			al_play_sample(enemy -> death_s, 0.2, 0.0, 1.0, ALLEGRO_PLAYMODE_ONCE, NULL);
 			sum += enemy -> points;
 			enemy -> exploded++;
 			return sum;
@@ -265,12 +268,13 @@ void hit_shots(shot_sentinel* ship_list, shot_sentinel* enemy_list){
 void hit_ship(ship* ship, shot_sentinel* shot_list){
 
 	for (shot* shot_aux = shot_list -> first; shot_aux; ){//bateu em ship
-		if (((ship -> pos_y + al_get_bitmap_height(*(ship) -> alive)/2) > shot_aux -> pos_y)\
-        && ((ship -> pos_y - al_get_bitmap_height(*(ship) -> alive)/2) < shot_aux -> pos_y)\
-        && ((ship -> pos_x - al_get_bitmap_width(*(ship) -> alive)/2) < shot_aux -> pos_x + al_get_bitmap_width(*(shot_aux) -> img)/2)\
-        && ((ship -> pos_x + al_get_bitmap_width(*(ship) -> alive)/2) > shot_aux -> pos_x - al_get_bitmap_width(*(shot_aux) -> img)/2)){
+		if (((ship -> pos_y + al_get_bitmap_height(*(ship) -> alive_img)/2) > shot_aux -> pos_y)\
+        && ((ship -> pos_y - al_get_bitmap_height(*(ship) -> alive_img)/2) < shot_aux -> pos_y)\
+        && ((ship -> pos_x - al_get_bitmap_width(*(ship) -> alive_img)/2) < shot_aux -> pos_x + al_get_bitmap_width(*(shot_aux) -> img)/2)\
+        && ((ship -> pos_x + al_get_bitmap_width(*(ship) -> alive_img)/2) > shot_aux -> pos_x - al_get_bitmap_width(*(shot_aux) -> img)/2)){
             shot_aux = destroy_shot(shot_aux, shot_list);
 			ship -> life--;
+			al_play_sample(ship -> death_s, 0.2, 0.0, 1.0, ALLEGRO_PLAYMODE_ONCE, NULL);
 			if (!ship -> life)
 				ship -> exploded = 1;
 		} else 

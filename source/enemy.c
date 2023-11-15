@@ -14,8 +14,10 @@ enemy* add_enemy(int type, char dir){
 	new_enemy -> pos_x = 0;
 	new_enemy -> pos_y = 0;
 	new_enemy -> exploded = 0;
-	new_enemy -> alive = NULL;
-	new_enemy -> dead = NULL;
+	new_enemy -> alive_img = NULL;
+	new_enemy -> dead_img = NULL;
+	new_enemy -> shot_img = NULL;
+	new_enemy -> death_s = NULL;
 	new_enemy -> dir = dir;
 	new_enemy -> points = (type == HARD)? 4*10: (type == SUPER)? 150: type*10;
 
@@ -26,6 +28,7 @@ enemy* add_enemy(int type, char dir){
 //Remove um inimigo do tabuleiro. Essa tarefa inclui a desalocação do mesmo
 void* destroy_enemy(enemy* enemy){
 
+	al_destroy_sample(enemy -> death_s);
 	free(enemy);
 	return NULL;
 }
@@ -57,8 +60,8 @@ void two_enemy_shots(int pos_x, int pos_y, short lines, short rows, enemy*** map
 
 	shot* shot = straight_shoot(shot_list, (closer[0] -> type == HARD)? 2:1, STAY, DOWN, closer[0] -> pos_x, closer[0] -> pos_y, closer[0] -> type + 1);
 	if (shot)
-		shot -> img = closer[0] -> shot;
+		shot -> img = closer[0] -> shot_img;
 	shot = straight_shoot(shot_list, (closer[1] -> type == HARD)? 2:1, STAY, DOWN, closer[1] -> pos_x, closer[1] -> pos_y, closer[1] -> type + 1);
 	if (shot)
-		shot -> img = closer[1] -> shot;
+		shot -> img = closer[1] -> shot_img;
 }

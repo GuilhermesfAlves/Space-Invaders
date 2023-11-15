@@ -22,6 +22,8 @@ int main(){
     al_init_image_addon();
     al_init_primitives_addon();
     al_init_font_addon();
+    al_install_audio();
+    al_init_acodec_addon();
 
     allegro_structures* allegro_structures = add_allegro_structures();
     theme* theme = create_themes(last_used_theme());
@@ -37,6 +39,7 @@ int main(){
     al_start_timer(allegro_structures -> timer);
 
     while (mode){
+        al_play_sample_instance(allegro_structures -> song_instance);
         switch (mode){
         case _MENU_PART:
             mode = menu_part(theme, difficult, allegro_structures);

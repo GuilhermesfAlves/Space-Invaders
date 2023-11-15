@@ -1,6 +1,7 @@
 #ifndef __SI_MENU__
 #define __SI_MENU__
 
+#include "sound.h"
 #include "design.h"
 
 enum mode {_EXIT, _MENU_PART, _GAME_PART, _GAME_OVER_PART};

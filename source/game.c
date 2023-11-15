@@ -38,17 +38,17 @@ void update_game(game* game, unsigned int frame){
         hit_obstacles(game -> space -> obstacles, game -> space -> qtd_obstacles, game -> space -> shot_list);
         hit_ship(game -> space -> ship, game -> space -> shot_list);
     }
-    update_shots(game -> space -> ship -> shots, game -> limits.min_height,  game -> limits.max_width, game -> limits.min_width);
-    game -> points += hit_aliens(game -> space -> map, game -> space -> lines, game -> space -> rows, game -> space -> ship -> shots);
-    hit_obstacles(game -> space -> obstacles, game -> space -> qtd_obstacles, game -> space -> ship -> shots);
-    hit_shots(game -> space -> ship -> shots, game -> space -> shot_list);
-    game -> points += hit_alien(game -> space -> super_alien, game -> space -> ship -> shots);
+    update_shots(game -> space -> ship -> shot_list, game -> limits.min_height,  game -> limits.max_width, game -> limits.min_width);
+    game -> points += hit_aliens(game -> space -> map, game -> space -> lines, game -> space -> rows, game -> space -> ship -> shot_list);
+    hit_obstacles(game -> space -> obstacles, game -> space -> qtd_obstacles, game -> space -> ship -> shot_list);
+    hit_shots(game -> space -> ship -> shot_list, game -> space -> shot_list);
+    game -> points += hit_alien(game -> space -> super_alien, game -> space -> ship -> shot_list);
     if (frame % 120 == 0)
         two_enemy_shots(game -> space -> ship -> pos_x, game -> space -> ship -> pos_y, game -> space -> lines, game -> space -> rows, game -> space -> map, game -> space -> shot_list);
     if (game -> space -> super_shot -> first){
         update_shots(game -> space -> super_shot, game -> limits.max_height, game -> limits.max_width, game -> limits.min_width);
         hit_obstacles(game -> space -> obstacles, game -> space -> qtd_obstacles, game -> space -> super_shot);
-        hit_shots(game -> space -> super_shot, game -> space -> ship -> shots);
+        hit_shots(game -> space -> super_shot, game -> space -> ship -> shot_list);
         hit_ship(game -> space -> ship, game -> space -> super_shot);
     }
 }

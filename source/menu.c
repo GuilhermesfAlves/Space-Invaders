@@ -28,17 +28,18 @@ void update_joystick_menu(joystick* joystick, theme* theme, difficult* difficult
 
 void update_joystick_game(joystick* joystick, ship* ship, sprite_base* sprite_base, limits limits){
 
-    if ((joystick -> right) && (ship -> pos_x + SHIP_MOVE + al_get_bitmap_width(*(ship) -> alive)/2 < limits.max_width)){
+    if ((joystick -> right) && (ship -> pos_x + SHIP_MOVE + al_get_bitmap_width(*(ship) -> alive_img)/2 < limits.max_width)){
         ship -> pos_x += SHIP_MOVE;
     }
-    if ((joystick -> left) && (ship -> pos_x - SHIP_MOVE - al_get_bitmap_width(*(ship) -> alive)/2 > limits.min_width)){
+    if ((joystick -> left) && (ship -> pos_x - SHIP_MOVE - al_get_bitmap_width(*(ship) -> alive_img)/2 > limits.min_width)){
         ship -> pos_x -= SHIP_MOVE; 
     }
     if (joystick -> space){
-        shot* shot = straight_shoot(ship -> shots, 1, STAY, UP, ship -> pos_x, ship -> pos_y, SHIP);
-        if (shot)
+        shot* shot = straight_shoot(ship -> shot_list, 1, STAY, UP, ship -> pos_x, ship -> pos_y, SHIP);
+        if (shot){
             set_shot_sprite(shot, sprite_base);
-        
+            al_play_sample(ship -> shoot_s, 0.5, 0.0, 1.0, ALLEGRO_PLAYMODE_ONCE, NULL);
+        }
         joystick_space(joystick);
     }
 }
@@ -109,6 +110,7 @@ char game_part(int *points, difficult* difficult, set_theme* theme, allegro_stru
     al_set_target_bitmap(al_get_backbuffer(allegro_structures -> disp));
 
     set_game_sprites(game, sprite_base);
+    set_game_sounds(game);
     start_objects_position(game);
 
     mov_x = RIGHT;
@@ -116,11 +118,14 @@ char game_part(int *points, difficult* difficult, set_theme* theme, allegro_stru
         al_wait_for_event(allegro_structures -> queue, &allegro_structures -> event);
         update_joystick_game(game -> joystick, game -> space -> ship, sprite_base, game -> limits);
     
-        if (frame % 60 == 0)
+        if (frame % 60 == 0){
             mov_x = move_aliens(game -> space, game -> limits, mov_x);
-    
-        if (!has_alien(game -> space))
+            al_play_sample(game -> move_s[(frame /60) % MOVE_SOUNDS], 0.2, 0.0, 1.0, ALLEGRO_PLAYMODE_ONCE, NULL);
+        }
+        if (!has_alien(game -> space)){
             mov_x = restart_round(game, sprite_base);
+            set_game_sounds(game);
+        }
         
         if (time_to_start(frame))
             update_game(game, frame);
@@ -130,6 +135,7 @@ char game_part(int *points, difficult* difficult, set_theme* theme, allegro_stru
             game -> space -> super_alien -> pos_x = mid + game -> limits.min_width - mov_x*mid;
             game -> space -> super_alien -> pos_y = game -> limits.min_height + 10;
             set_alien_sprite(game -> space -> super_alien, sprite_base);
+            set_enemy_sounds(game -> space -> super_alien);
             shot_pos = (rand() % (game -> limits.max_width - game -> limits.min_width)) + game -> limits.min_width;
         }
         if (game -> space -> super_alien){

@@ -12,6 +12,8 @@ typedef struct{
     space* space;
     joystick* joystick;
     set_theme* theme;
+    int round;
+    ALLEGRO_SAMPLE** move_s;
 }game;
 
 game* add_game(unsigned char difficult, set_theme* theme, ALLEGRO_DISPLAY_MODE *disp_mode);
