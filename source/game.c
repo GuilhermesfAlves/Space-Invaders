@@ -55,7 +55,6 @@ void update_game(game* game, unsigned int frame){
         hit_shots(game -> space -> super_shot, game -> space -> ship -> shot_list);
         hit_ship(game -> space -> ship, game -> space -> super_shot);
     }
-    printf("%d %d\n", game -> space -> ship -> power_up_eff, game -> space -> ship -> power_up_type);
     if (game -> space -> ship -> power_up_eff <= 0)
         game -> space -> ship -> power_up_type = NONE;
     else if (game -> space -> ship -> power_up_eff > 0)

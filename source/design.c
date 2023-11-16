@@ -212,9 +212,9 @@ sprite_base* get_sprite_base(limits* limits){
     for (int i = 0; i < QTD_POWER_UP_TYPES; i++){
         sprintf(path, "img/%s%d.png", name[5], i);
         unscaled = al_load_bitmap(path);
-        new_sprite_base -> power_up[i] = al_create_bitmap((limits -> max_width - limits -> min_width)*al_get_bitmap_width(unscaled)/500, (limits -> max_width - limits -> min_width)*al_get_bitmap_width(unscaled)/500);
+        new_sprite_base -> power_up[i] = al_create_bitmap((limits -> max_width - limits -> min_width)*al_get_bitmap_width(unscaled)/650, (limits -> max_width - limits -> min_width)*al_get_bitmap_width(unscaled)/650);
         al_set_target_bitmap(new_sprite_base -> power_up[i]);
-        al_draw_scaled_bitmap(unscaled, 0, 0, al_get_bitmap_width(unscaled), al_get_bitmap_height(unscaled), 0, 0, (limits -> max_width - limits -> min_width)*al_get_bitmap_width(unscaled)/500, (limits -> max_width - limits -> min_width)*al_get_bitmap_width(unscaled)/500, 0);
+        al_draw_scaled_bitmap(unscaled, 0, 0, al_get_bitmap_width(unscaled), al_get_bitmap_height(unscaled), 0, 0, (limits -> max_width - limits -> min_width)*al_get_bitmap_width(unscaled)/650, (limits -> max_width - limits -> min_width)*al_get_bitmap_width(unscaled)/650, 0);
         al_destroy_bitmap(unscaled);
     }
 
@@ -224,9 +224,9 @@ sprite_base* get_sprite_base(limits* limits){
     for (int i = 0; i < 2; i++){
         sprintf(path, "img/%s%d.png", name[3], i); 
         unscaled = al_load_bitmap(path);
-        new_sprite_base -> ship[i] = al_create_bitmap((limits -> max_width - limits -> min_width)*al_get_bitmap_width(unscaled)/300,(limits -> max_width - limits -> min_width)*al_get_bitmap_width(unscaled)/300*0.6);
+        new_sprite_base -> ship[i] = al_create_bitmap((limits -> max_width - limits -> min_width)*al_get_bitmap_width(unscaled)/300,(limits -> max_width - limits -> min_width)*al_get_bitmap_height(unscaled)/300);
         al_set_target_bitmap(new_sprite_base -> ship[i]);
-        al_draw_scaled_bitmap(unscaled, 0, 0, al_get_bitmap_width(unscaled), al_get_bitmap_height(unscaled), 0, 0, (limits -> max_width - limits -> min_width)*al_get_bitmap_width(unscaled)/300, (limits -> max_width - limits -> min_width)*al_get_bitmap_width(unscaled)/300*0.6, 0);
+        al_draw_scaled_bitmap(unscaled, 0, 0, al_get_bitmap_width(unscaled), al_get_bitmap_height(unscaled), 0, 0, (limits -> max_width - limits -> min_width)*al_get_bitmap_width(unscaled)/300, (limits -> max_width - limits -> min_width)*al_get_bitmap_height(unscaled)/300, 0);
         al_destroy_bitmap(unscaled);
     }
 
@@ -327,7 +327,6 @@ void show_power_ups(power_up_list* power_up_list, set_theme* theme){
 
     for (power_up* aux_power_up = power_up_list -> first; aux_power_up; aux_power_up = aux_power_up -> next)
         al_draw_tinted_bitmap(aux_power_up -> img, theme -> secondary, aux_power_up -> pos_x, aux_power_up -> pos_y, 0);
-    
 }
 
 void show_game(ALLEGRO_FONT* font, game* game, unsigned int frame){

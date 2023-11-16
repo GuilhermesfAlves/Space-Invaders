@@ -295,7 +295,7 @@ void hit_ship(ship* ship, shot_sentinel* shot_list){
         && ((ship -> pos_y - al_get_bitmap_height(*(ship) -> alive_img)/2) < shot_aux -> pos_y)\
         && ((ship -> pos_x - al_get_bitmap_width(*(ship) -> alive_img)/2) < shot_aux -> pos_x + al_get_bitmap_width(*(shot_aux) -> img)/2)\
         && ((ship -> pos_x + al_get_bitmap_width(*(ship) -> alive_img)/2) > shot_aux -> pos_x - al_get_bitmap_width(*(shot_aux) -> img)/2)){
-            ship -> power_up_eff = 0;
+            ship -> power_up_eff = -1;
 			shot_aux = destroy_shot(shot_aux, shot_list);
 			if (ship -> power_up_type == SHIELD)
 				continue;
@@ -314,6 +314,8 @@ void set_random_power_ups(enemy*** map, int lines, int rows, int power_up_qtd){
 	for (int p = 0; p < power_up_qtd; p++){
 		to_set_y = rand() % rows;
 		to_set_x = rand() % lines;
+		if (!map[to_set_x][to_set_y])
+			continue;
 		map[to_set_x][to_set_y] -> power_up = (rand() % QTD_POWER_UP_TYPES) + 1;
 	}
 }

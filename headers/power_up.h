@@ -5,7 +5,7 @@
 
 #define FALL_MOVE 3
 #define QTD_POWER_UP_TYPES 1
-#define POWER_UP_LIFETIME 200
+#define POWER_UP_LIFETIME 420
 enum power_up_enums{NONE, SHIELD};
 
 typedef struct power_up{
