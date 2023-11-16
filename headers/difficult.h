@@ -1,7 +1,6 @@
 #ifndef __SI_DIFFICULT__
 #define __SI_DIFFICULT__
-#include <allegro5/allegro5.h>
-#include <allegro5/allegro_primitives.h>
+#include "allegro_headers.h"
 #include <stdio.h>
 
 #define MAX_DIFFICULTIES 4

@@ -103,9 +103,8 @@ char game_part(int *points, difficult* difficult, set_theme* theme, allegro_stru
     char exit = _GAME_OVER_PART;
     int shot_pos;
 
-    game = add_game(difficult -> current, theme, &allegro_structures -> disp_mode);
-    
     srand(time(NULL));
+    game = add_game(difficult -> current, theme, &allegro_structures -> disp_mode);
     sprite_base = get_sprite_base(&game -> limits);
     al_set_target_bitmap(al_get_backbuffer(allegro_structures -> disp));
 
@@ -114,7 +113,7 @@ char game_part(int *points, difficult* difficult, set_theme* theme, allegro_stru
     start_objects_position(game);
 
     mov_x = RIGHT;
-    while((game -> space -> ship -> exploded != 20) && (mov_x) && (exit)){
+    while((game -> space -> ship -> exploded != 20) && (game -> space -> ship -> life != 0) && (mov_x) && (exit)){
         al_wait_for_event(allegro_structures -> queue, &allegro_structures -> event);
         update_joystick_game(game -> joystick, game -> space -> ship, sprite_base, game -> limits);
     
@@ -124,19 +123,25 @@ char game_part(int *points, difficult* difficult, set_theme* theme, allegro_stru
         }
         if (!has_alien(game -> space)){
             mov_x = restart_round(game, sprite_base);
+            frame = 0;
             set_game_sounds(game);
         }
-        
         if (time_to_start(frame))
             update_game(game, frame);
         if ((frame % 1000 == 500) && (!game -> space -> super_alien)){
             game -> space -> super_alien = add_enemy(SUPER, mov_x);
-            short mid = (game -> limits.max_width - game -> limits.min_width)/2;
-            game -> space -> super_alien -> pos_x = mid + game -> limits.min_width - mov_x*mid;
+            short mid = (game -> limits.max_width + game -> limits.min_width)/2;
+            game -> space -> super_alien -> pos_x = mid - mov_x*mid;
             game -> space -> super_alien -> pos_y = game -> limits.min_height + 10;
             set_alien_sprite(game -> space -> super_alien, sprite_base);
             set_enemy_sounds(game -> space -> super_alien);
             shot_pos = (rand() % (game -> limits.max_width - game -> limits.min_width)) + game -> limits.min_width;
+        }
+        if (game -> space -> power_up_list -> first){
+            for (power_up* aux_power_up = game -> space -> power_up_list -> first; aux_power_up; aux_power_up = aux_power_up -> next){
+                set_power_up_sprite(aux_power_up, sprite_base);
+                aux_power_up -> pos_y += FALL_MOVE;
+            }
         }
         if (game -> space -> super_alien){
             if ((!game -> space -> super_shot -> first) && (shot_pos*game -> space -> super_alien -> dir < game -> space -> super_alien -> pos_x*game -> space -> super_alien -> dir)){

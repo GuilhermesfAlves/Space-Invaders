@@ -29,9 +29,13 @@ void destroy_game(game* game){
 
 void update_game(game* game, unsigned int frame){
     
-    get_exploded(game -> space -> map, game -> space -> lines, game -> space -> rows);
+    get_exploded(game -> space);
     if (game -> space -> ship -> exploded)
         game -> space -> ship -> exploded++;
+    if (game -> space -> ship -> exploded == 20){
+        game -> space -> ship -> pos_x = (game -> limits.max_width + game -> limits.min_width)/2;
+        game -> space -> ship -> exploded = 0;
+    }
     game -> space -> super_alien = get_explod(game -> space -> super_alien);
     if (game -> space -> shot_list -> first){
         update_shots(game -> space -> shot_list, game -> limits.max_height, game -> limits.max_width, game -> limits.min_width);
@@ -51,6 +55,14 @@ void update_game(game* game, unsigned int frame){
         hit_shots(game -> space -> super_shot, game -> space -> ship -> shot_list);
         hit_ship(game -> space -> ship, game -> space -> super_shot);
     }
+    printf("%d %d\n", game -> space -> ship -> power_up_eff, game -> space -> ship -> power_up_type);
+    if (game -> space -> ship -> power_up_eff <= 0)
+        game -> space -> ship -> power_up_type = NONE;
+    else if (game -> space -> ship -> power_up_eff > 0)
+        game -> space -> ship -> power_up_eff--;
+
+    if (game -> space -> power_up_list -> first)
+        ship_got_power_up(game -> space);
 }
 
 void start_alien_position(space* space, limits limits){
@@ -59,6 +71,9 @@ void start_alien_position(space* space, limits limits){
 	
     for (int i = 0; i < space -> lines; i++) 
 		for (int j = 0; j < space -> rows; j++){
+            if (!space -> map[i][j])
+                continue;
+
 			space -> map[i][j] -> pos_x = limits.min_width + between_x/2 + j*between_x;
             space -> map[i][j] -> pos_y =  limits.min_height + 30 + between_y/2 + i*between_y;
 		}

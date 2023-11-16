@@ -1,7 +1,7 @@
 #ifndef __SI_OBSTACLES__
 #define __SI_OBSTACLES__
 #include <stdlib.h>
-#include <allegro5/allegro5.h>
+#include "allegro_headers.h"
 
 #define OBSTACLE_LIFES 10
 

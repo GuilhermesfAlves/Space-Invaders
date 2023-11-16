@@ -3,12 +3,15 @@
 
 #include "shots.h"
 
+#define ENEMIES_TO_SHOOT 2
+
 typedef struct{
 	char type;
 	int pos_x;
 	int pos_y;
 	char dir;
 	short points;
+	char power_up;
 	unsigned char exploded;
 	ALLEGRO_BITMAP** alive_img;
 	ALLEGRO_BITMAP** dead_img;

@@ -14,6 +14,8 @@ typedef struct{
     int pos_y;
     unsigned char move;
     unsigned char exploded;
+    unsigned char power_up_type;
+    unsigned char power_up_eff;
     shot_sentinel* shot_list;
     ALLEGRO_BITMAP** alive_img;
     ALLEGRO_BITMAP** dead_img;

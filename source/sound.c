@@ -2,6 +2,8 @@
 
 int set_ship_sounds(ship* ship){
 
+    if (!ship)
+        return -1;
     if (!(ship -> death_s = al_load_sample("sound/explosion.wav")))
         return -1;
     if(!(ship -> shoot_s = al_load_sample("sound/shoot.wav")))
@@ -22,9 +24,12 @@ int set_enemies_sounds(enemy*** enemies, int lines, int rows){
     ALLEGRO_SAMPLE* sample;
 
     for (int i = 0; i < lines; i++)
-        for (int j = 0; j < rows; j++)
+        for (int j = 0; j < rows; j++){
+            if (!enemies[i][j])
+                continue;
             if (!(enemies[i][j] -> death_s = al_load_sample("sound/invaderkilled.wav")))
                 return -1;
+            }
     return 1;
 }
 

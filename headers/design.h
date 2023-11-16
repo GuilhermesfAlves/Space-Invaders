@@ -1,10 +1,6 @@
 #ifndef __SI_DESIGN__
 #define __SI_DESIGN__
 
-#include <allegro5/allegro_font.h>
-#include <allegro5/allegro_primitives.h>
-#include <allegro5/allegro_audio.h>
-#include <allegro5/allegro_acodec.h>
 #include "game.h"
 
 #define ENEMIES_SPRITES 4
@@ -27,7 +23,8 @@ typedef struct {
     ALLEGRO_BITMAP*** shots;
     ALLEGRO_BITMAP** obstacles;
     ALLEGRO_BITMAP** explosion;
-    ALLEGRO_BITMAP* ship;
+    ALLEGRO_BITMAP** ship;
+    ALLEGRO_BITMAP** power_up;
 }sprite_base;
 
 allegro_structures* add_allegro_structures();
@@ -47,6 +44,7 @@ void set_aliens_sprites(space* space, sprite_base* sprite_base);
 void set_game_sprites(game* game, sprite_base* sprite_base);
 void set_shot_sprite(shot* shot, sprite_base* sprite_base);
 void set_shot_sprites(shot_sentinel* shot_list, sprite_base* sprite_base);
+void set_power_up_sprite(power_up* power_up, sprite_base* sprite_base);
 
 sprite_base* get_sprite_base(limits* limits);
 void destroy_sprite_base(sprite_base* sprite_base);

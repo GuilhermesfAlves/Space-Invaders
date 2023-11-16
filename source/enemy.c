@@ -7,6 +7,9 @@
 enemy* add_enemy(int type, char dir){
 	enemy* new_enemy;
 
+	if ((type < 0) || (type > SUPER))
+		return NULL;
+
 	if (!(new_enemy = (enemy*) malloc(sizeof(enemy))))
 		return NULL;
 
@@ -14,6 +17,7 @@ enemy* add_enemy(int type, char dir){
 	new_enemy -> pos_x = 0;
 	new_enemy -> pos_y = 0;
 	new_enemy -> exploded = 0;
+	new_enemy -> power_up = 0;
 	new_enemy -> alive_img = NULL;
 	new_enemy -> dead_img = NULL;
 	new_enemy -> shot_img = NULL;
@@ -33,35 +37,44 @@ void* destroy_enemy(enemy* enemy){
 	return NULL;
 }
 
+int already_shooten(enemy* new, enemy** shooten){
+
+	for (int i = 0; (i < ENEMIES_TO_SHOOT) && (shooten[i]); i++)
+		if (new == shooten[i])
+			return 1;
+
+	return 0;
+}
+
 void two_enemy_shots(int pos_x, int pos_y, short lines, short rows, enemy*** map, shot_sentinel* shot_list){
-	enemy* closer[2] = {NULL, NULL};
+	enemy** closer;
 	float distance;
 	float distance_closer;
 
-	for (int e = 0; e < 2; e++){
+	if (!(closer = (enemy**) calloc(ENEMIES_TO_SHOOT, sizeof(enemy*))))
+		return;
+
+	for (int e = 0; e < ENEMIES_TO_SHOOT; e++){
+		distance_closer = 5000;
 		for (int i = 0; i < lines; i++){
 			for (int j = 0; j < rows; j++){
-				if ((!map[i][j]) || (map[i][j] -> exploded))
+				if ((!map[i][j]) || (map[i][j] -> exploded) || (already_shooten(map[i][j], closer)))
 					continue;
 
-				if (!closer[e]){
-					closer[e] = map[i][j];
-					distance_closer = sqrt(pow(map[i][j] -> pos_x - pos_x, 2) + pow(map[i][j] -> pos_y - pos_y, 2));
-				}
 				distance = sqrt(pow(map[i][j] -> pos_x - pos_x, 2) + pow(map[i][j] -> pos_y - pos_y, 2));
-				
-				if ((distance < distance_closer) && ((e == 0) || (closer[0] != map[i][j]))){
+
+				if ((!closer[e]) || (distance < distance_closer) && ((map[i][j] -> type + 1 == HARD) || (((map[i][j] -> type + 1 == MEDIUM) || (i == lines - 1) || (!map[i + 1][j])) && (!has_shot_in_row(shot_list, map[i][j] -> pos_x))))){
 					closer[e] = map[i][j];
 					distance_closer = distance;
 				}
 			}
 		}
 	}
-
-	shot* shot = straight_shoot(shot_list, (closer[0] -> type == HARD)? 2:1, STAY, DOWN, closer[0] -> pos_x, closer[0] -> pos_y, closer[0] -> type + 1);
-	if (shot)
-		shot -> img = closer[0] -> shot_img;
-	shot = straight_shoot(shot_list, (closer[1] -> type == HARD)? 2:1, STAY, DOWN, closer[1] -> pos_x, closer[1] -> pos_y, closer[1] -> type + 1);
-	if (shot)
-		shot -> img = closer[1] -> shot_img;
+	shot* shot;
+	for (int i = 0; (i < ENEMIES_TO_SHOOT) && (closer[i]); i++){
+		shot = straight_shoot(shot_list, (closer[i] -> type == HARD)? 2:1, STAY, DOWN, closer[i] -> pos_x, closer[i] -> pos_y, closer[i] -> type + 1);
+		if (shot)
+			shot -> img = closer[i] -> shot_img;
+	}
+	free(closer);
 }

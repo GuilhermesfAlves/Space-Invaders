@@ -10,8 +10,7 @@
 #define ROW_SPACE 32
 #include <stdlib.h>
 
-#include <allegro5/allegro_audio.h>
-#include <allegro5/allegro_acodec.h>
+#include "allegro_headers.h"
 
 enum type_shooter {SHIP, EASY, MEDIUM, HARD, SUPER};
 

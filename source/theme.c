@@ -6,7 +6,7 @@ theme* create_themes(unsigned char current){
     if (!(new_theme = (theme*)malloc(sizeof(theme))))
         return NULL;
 
-    if (!(new_theme -> vec = (set_theme**)malloc(9*sizeof(set_theme*))))
+    if (!(new_theme -> vec = (set_theme**)malloc(MAX_THEMES*sizeof(set_theme*))))
         return NULL;
 
     for (int i = 0; i < 9; i++){
@@ -53,6 +53,7 @@ theme* create_themes(unsigned char current){
     new_theme -> vec[8] -> primary = al_map_rgb(102,137,57);
     new_theme -> vec[8] -> secondary = al_map_rgb(187,225,107);
     new_theme -> vec[8] -> back_theme = al_map_rgb(239,239,239);
+
     return new_theme;
 }
 
@@ -68,7 +69,7 @@ void destroy_themes(theme* theme){
 unsigned char last_used_theme(){
     char ind;
 
-    FILE* LastUsed = fopen("database/LastUsedTheme.txt","r+"); 
+    FILE* LastUsed = fopen("database/LastUsedTheme.txt","r"); 
 
     if (!LastUsed)
         return 0;
@@ -80,7 +81,7 @@ unsigned char last_used_theme(){
 
 void save_last_used(unsigned char current){
 
-    FILE* LastUsed = fopen("database/LastUsedTheme.txt","w+"); 
+    FILE* LastUsed = fopen("database/LastUsedTheme.txt","w"); 
     
     if (!LastUsed)
         return;

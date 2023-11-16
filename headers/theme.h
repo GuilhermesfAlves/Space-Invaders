@@ -2,8 +2,8 @@
 #define __SI_THEME__
 
 #include <stdlib.h>
-#include <allegro5/allegro5.h>
 #include <stdio.h>
+#include "allegro_headers.h"
 
 #define MAX_THEMES 9
 
