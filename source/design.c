@@ -87,6 +87,17 @@ ALLEGRO_BITMAP* add_logo_alien(ALLEGRO_DISPLAY_MODE* disp_data){
     return ALIEN_REDIM;
 }
 
+ALLEGRO_BITMAP* add_monster(ALLEGRO_DISPLAY_MODE* disp_data){
+    ALLEGRO_BITMAP *MONSTER = al_load_bitmap("img/si_monster.png");
+    ALLEGRO_BITMAP *MONSTER_REDIM = al_create_bitmap(al_get_bitmap_width(MONSTER)*0.25, al_get_bitmap_height(MONSTER)*0.25);
+    
+    al_set_target_bitmap(MONSTER_REDIM);
+    al_draw_scaled_bitmap(MONSTER, 0, 0, al_get_bitmap_width(MONSTER), al_get_bitmap_height(MONSTER), 0, 0, al_get_bitmap_width(MONSTER)*0.25, al_get_bitmap_height(MONSTER)*0.25, 0);
+    al_destroy_bitmap(MONSTER);
+
+    return MONSTER_REDIM;
+}
+
 void add_icon(ALLEGRO_DISPLAY* disp){
     ALLEGRO_BITMAP *icon = al_load_bitmap("img/ICON.png");
     al_set_display_icon(disp, icon);

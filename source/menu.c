@@ -47,6 +47,7 @@ void update_joystick_game(joystick* joystick, ship* ship, sprite_base* sprite_ba
 char menu_part(theme* theme, difficult* difficult, allegro_structures* allegro_structures){
     ALLEGRO_BITMAP *logo = add_logo(&allegro_structures -> disp_mode);
     ALLEGRO_BITMAP *alien = add_logo_alien(&allegro_structures -> disp_mode);
+    ALLEGRO_BITMAP *monster_left =  add_monster(&allegro_structures -> disp_mode);
     joystick* joystick = add_joystick();
     unsigned int frame = 0;
     int move = 0;
@@ -68,6 +69,7 @@ char menu_part(theme* theme, difficult* difficult, allegro_structures* allegro_s
             al_clear_to_color(theme -> vec[theme -> current] -> back_theme);
             al_draw_bitmap(allegro_structures -> back_gradient, (allegro_structures -> disp_mode.width - al_get_bitmap_width(allegro_structures -> back_gradient))/2, allegro_structures -> disp_mode.height - al_get_bitmap_height(allegro_structures -> back_gradient), 0);
             al_draw_tinted_bitmap(logo, theme -> vec[theme -> current] -> primary,(allegro_structures -> disp_mode.width - al_get_bitmap_width(logo))/2, 108 - move, 0);
+            al_draw_tinted_bitmap(monster_left, theme -> vec[theme -> current] -> secondary, allegro_structures -> disp_mode.width*0.32, allegro_structures -> disp_mode.height*0.35, 0);
             al_draw_tinted_bitmap(alien, theme -> vec[theme -> current] -> primary,(allegro_structures -> disp_mode.width - al_get_bitmap_width(alien))/2, al_get_bitmap_height(logo) + 108 + 20 - move, 0);
             show_themes(allegro_structures -> font, &allegro_structures -> disp_mode, theme, move);
             show_difficulties(allegro_structures -> font, &allegro_structures -> disp_mode, theme -> vec[theme -> current], difficult, move);
@@ -90,6 +92,7 @@ char menu_part(theme* theme, difficult* difficult, allegro_structures* allegro_s
     save_last_used(theme -> current);
     save_last_used_difficult(difficult -> current);
     destroy_joystick(joystick);
+    al_destroy_bitmap(monster_left);
     al_destroy_bitmap(logo);
     al_destroy_bitmap(alien);
     

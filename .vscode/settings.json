@@ -28,6 +28,7 @@
         "sound.h": "c",
         "allegro_acodec.h": "c",
         "allegro_audio.h": "c",
-        "power_up.h": "c"
+        "power_up.h": "c",
+        "allegro_headers.h": "c"
     }
 }

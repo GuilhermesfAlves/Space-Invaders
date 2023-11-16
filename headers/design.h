@@ -38,6 +38,7 @@ void show_historic(ALLEGRO_FONT* font, difficult* difficult, set_theme* theme, i
 
 ALLEGRO_BITMAP* add_logo(ALLEGRO_DISPLAY_MODE* disp_data);
 ALLEGRO_BITMAP* add_logo_alien(ALLEGRO_DISPLAY_MODE* disp_data);
+ALLEGRO_BITMAP* add_monster(ALLEGRO_DISPLAY_MODE* disp_data);
 void add_icon(ALLEGRO_DISPLAY* disp);
 
 void set_alien_sprite(enemy* enemy, sprite_base* sprite_base);
