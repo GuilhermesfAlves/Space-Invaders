@@ -5,15 +5,19 @@
 #include "joystick.h"
 #include "theme.h"
 
+#define BASE_TICK_RATE 120
+
 typedef struct{
+    int round;
     int points;
+    int tick_rate;
     unsigned char difficult;
     limits limits;
     space* space;
     joystick* joystick;
     set_theme* theme;
-    int round;
     ALLEGRO_SAMPLE** move_s;
+    ALLEGRO_BITMAP* back_gradient;
 }game;
 
 game* add_game(unsigned char difficult, set_theme* theme, ALLEGRO_DISPLAY_MODE *disp_mode);

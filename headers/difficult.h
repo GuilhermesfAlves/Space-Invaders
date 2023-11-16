@@ -1,12 +1,11 @@
 #ifndef __SI_DIFFICULT__
 #define __SI_DIFFICULT__
 #include "allegro_headers.h"
-#include <stdio.h>
 
 #define MAX_DIFFICULTIES 4
 #define QTD_P_HISTORIC 10
 
-enum diff_mode {Easy, Normal, Hard, Extreme};
+enum diff_mode {Diff_Easy, Diff_Normal, Diff_Hard, Diff_Extreme};
 
 typedef struct{
     int points;

@@ -16,6 +16,7 @@ game* add_game(unsigned char difficult, set_theme *theme, ALLEGRO_DISPLAY_MODE *
     new_game -> points = 0;
     new_game -> theme = theme;
     new_game -> space = create_space(difficult, new_game -> limits);
+    new_game -> tick_rate = BASE_TICK_RATE - difficult*20;
 
     return new_game;
 }
@@ -47,7 +48,7 @@ void update_game(game* game, unsigned int frame){
     hit_obstacles(game -> space -> obstacles, game -> space -> qtd_obstacles, game -> space -> ship -> shot_list);
     hit_shots(game -> space -> ship -> shot_list, game -> space -> shot_list);
     game -> points += hit_alien(game -> space -> super_alien, game -> space -> ship -> shot_list);
-    if (frame % 120 == 0)
+    if (frame % (game -> tick_rate*2) == 0)
         two_enemy_shots(game -> space -> ship -> pos_x, game -> space -> ship -> pos_y, game -> space -> lines, game -> space -> rows, game -> space -> map, game -> space -> shot_list);
     if (game -> space -> super_shot -> first){
         update_shots(game -> space -> super_shot, game -> limits.max_height, game -> limits.max_width, game -> limits.min_width);

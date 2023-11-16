@@ -23,28 +23,28 @@ space* generate_space(int lines, int rows){
 int set_formation(char* rows, char* lines, char* difficult, unsigned char* qtd_obstacles, char* qtd_power_ups, char* vec_y, char *blanck_row){
 
 	switch (*difficult){
-	case Easy:
+	case Diff_Easy:
 		*rows = 9;
 		*lines = 3;
 		*qtd_obstacles = 6;
-		*qtd_power_ups = 8;
+		*qtd_power_ups = 7;
 		vec_y[0] = MEDIUM; vec_y[1] = EASY; vec_y[2] = EASY; vec_y[3] = -1; vec_y[4] = -1; vec_y[5] = -1;
 		break;
-	case Normal:
+	case Diff_Normal:
 		*rows = 10;
 		*lines = 4;
 		*qtd_obstacles = 5;
 		*qtd_power_ups = 6;
 		vec_y[0] = HARD; vec_y[1] = MEDIUM; vec_y[2] = EASY; vec_y[3] = EASY; vec_y[4] = -1; vec_y[5] = -1;
 		break;
-	case Hard:
+	case Diff_Hard:
 		*rows = 11;
 		*lines = 5;
 		*qtd_obstacles = 4;
 		*qtd_power_ups = 4;
 		vec_y[0] = HARD; vec_y[1] = MEDIUM; vec_y[2] = MEDIUM; vec_y[3] = EASY; vec_y[4] = EASY; vec_y[5] = -1;
 		break;
-	case Extreme:
+	case Diff_Extreme:
 		*rows = 13;
 		*lines = 6;
 		*qtd_obstacles = 2;

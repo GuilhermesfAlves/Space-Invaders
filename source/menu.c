@@ -66,7 +66,8 @@ char menu_part(theme* theme, difficult* difficult, allegro_structures* allegro_s
 
         if ((allegro_structures -> event.type == ALLEGRO_EVENT_TIMER) && (al_is_event_queue_empty(allegro_structures -> queue))){
             al_clear_to_color(theme -> vec[theme -> current] -> back_theme);
-            al_draw_bitmap(logo, (allegro_structures -> disp_mode.width - al_get_bitmap_width(logo))/2, 108 - move, 0);
+            al_draw_bitmap(allegro_structures -> back_gradient, (allegro_structures -> disp_mode.width - al_get_bitmap_width(allegro_structures -> back_gradient))/2, allegro_structures -> disp_mode.height - al_get_bitmap_height(allegro_structures -> back_gradient), 0);
+            al_draw_tinted_bitmap(logo, theme -> vec[theme -> current] -> primary,(allegro_structures -> disp_mode.width - al_get_bitmap_width(logo))/2, 108 - move, 0);
             al_draw_tinted_bitmap(alien, theme -> vec[theme -> current] -> primary,(allegro_structures -> disp_mode.width - al_get_bitmap_width(alien))/2, al_get_bitmap_height(logo) + 108 + 20 - move, 0);
             show_themes(allegro_structures -> font, &allegro_structures -> disp_mode, theme, move);
             show_difficulties(allegro_structures -> font, &allegro_structures -> disp_mode, theme -> vec[theme -> current], difficult, move);
@@ -110,6 +111,7 @@ char game_part(int *points, difficult* difficult, set_theme* theme, allegro_stru
 
     set_game_sprites(game, sprite_base);
     set_game_sounds(game);
+    printf("aqui\n");
     start_objects_position(game);
 
     mov_x = RIGHT;
@@ -117,9 +119,9 @@ char game_part(int *points, difficult* difficult, set_theme* theme, allegro_stru
         al_wait_for_event(allegro_structures -> queue, &allegro_structures -> event);
         update_joystick_game(game -> joystick, game -> space -> ship, sprite_base, game -> limits);
     
-        if (frame % 60 == 0){
+        if (frame % game -> tick_rate == 0){
             mov_x = move_aliens(game -> space, game -> limits, mov_x);
-            al_play_sample(game -> move_s[(frame /60) % MOVE_SOUNDS], 0.2, 0.0, 1.0, ALLEGRO_PLAYMODE_ONCE, NULL);
+            al_play_sample(game -> move_s[(frame / game -> tick_rate) % MOVE_SOUNDS], 0.2, 0.0, 1.0, ALLEGRO_PLAYMODE_ONCE, NULL);
         }
         if (!has_alien(game -> space)){
             mov_x = restart_round(game, sprite_base);
@@ -141,6 +143,8 @@ char game_part(int *points, difficult* difficult, set_theme* theme, allegro_stru
             for (power_up* aux_power_up = game -> space -> power_up_list -> first; aux_power_up; aux_power_up = aux_power_up -> next){
                 set_power_up_sprite(aux_power_up, sprite_base);
                 aux_power_up -> pos_y += FALL_MOVE;
+                if (aux_power_up -> pos_y > game -> limits.max_height)
+                    destroy_power_up(aux_power_up, game -> space -> power_up_list);
             }
         }
         if (game -> space -> super_alien){
@@ -161,6 +165,7 @@ char game_part(int *points, difficult* difficult, set_theme* theme, allegro_stru
         }
         else if (allegro_structures -> event.type == ALLEGRO_EVENT_TIMER){
             al_clear_to_color(theme -> back_theme);
+            al_draw_bitmap(allegro_structures -> back_gradient, (allegro_structures -> disp_mode.width - al_get_bitmap_width(allegro_structures -> back_gradient))/2, allegro_structures -> disp_mode.height - al_get_bitmap_height(allegro_structures -> back_gradient), 0);
             show_game(allegro_structures -> font, game, frame);
             al_flip_display();
         }
@@ -183,6 +188,7 @@ char game_over_part(set_theme* theme, int points, allegro_structures* allegro_st
 
         if (allegro_structures -> event.type == ALLEGRO_EVENT_TIMER){
             al_clear_to_color(theme -> back_theme);
+            al_draw_bitmap(allegro_structures -> back_gradient, (allegro_structures -> disp_mode.width - al_get_bitmap_width(allegro_structures -> back_gradient))/2, allegro_structures -> disp_mode.height - al_get_bitmap_height(allegro_structures -> back_gradient), 0);
             show_game_over(allegro_structures -> font, &allegro_structures -> disp_mode, frame, points, theme);
             al_flip_display();
         }

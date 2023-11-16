@@ -20,13 +20,14 @@ allegro_structures* add_allegro_structures(){
     al_set_sample_instance_gain(new_allegro_structures -> song_instance, 0.1);
     al_reserve_samples(20);
     al_attach_sample_instance_to_mixer(new_allegro_structures -> song_instance, al_get_default_mixer());
-
+    new_allegro_structures -> back_gradient = al_load_bitmap("img/Back.png");
 
     return new_allegro_structures;
 }
 
 void destroy_allegro_structures(allegro_structures* allegro_structures){
 
+    al_destroy_bitmap(allegro_structures -> back_gradient);
     al_destroy_font(allegro_structures -> font);
     al_destroy_display(allegro_structures -> disp);
     al_destroy_timer(allegro_structures -> timer);
@@ -65,7 +66,7 @@ void show_difficulties(ALLEGRO_FONT* font, ALLEGRO_DISPLAY_MODE* disp_data, set_
 }   
 
 ALLEGRO_BITMAP* add_logo(ALLEGRO_DISPLAY_MODE* disp_data){
-    ALLEGRO_BITMAP *logo = al_load_bitmap("img/Space_Invaders_Logo.bmp");
+    ALLEGRO_BITMAP *logo = al_load_bitmap("img/LOGO.png");
     ALLEGRO_BITMAP *logo_redimens = al_create_bitmap(disp_data -> width*0.359895833, disp_data -> width*0.150984956);
     
     al_set_target_bitmap(logo_redimens);
@@ -262,18 +263,18 @@ void destroy_sprite_base(sprite_base* sprite_base){
     free(sprite_base);
 }
 
-void show_aliens(ALLEGRO_FONT* font, space* space, set_theme* theme, unsigned int frame){
+void show_aliens(ALLEGRO_FONT* font, game* game , unsigned int frame){
     
-    for (int i = 0; i < space -> lines; i++){
-        for (int j = 0; j < space -> rows; j++){
-            if (!space -> map[i][j])
+    for (int i = 0; i < game -> space -> lines; i++){
+        for (int j = 0; j < game -> space -> rows; j++){
+            if (!game -> space -> map[i][j])
                 continue;
 
-            if (space -> map[i][j] -> exploded){
-                al_draw_tinted_bitmap((space -> map[i][j]) -> dead_img[(frame / 7) % ALT_SPRITES], theme -> primary, space -> map[i][j] -> pos_x - al_get_bitmap_width(*(space -> map[i][j]) -> dead_img)/2, space -> map[i][j] -> pos_y - al_get_bitmap_height(*(space -> map[i][j]) -> dead_img)/2, 0);
-                al_draw_textf(font, theme -> secondary, space -> map[i][j] -> pos_x, space -> map[i][j] -> pos_y, ALLEGRO_ALIGN_CENTRE, "+%d", space -> map[i][j] -> points);
+            if (game -> space -> map[i][j] -> exploded){
+                al_draw_tinted_bitmap((game -> space -> map[i][j]) -> dead_img[(frame / 7) % ALT_SPRITES], game -> theme -> primary, game -> space -> map[i][j] -> pos_x - al_get_bitmap_width(*(game -> space -> map[i][j]) -> dead_img)/2, game -> space -> map[i][j] -> pos_y - al_get_bitmap_height(*(game -> space -> map[i][j]) -> dead_img)/2, 0);
+                al_draw_textf(font, game -> theme -> secondary, game -> space -> map[i][j] -> pos_x, game -> space -> map[i][j] -> pos_y, ALLEGRO_ALIGN_CENTRE, "+%d", game -> space -> map[i][j] -> points);
             } else 
-                al_draw_tinted_bitmap((space -> map[i][j] -> alive_img)[(frame / 60) % ALT_SPRITES], theme -> primary, space -> map[i][j] -> pos_x - al_get_bitmap_width(*(space -> map[i][j]) -> alive_img)/2, space -> map[i][j] -> pos_y - al_get_bitmap_height(*(space -> map[i][j]) -> alive_img)/2, 0);
+                al_draw_tinted_bitmap((game -> space -> map[i][j] -> alive_img)[(frame / game -> tick_rate) % ALT_SPRITES], game -> theme -> primary, game -> space -> map[i][j] -> pos_x - al_get_bitmap_width(*(game -> space -> map[i][j]) -> alive_img)/2, game -> space -> map[i][j] -> pos_y - al_get_bitmap_height(*(game -> space -> map[i][j]) -> alive_img)/2, 0);
         }
     }
 }
@@ -332,7 +333,7 @@ void show_power_ups(power_up_list* power_up_list, set_theme* theme){
 void show_game(ALLEGRO_FONT* font, game* game, unsigned int frame){
 
     al_draw_rounded_rectangle(game -> limits.min_width + 100, game -> limits.max_height*1.025, game -> limits.max_width - 100, game -> limits.max_height*1.03, 3,3, game -> theme -> secondary, 9);
-    show_aliens(font, game -> space, game -> theme, frame);
+    show_aliens(font, game, frame);
     show_shots(game -> space -> shot_list, game -> theme, frame);
     show_shots(game -> space -> ship -> shot_list, game -> theme, frame); 
     show_obstacles(game -> space, game -> theme);

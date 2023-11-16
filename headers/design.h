@@ -16,6 +16,7 @@ typedef struct{
     ALLEGRO_TIMER* timer;
     ALLEGRO_SAMPLE *sample;
     ALLEGRO_SAMPLE_INSTANCE* song_instance;
+    ALLEGRO_BITMAP* back_gradient;
 }allegro_structures;
 
 typedef struct {
