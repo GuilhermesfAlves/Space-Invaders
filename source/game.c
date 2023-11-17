@@ -30,6 +30,8 @@ void destroy_game(game* game){
 
 void update_game(game* game, unsigned int frame){
     
+    if ((frame / 600 % 2) && (game -> tick_rate > BASE_TICK_RATE - game -> difficult*20 - 10))
+        game -> tick_rate -= 2;
     get_exploded(game -> space);
     if (game -> space -> ship -> exploded)
         game -> space -> ship -> exploded++;
@@ -50,12 +52,6 @@ void update_game(game* game, unsigned int frame){
     game -> points += hit_alien(game -> space -> super_alien, game -> space -> ship -> shot_list);
     if (frame % (game -> tick_rate*2) == 0)
         two_enemy_shots(game -> space -> ship -> pos_x, game -> space -> ship -> pos_y, game -> space -> lines, game -> space -> rows, game -> space -> map, game -> space -> shot_list);
-    if (game -> space -> super_shot -> first){
-        update_shots(game -> space -> super_shot, game -> limits.max_height, game -> limits.max_width, game -> limits.min_width);
-        hit_obstacles(game -> space -> obstacles, game -> space -> qtd_obstacles, game -> space -> super_shot);
-        hit_shots(game -> space -> super_shot, game -> space -> ship -> shot_list);
-        hit_ship(game -> space -> ship, game -> space -> super_shot);
-    }
     if (game -> space -> ship -> power_up_eff <= 0)
         game -> space -> ship -> power_up_type = NONE;
     else if (game -> space -> ship -> power_up_eff > 0)

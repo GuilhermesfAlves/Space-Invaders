@@ -15,7 +15,7 @@ shot_sentinel* create_shotlist(void){
 shot* straight_shoot(shot_sentinel *list, unsigned char damage, char trajectory_x, char trajectory_y, short pos_x, short pos_y, unsigned char type){
 	shot* new_shot;
 
-	if ((type != HARD) && (has_shot_in_row(list, pos_x)))
+	if ((type + 1 != HARD) && (has_shot_in_row(list, pos_x)))
 		return NULL;
 		
 	if (!(new_shot = (shot*) malloc(sizeof(shot))))

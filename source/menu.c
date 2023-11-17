@@ -105,6 +105,51 @@ char menu_part(theme* theme, difficult* difficult, allegro_structures* allegro_s
     return exit;
 }
 
+char tutorial_part(set_theme* theme, allegro_structures* allegro_structures, int tutorial){
+    ALLEGRO_BITMAP* tutorial_img = add_tutorial(&allegro_structures -> disp_mode);
+    unsigned int frame = 0;
+    char exit = _GAME_PART;
+
+    al_set_target_bitmap(al_get_backbuffer(allegro_structures -> disp));
+    while(exit){
+        al_wait_for_event(allegro_structures -> queue, &allegro_structures -> event);
+
+        if (allegro_structures -> event.type == ALLEGRO_EVENT_TIMER){
+            al_clear_to_color(theme -> back_theme);
+            al_draw_bitmap(allegro_structures -> back_gradient, (allegro_structures -> disp_mode.width - al_get_bitmap_width(allegro_structures -> back_gradient))/2, allegro_structures -> disp_mode.height - al_get_bitmap_height(allegro_structures -> back_gradient), 0);
+            al_draw_filled_rounded_rectangle(allegro_structures -> disp_mode.width/2 - 440, allegro_structures -> disp_mode.height/2 - 440, allegro_structures -> disp_mode.width/2 + 440, allegro_structures -> disp_mode.height/2 + 440, 40, 40, theme -> secondary);
+            al_draw_filled_rounded_rectangle(allegro_structures -> disp_mode.width/2 - 420, allegro_structures -> disp_mode.height/2 - 420, allegro_structures -> disp_mode.width/2 + 420, allegro_structures -> disp_mode.height/2 + 420, 20, 20, theme -> back_theme);
+            al_draw_tinted_bitmap(tutorial_img, theme -> primary, (allegro_structures -> disp_mode.width - al_get_bitmap_width(tutorial_img))/2, (allegro_structures -> disp_mode.height - al_get_bitmap_height(tutorial_img))/2, 0);
+            al_draw_text(allegro_structures -> font, theme -> secondary, allegro_structures -> disp_mode.width/2, allegro_structures -> disp_mode.height/2 + 30, ALLEGRO_ALIGN_LEFT, "Press A or LEFT to move the Ship to the left.");
+            al_draw_text(allegro_structures -> font, theme -> secondary, allegro_structures -> disp_mode.width/2, allegro_structures -> disp_mode.height/2 + 45, ALLEGRO_ALIGN_LEFT, "Press D or RIGHT to move the Ship to the right.");
+            al_draw_text(allegro_structures -> font, theme -> secondary, allegro_structures -> disp_mode.width/2, allegro_structures -> disp_mode.height/2 + 60, ALLEGRO_ALIGN_LEFT, "Press SPACE to fire a shot.");
+            al_draw_text(allegro_structures -> font, theme -> secondary, allegro_structures -> disp_mode.width/2, allegro_structures -> disp_mode.height/2 + 100, ALLEGRO_ALIGN_LEFT, "You start with 3 lifes.");
+            al_draw_text(allegro_structures -> font, theme -> secondary, allegro_structures -> disp_mode.width/2, allegro_structures -> disp_mode.height/2 + 115, ALLEGRO_ALIGN_LEFT, "Every round won, you receive 1 life.");
+            al_draw_text(allegro_structures -> font, theme -> secondary, allegro_structures -> disp_mode.width/2, allegro_structures -> disp_mode.height/2 + 130, ALLEGRO_ALIGN_LEFT, "Obstacles have 10 lifes that don't regenerate.");
+            al_draw_text(allegro_structures -> font, theme -> secondary, allegro_structures -> disp_mode.width/2, allegro_structures -> disp_mode.height/2 + 170, ALLEGRO_ALIGN_LEFT, "Fight to survive.");
+            al_draw_text(allegro_structures -> font, theme -> secondary, allegro_structures -> disp_mode.width/2, allegro_structures -> disp_mode.height/2 + 185, ALLEGRO_ALIGN_LEFT, "Run to stay alive.");
+            al_draw_text(allegro_structures -> font, theme -> secondary, allegro_structures -> disp_mode.width/2, allegro_structures -> disp_mode.height/2 + 200, ALLEGRO_ALIGN_LEFT, "Kill the invaders!!");
+            if ((frame / 60) % 2)
+                al_draw_text(allegro_structures -> font, theme -> secondary, allegro_structures -> disp_mode.width/2, allegro_structures -> disp_mode.height*4/5 , ALLEGRO_ALIGN_CENTRE, "Press SPACE to Start");
+            al_flip_display();
+        }
+        else if ((frame > 100) && (allegro_structures -> event.type == ALLEGRO_EVENT_KEY_DOWN)){
+            if (allegro_structures -> event.keyboard.keycode == ALLEGRO_KEY_ENTER){
+                tutorial ^= 1;
+            }
+            if (allegro_structures -> event.keyboard.keycode == ALLEGRO_KEY_SPACE)
+                break;
+            if (allegro_structures -> event.keyboard.keycode == ALLEGRO_KEY_ESCAPE)
+                exit = _EXIT;
+        }
+        else if (allegro_structures -> event.type == ALLEGRO_EVENT_DISPLAY_CLOSE)
+            exit = _EXIT;
+        frame++;
+    }
+
+    return exit;
+}
+
 char game_part(int *points, difficult* difficult, set_theme* theme, allegro_structures* allegro_structures){
     sprite_base* sprite_base;
     unsigned int frame = 0;
@@ -123,7 +168,7 @@ char game_part(int *points, difficult* difficult, set_theme* theme, allegro_stru
     start_objects_position(game);
 
     mov_x = RIGHT;
-    while((game -> space -> ship -> exploded != 20) && (game -> space -> ship -> life != 0) && (mov_x) && (exit)){
+    while (((game -> space -> ship -> exploded != 19) || (game -> space -> ship -> life != 0)) && (mov_x) && (exit)){
         al_wait_for_event(allegro_structures -> queue, &allegro_structures -> event);
         update_joystick_game(game -> joystick, game -> space -> ship, sprite_base, game -> limits);
     
@@ -165,7 +210,13 @@ char game_part(int *points, difficult* difficult, set_theme* theme, allegro_stru
             if (game -> space -> super_alien -> pos_x > game -> limits.max_width)
                 game -> space -> super_alien = destroy_enemy(game -> space -> super_alien);
         }
-
+        if (game -> space -> super_shot -> first){
+            update_shots(game -> space -> super_shot, game -> limits.max_height, game -> limits.max_width, game -> limits.min_width);
+            hit_obstacles(game -> space -> obstacles, game -> space -> qtd_obstacles, game -> space -> super_shot);
+            hit_shots(game -> space -> super_shot, game -> space -> ship -> shot_list);
+            hit_ship(game -> space -> ship, game -> space -> super_shot);
+        }
+    
         if ((allegro_structures -> event.type == ALLEGRO_EVENT_KEY_DOWN) || (allegro_structures -> event.type == ALLEGRO_EVENT_KEY_UP)){
             if ((allegro_structures -> event.keyboard.keycode == ALLEGRO_KEY_SPACE) && !(allegro_structures -> event.type == ALLEGRO_EVENT_KEY_UP) && time_to_start(frame)) joystick_space(game -> joystick);
             else if ((allegro_structures -> event.keyboard.keycode == ALLEGRO_KEY_LEFT) || (allegro_structures -> event.keyboard.keycode == ALLEGRO_KEY_A)) joystick_left(game -> joystick);
@@ -212,50 +263,4 @@ char game_over_part(set_theme* theme, int points, allegro_structures* allegro_st
     }
 
     return exit;
-}
-
-char tutorial_part(set_theme* theme, allegro_structures* allegro_structures, int tutorial){
-    ALLEGRO_BITMAP* tutorial_img = add_tutorial(&allegro_structures -> disp_mode);
-    unsigned int frame = 0;
-    char exit = _GAME_PART;
-
-    al_set_target_bitmap(al_get_backbuffer(allegro_structures -> disp));
-    while(exit){
-        al_wait_for_event(allegro_structures -> queue, &allegro_structures -> event);
-
-        if (allegro_structures -> event.type == ALLEGRO_EVENT_TIMER){
-            al_clear_to_color(theme -> back_theme);
-            al_draw_bitmap(allegro_structures -> back_gradient, (allegro_structures -> disp_mode.width - al_get_bitmap_width(allegro_structures -> back_gradient))/2, allegro_structures -> disp_mode.height - al_get_bitmap_height(allegro_structures -> back_gradient), 0);
-            al_draw_filled_rounded_rectangle(allegro_structures -> disp_mode.width/2 - 440, allegro_structures -> disp_mode.height/2 - 440, allegro_structures -> disp_mode.width/2 + 440, allegro_structures -> disp_mode.height/2 + 440, 40, 40, theme -> secondary);
-            al_draw_filled_rounded_rectangle(allegro_structures -> disp_mode.width/2 - 420, allegro_structures -> disp_mode.height/2 - 420, allegro_structures -> disp_mode.width/2 + 420, allegro_structures -> disp_mode.height/2 + 420, 20, 20, theme -> back_theme);
-            al_draw_tinted_bitmap(tutorial_img, theme -> primary, (allegro_structures -> disp_mode.width - al_get_bitmap_width(tutorial_img))/2, (allegro_structures -> disp_mode.height - al_get_bitmap_height(tutorial_img))/2, 0);
-            al_draw_text(allegro_structures -> font, theme -> secondary, allegro_structures -> disp_mode.width/2, allegro_structures -> disp_mode.height/2 + 30, ALLEGRO_ALIGN_LEFT, "Press A or LEFT to move the Ship to the left.");
-            al_draw_text(allegro_structures -> font, theme -> secondary, allegro_structures -> disp_mode.width/2, allegro_structures -> disp_mode.height/2 + 45, ALLEGRO_ALIGN_LEFT, "Press D or RIGHT to move the Ship to the right.");
-            al_draw_text(allegro_structures -> font, theme -> secondary, allegro_structures -> disp_mode.width/2, allegro_structures -> disp_mode.height/2 + 60, ALLEGRO_ALIGN_LEFT, "Press SPACE to fire a shot.");
-            al_draw_text(allegro_structures -> font, theme -> secondary, allegro_structures -> disp_mode.width/2, allegro_structures -> disp_mode.height/2 + 100, ALLEGRO_ALIGN_LEFT, "You start with 3 lifes.");
-            al_draw_text(allegro_structures -> font, theme -> secondary, allegro_structures -> disp_mode.width/2, allegro_structures -> disp_mode.height/2 + 115, ALLEGRO_ALIGN_LEFT, "Every round won, you receive 1 life.");
-            al_draw_text(allegro_structures -> font, theme -> secondary, allegro_structures -> disp_mode.width/2, allegro_structures -> disp_mode.height/2 + 130, ALLEGRO_ALIGN_LEFT, "Obstacles have 10 lifes that don't regenerate.");
-            al_draw_text(allegro_structures -> font, theme -> secondary, allegro_structures -> disp_mode.width/2, allegro_structures -> disp_mode.height/2 + 170, ALLEGRO_ALIGN_LEFT, "Fight to survive.");
-            al_draw_text(allegro_structures -> font, theme -> secondary, allegro_structures -> disp_mode.width/2, allegro_structures -> disp_mode.height/2 + 185, ALLEGRO_ALIGN_LEFT, "Run to stay alive.");
-            al_draw_text(allegro_structures -> font, theme -> secondary, allegro_structures -> disp_mode.width/2, allegro_structures -> disp_mode.height/2 + 200, ALLEGRO_ALIGN_LEFT, "Kill 'em all.");
-            if ((frame / 60) % 2)
-                al_draw_text(allegro_structures -> font, theme -> secondary, allegro_structures -> disp_mode.width/2, allegro_structures -> disp_mode.height*4/5 , ALLEGRO_ALIGN_CENTRE, "Press SPACE to Start");
-            al_flip_display();
-        }
-        else if ((frame > 100) && (allegro_structures -> event.type == ALLEGRO_EVENT_KEY_DOWN)){
-            if (allegro_structures -> event.keyboard.keycode == ALLEGRO_KEY_ENTER){
-                tutorial ^= 1;
-            }
-            if (allegro_structures -> event.keyboard.keycode == ALLEGRO_KEY_SPACE)
-                break;
-            if (allegro_structures -> event.keyboard.keycode == ALLEGRO_KEY_ESCAPE)
-                exit = _EXIT;
-        }
-        else if (allegro_structures -> event.type == ALLEGRO_EVENT_DISPLAY_CLOSE)
-            exit = _EXIT;
-        frame++;
-    }
-
-    return exit;
-
 }

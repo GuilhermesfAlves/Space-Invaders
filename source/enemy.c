@@ -23,7 +23,7 @@ enemy* add_enemy(int type, char dir){
 	new_enemy -> shot_img = NULL;
 	new_enemy -> death_s = NULL;
 	new_enemy -> dir = dir;
-	new_enemy -> points = (type == HARD)? 4*10: (type == SUPER)? 150: type*10;
+	new_enemy -> points = (type == HARD)? 4*10: (type == SUPER)? ((rand() % 2) + 1)*150: type*10;
 
 	return new_enemy;
 }
