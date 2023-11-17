@@ -44,6 +44,9 @@ int main(){
         case _MENU_PART:
             mode = menu_part(theme, difficult, allegro_structures);
             break;
+        case _TUTORIAL_PART:
+            mode = tutorial_part(theme -> vec[theme -> current], allegro_structures, 1);
+            break;
         case _GAME_PART:
             mode = game_part(&points, difficult, theme -> vec[theme -> current], allegro_structures); 
             break;

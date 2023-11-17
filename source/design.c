@@ -65,6 +65,15 @@ void show_difficulties(ALLEGRO_FONT* font, ALLEGRO_DISPLAY_MODE* disp_data, set_
     al_draw_text(font, theme -> primary, disp_data -> width/2, disp_data -> height - 250 - move, ALLEGRO_ALIGN_CENTRE, difficult -> vec[difficult -> current].name);
 }   
 
+void show_tutorial_op(ALLEGRO_FONT* font, ALLEGRO_DISPLAY_MODE* disp_data, set_theme* theme, int move, int tutorial){
+
+    al_draw_text(font, theme -> secondary, disp_data -> width/2 - 10, disp_data -> height*0.8 - move - 5, ALLEGRO_ALIGN_CENTRE, "Press T to see Tutorial");
+    if (!tutorial)
+        al_draw_circle(disp_data -> width/2 + 105, disp_data -> height*0.8 - move, 5, theme -> primary, 2);
+    else
+        al_draw_filled_circle(disp_data -> width/2 + 105, disp_data -> height*0.8 - move, 5, theme -> primary);
+}
+
 ALLEGRO_BITMAP* add_logo(ALLEGRO_DISPLAY_MODE* disp_data){
     ALLEGRO_BITMAP *logo = al_load_bitmap("img/LOGO.png");
     ALLEGRO_BITMAP *logo_redimens = al_create_bitmap(disp_data -> width*0.359895833, disp_data -> width*0.150984956);
@@ -96,6 +105,17 @@ ALLEGRO_BITMAP* add_monster(ALLEGRO_DISPLAY_MODE* disp_data){
     al_destroy_bitmap(MONSTER);
 
     return MONSTER_REDIM;
+}
+
+ALLEGRO_BITMAP* add_tutorial(ALLEGRO_DISPLAY_MODE* disp_data){
+    ALLEGRO_BITMAP *TUTORIAL = al_load_bitmap("img/TUTORIAL.png");
+    ALLEGRO_BITMAP *TUTORIAL_REDIM = al_create_bitmap(disp_data -> width*al_get_bitmap_width(TUTORIAL)*0.00045, disp_data -> width*al_get_bitmap_height(TUTORIAL)*0.00045);
+    
+    al_set_target_bitmap(TUTORIAL_REDIM);
+    al_draw_scaled_bitmap(TUTORIAL, 0, 0, al_get_bitmap_width(TUTORIAL), al_get_bitmap_height(TUTORIAL), 0, 0, disp_data -> width*al_get_bitmap_width(TUTORIAL)*0.00045, disp_data -> width*al_get_bitmap_height(TUTORIAL)*0.00045, 0);
+    al_destroy_bitmap(TUTORIAL);
+
+    return TUTORIAL_REDIM;
 }
 
 void add_icon(ALLEGRO_DISPLAY* disp){

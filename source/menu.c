@@ -52,6 +52,7 @@ char menu_part(theme* theme, difficult* difficult, allegro_structures* allegro_s
     unsigned int frame = 0;
     int move = 0;
     char exit = _GAME_PART;
+    char tutorial = show_tutorial();
 
     al_set_target_bitmap(al_get_backbuffer(allegro_structures -> disp));
 
@@ -69,12 +70,13 @@ char menu_part(theme* theme, difficult* difficult, allegro_structures* allegro_s
             al_clear_to_color(theme -> vec[theme -> current] -> back_theme);
             al_draw_bitmap(allegro_structures -> back_gradient, (allegro_structures -> disp_mode.width - al_get_bitmap_width(allegro_structures -> back_gradient))/2, allegro_structures -> disp_mode.height - al_get_bitmap_height(allegro_structures -> back_gradient), 0);
             al_draw_tinted_bitmap(logo, theme -> vec[theme -> current] -> primary,(allegro_structures -> disp_mode.width - al_get_bitmap_width(logo))/2, 108 - move, 0);
-            al_draw_tinted_bitmap(monster_left, theme -> vec[theme -> current] -> secondary, allegro_structures -> disp_mode.width*0.32, allegro_structures -> disp_mode.height*0.35, 0);
+            al_draw_tinted_bitmap(monster_left, theme -> vec[theme -> current] -> secondary, allegro_structures -> disp_mode.width*0.65, allegro_structures -> disp_mode.height*0.25 - move, 0);
             al_draw_tinted_bitmap(alien, theme -> vec[theme -> current] -> primary,(allegro_structures -> disp_mode.width - al_get_bitmap_width(alien))/2, al_get_bitmap_height(logo) + 108 + 20 - move, 0);
             show_themes(allegro_structures -> font, &allegro_structures -> disp_mode, theme, move);
             show_difficulties(allegro_structures -> font, &allegro_structures -> disp_mode, theme -> vec[theme -> current], difficult, move);
             show_START_ALERT(allegro_structures -> font, &allegro_structures -> disp_mode, frame, move, theme -> vec[theme -> current]);
             show_historic(allegro_structures -> font, difficult, theme -> vec[theme -> current], allegro_structures -> disp_mode.width, allegro_structures -> disp_mode.height, move);
+            show_tutorial_op(allegro_structures -> font, &allegro_structures -> disp_mode, theme -> vec[theme -> current], move, tutorial);
             al_flip_display();
         }
         else if ((allegro_structures -> event.type == ALLEGRO_EVENT_KEY_DOWN) && (!move)){
@@ -83,12 +85,16 @@ char menu_part(theme* theme, difficult* difficult, allegro_structures* allegro_s
             else if (allegro_structures -> event.keyboard.keycode == ALLEGRO_KEY_SPACE) joystick_space(joystick);
             else if ((allegro_structures -> event.keyboard.keycode == ALLEGRO_KEY_LEFT) || (allegro_structures -> event.keyboard.keycode == ALLEGRO_KEY_A)) joystick_left(joystick);
             else if ((allegro_structures -> event.keyboard.keycode == ALLEGRO_KEY_RIGHT) || (allegro_structures -> event.keyboard.keycode == ALLEGRO_KEY_D)) joystick_right(joystick);
+            else if ((allegro_structures -> event.keyboard.keycode == ALLEGRO_KEY_T)) tutorial ^= 1;
         }
         else if (allegro_structures -> event.type == ALLEGRO_EVENT_DISPLAY_CLOSE)
             exit = _EXIT;
 
         frame++;
     }
+    if ((tutorial) && (exit))
+        exit = _TUTORIAL_PART;
+    save_preference(tutorial);
     save_last_used(theme -> current);
     save_last_used_difficult(difficult -> current);
     destroy_joystick(joystick);
@@ -114,7 +120,6 @@ char game_part(int *points, difficult* difficult, set_theme* theme, allegro_stru
 
     set_game_sprites(game, sprite_base);
     set_game_sounds(game);
-    printf("aqui\n");
     start_objects_position(game);
 
     mov_x = RIGHT;
@@ -207,4 +212,50 @@ char game_over_part(set_theme* theme, int points, allegro_structures* allegro_st
     }
 
     return exit;
+}
+
+char tutorial_part(set_theme* theme, allegro_structures* allegro_structures, int tutorial){
+    ALLEGRO_BITMAP* tutorial_img = add_tutorial(&allegro_structures -> disp_mode);
+    unsigned int frame = 0;
+    char exit = _GAME_PART;
+
+    al_set_target_bitmap(al_get_backbuffer(allegro_structures -> disp));
+    while(exit){
+        al_wait_for_event(allegro_structures -> queue, &allegro_structures -> event);
+
+        if (allegro_structures -> event.type == ALLEGRO_EVENT_TIMER){
+            al_clear_to_color(theme -> back_theme);
+            al_draw_bitmap(allegro_structures -> back_gradient, (allegro_structures -> disp_mode.width - al_get_bitmap_width(allegro_structures -> back_gradient))/2, allegro_structures -> disp_mode.height - al_get_bitmap_height(allegro_structures -> back_gradient), 0);
+            al_draw_filled_rounded_rectangle(allegro_structures -> disp_mode.width/2 - 440, allegro_structures -> disp_mode.height/2 - 440, allegro_structures -> disp_mode.width/2 + 440, allegro_structures -> disp_mode.height/2 + 440, 40, 40, theme -> secondary);
+            al_draw_filled_rounded_rectangle(allegro_structures -> disp_mode.width/2 - 420, allegro_structures -> disp_mode.height/2 - 420, allegro_structures -> disp_mode.width/2 + 420, allegro_structures -> disp_mode.height/2 + 420, 20, 20, theme -> back_theme);
+            al_draw_tinted_bitmap(tutorial_img, theme -> primary, (allegro_structures -> disp_mode.width - al_get_bitmap_width(tutorial_img))/2, (allegro_structures -> disp_mode.height - al_get_bitmap_height(tutorial_img))/2, 0);
+            al_draw_text(allegro_structures -> font, theme -> secondary, allegro_structures -> disp_mode.width/2, allegro_structures -> disp_mode.height/2 + 30, ALLEGRO_ALIGN_LEFT, "Press A or LEFT to move the Ship to the left.");
+            al_draw_text(allegro_structures -> font, theme -> secondary, allegro_structures -> disp_mode.width/2, allegro_structures -> disp_mode.height/2 + 45, ALLEGRO_ALIGN_LEFT, "Press D or RIGHT to move the Ship to the right.");
+            al_draw_text(allegro_structures -> font, theme -> secondary, allegro_structures -> disp_mode.width/2, allegro_structures -> disp_mode.height/2 + 60, ALLEGRO_ALIGN_LEFT, "Press SPACE to fire a shot.");
+            al_draw_text(allegro_structures -> font, theme -> secondary, allegro_structures -> disp_mode.width/2, allegro_structures -> disp_mode.height/2 + 100, ALLEGRO_ALIGN_LEFT, "You start with 3 lifes.");
+            al_draw_text(allegro_structures -> font, theme -> secondary, allegro_structures -> disp_mode.width/2, allegro_structures -> disp_mode.height/2 + 115, ALLEGRO_ALIGN_LEFT, "Every round won, you receive 1 life.");
+            al_draw_text(allegro_structures -> font, theme -> secondary, allegro_structures -> disp_mode.width/2, allegro_structures -> disp_mode.height/2 + 130, ALLEGRO_ALIGN_LEFT, "Obstacles have 10 lifes that don't regenerate.");
+            al_draw_text(allegro_structures -> font, theme -> secondary, allegro_structures -> disp_mode.width/2, allegro_structures -> disp_mode.height/2 + 170, ALLEGRO_ALIGN_LEFT, "Fight to survive.");
+            al_draw_text(allegro_structures -> font, theme -> secondary, allegro_structures -> disp_mode.width/2, allegro_structures -> disp_mode.height/2 + 185, ALLEGRO_ALIGN_LEFT, "Run to stay alive.");
+            al_draw_text(allegro_structures -> font, theme -> secondary, allegro_structures -> disp_mode.width/2, allegro_structures -> disp_mode.height/2 + 200, ALLEGRO_ALIGN_LEFT, "Kill 'em all.");
+            if ((frame / 60) % 2)
+                al_draw_text(allegro_structures -> font, theme -> secondary, allegro_structures -> disp_mode.width/2, allegro_structures -> disp_mode.height*4/5 , ALLEGRO_ALIGN_CENTRE, "Press SPACE to Start");
+            al_flip_display();
+        }
+        else if ((frame > 100) && (allegro_structures -> event.type == ALLEGRO_EVENT_KEY_DOWN)){
+            if (allegro_structures -> event.keyboard.keycode == ALLEGRO_KEY_ENTER){
+                tutorial ^= 1;
+            }
+            if (allegro_structures -> event.keyboard.keycode == ALLEGRO_KEY_SPACE)
+                break;
+            if (allegro_structures -> event.keyboard.keycode == ALLEGRO_KEY_ESCAPE)
+                exit = _EXIT;
+        }
+        else if (allegro_structures -> event.type == ALLEGRO_EVENT_DISPLAY_CLOSE)
+            exit = _EXIT;
+        frame++;
+    }
+
+    return exit;
+
 }
