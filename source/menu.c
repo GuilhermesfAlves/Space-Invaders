@@ -49,10 +49,18 @@ char menu_part(theme* theme, difficult* difficult, allegro_structures* allegro_s
     ALLEGRO_BITMAP *alien = add_logo_alien(&allegro_structures -> disp_mode);
     ALLEGRO_BITMAP *monster_left =  add_monster(&allegro_structures -> disp_mode);
     joystick* joystick = add_joystick();
+    if (!joystick){
+        fprintf(stderr, "Failed to create joystick\n");
+        exit(1);
+    }
     unsigned int frame = 0;
     int move = 0;
     char exit = _GAME_PART;
     char tutorial = show_tutorial();
+    if (!logo || !alien || !monster){
+        fprintf(stderr, "Failed to load an image to menu\n");
+        exit(1);
+    }
 
     al_set_target_bitmap(al_get_backbuffer(allegro_structures -> disp));
 
