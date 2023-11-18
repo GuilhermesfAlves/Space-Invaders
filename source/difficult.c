@@ -9,7 +9,7 @@ void get_historic(difficulties* difficulties){
     if (!(file = fopen(difficulties -> arq, "rb")))
         return;
 
-    if (!(fread(difficulties -> historic, sizeof(historic), QTD_P_HISTORIC, file)))
+    fread(difficulties -> historic, sizeof(historic), QTD_P_HISTORIC, file);
     fclose(file);
 }
 

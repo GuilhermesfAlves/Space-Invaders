@@ -1,5 +1,5 @@
 #include "../headers/space.h"
-#include <stdio.h>
+
 space* generate_space(int lines, int rows){
 	space* new_space;
 	
@@ -29,7 +29,7 @@ int set_formation(char* rows, char* lines, char* difficult, unsigned char* qtd_o
 		*qtd_obstacles = 6;
 		*qtd_power_ups = 7;
 		vec_y[0] = MEDIUM; vec_y[1] = EASY; vec_y[2] = EASY; vec_y[3] = -1; vec_y[4] = -1; vec_y[5] = -1;
-		break;
+		break; 
 	case Diff_Normal:
 		*rows = 10;
 		*lines = 4;
@@ -56,7 +56,7 @@ int set_formation(char* rows, char* lines, char* difficult, unsigned char* qtd_o
 	}
 	blanck_row[0] = rand() % (*rows + 5);
 	blanck_row[1] = rand() % (*rows + 5);
-	// rows + 3 para haver a possibilidade de não existir coluna vazia 
+	// rows + 5 para haver a possibilidade de não existir coluna vazia 
 	return 1;
 }
 
@@ -108,16 +108,17 @@ void clean_space(space *space){
 }
 
 void destroy_space(space* space){
-
 	clean_space(space);
-
 	for (int i = 0; i < space -> lines; i++)
 		free(space -> map[i]);
-
-	destroy_ship(space -> ship);
-	clean_shots(space -> shot_list);
-	destroy_obstacles(space -> obstacles, space -> qtd_obstacles);
 	free(space -> map);
+	destroy_shot_list(space -> super_shot);
+	destroy_power_up_list(space -> power_up_list);
+	destroy_shot_list(space -> shot_list);
+	if (space -> super_alien)
+		destroy_enemy(space -> super_alien);
+	destroy_obstacles(space -> obstacles, space -> qtd_obstacles);
+	destroy_ship(space -> ship);
 	free(space);
 }
 
@@ -173,12 +174,11 @@ int move_aliens(space* space, limits limits, int mov_x){
 
 int has_alien(space* space){
 	
-	for (int i = 0; i < space -> lines; i++){
-		for (int j = 0; j < space -> rows; j++){
+	for (int i = 0; i < space -> lines; i++)
+		for (int j = 0; j < space -> rows; j++)
 			if (space -> map[i][j])
 				return 1;
-		}
-	}
+
 	return 0;
 }
 
@@ -262,7 +262,6 @@ enemy* get_explod(enemy* enemy){
 		return destroy_enemy(enemy);
 	else 
 		enemy -> exploded++;
-
 }
 
 void hit_shots(shot_sentinel* ship_list, shot_sentinel* enemy_list){
@@ -320,7 +319,7 @@ void set_random_power_ups(enemy*** map, int lines, int rows, int power_up_qtd){
 	}
 }
 
-int ship_got_power_up(space* space){
+void ship_got_power_up(space* space){
 	
 	for (power_up* current = space -> power_up_list -> first; current; current = current -> next){
 		current -> pos_y += FALL_MOVE;
@@ -332,7 +331,5 @@ int ship_got_power_up(space* space){
 				space -> ship -> power_up_eff = POWER_UP_LIFETIME;
 				destroy_power_up(current, space -> power_up_list);
 			}
-		
 	}
-
 }

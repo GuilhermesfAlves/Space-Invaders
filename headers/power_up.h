@@ -5,9 +5,11 @@
 
 #define FALL_MOVE 3
 #define QTD_POWER_UP_TYPES 1
-#define POWER_UP_LIFETIME 420
+#define POWER_UP_LIFETIME 420 // equal to 7 seconds
+
 enum power_up_enums{NONE, SHIELD};
 
+//node of power ups
 typedef struct power_up{
     int pos_x;
     int pos_y;
@@ -17,6 +19,7 @@ typedef struct power_up{
     struct power_up* previous;
 }power_up;
 
+//list of power ups
 typedef struct{
     power_up* first;
     power_up* last;

@@ -1,4 +1,5 @@
 #include "../headers/obstacles.h"
+#include <stdlib.h>
 
 obstacles** add_obstacles(unsigned char qtd){
     obstacles** new_obstacles;
@@ -18,7 +19,9 @@ obstacles** add_obstacles(unsigned char qtd){
 }
 
 void* destroy_obstacle(obstacles* obstacle){
-    free(obstacle);
+
+    if (obstacle)
+       free(obstacle);
     return NULL;
 }
 

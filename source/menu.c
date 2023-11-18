@@ -1,4 +1,5 @@
 #include "../headers/menu.h"
+#include <stdio.h>
 
 int time_to_start(unsigned int frame){
     return (frame > 40)? 1:0;
@@ -47,7 +48,7 @@ void update_joystick_game(joystick* joystick, ship* ship, sprite_base* sprite_ba
 char menu_part(theme* theme, difficult* difficult, allegro_structures* allegro_structures){
     ALLEGRO_BITMAP *logo = add_logo(&allegro_structures -> disp_mode);
     ALLEGRO_BITMAP *alien = add_logo_alien(&allegro_structures -> disp_mode);
-    ALLEGRO_BITMAP *monster_left =  add_monster(&allegro_structures -> disp_mode);
+    ALLEGRO_BITMAP *monster =  add_monster(&allegro_structures -> disp_mode);
     joystick* joystick = add_joystick();
     if (!joystick){
         fprintf(stderr, "Failed to create joystick\n");
@@ -55,7 +56,7 @@ char menu_part(theme* theme, difficult* difficult, allegro_structures* allegro_s
     }
     unsigned int frame = 0;
     int move = 0;
-    char exit = _GAME_PART;
+    char next_part = _GAME_PART;
     char tutorial = show_tutorial();
     if (!logo || !alien || !monster){
         fprintf(stderr, "Failed to load an image to menu\n");
@@ -64,7 +65,7 @@ char menu_part(theme* theme, difficult* difficult, allegro_structures* allegro_s
 
     al_set_target_bitmap(al_get_backbuffer(allegro_structures -> disp));
 
-    while (exit){
+    while (next_part){
         al_wait_for_event(allegro_structures -> queue, &allegro_structures -> event);
         update_joystick_menu(joystick, theme, difficult);
         
@@ -78,12 +79,13 @@ char menu_part(theme* theme, difficult* difficult, allegro_structures* allegro_s
             al_clear_to_color(theme -> vec[theme -> current] -> back_theme);
             al_draw_bitmap(allegro_structures -> back_gradient, (allegro_structures -> disp_mode.width - al_get_bitmap_width(allegro_structures -> back_gradient))/2, allegro_structures -> disp_mode.height - al_get_bitmap_height(allegro_structures -> back_gradient), 0);
             al_draw_tinted_bitmap(logo, theme -> vec[theme -> current] -> primary,(allegro_structures -> disp_mode.width - al_get_bitmap_width(logo))/2, 108 - move, 0);
-            al_draw_tinted_bitmap(monster_left, theme -> vec[theme -> current] -> secondary, allegro_structures -> disp_mode.width*0.65, allegro_structures -> disp_mode.height*0.25 - move, 0);
+            al_draw_tinted_bitmap(monster, theme -> vec[theme -> current] -> secondary, allegro_structures -> disp_mode.width*0.65, allegro_structures -> disp_mode.height*0.25 - move, 0);
             al_draw_tinted_bitmap(alien, theme -> vec[theme -> current] -> primary,(allegro_structures -> disp_mode.width - al_get_bitmap_width(alien))/2, al_get_bitmap_height(logo) + 108 + 20 - move, 0);
             show_themes(allegro_structures -> font, &allegro_structures -> disp_mode, theme, move);
             show_difficulties(allegro_structures -> font, &allegro_structures -> disp_mode, theme -> vec[theme -> current], difficult, move);
             show_START_ALERT(allegro_structures -> font, &allegro_structures -> disp_mode, frame, move, theme -> vec[theme -> current]);
-            show_historic(allegro_structures -> font, difficult, theme -> vec[theme -> current], allegro_structures -> disp_mode.width, allegro_structures -> disp_mode.height, move);
+            if (difficult -> show)
+                show_historic(allegro_structures -> font, difficult, theme -> vec[theme -> current], allegro_structures -> disp_mode.width, allegro_structures -> disp_mode.height, move);
             show_tutorial_op(allegro_structures -> font, &allegro_structures -> disp_mode, theme -> vec[theme -> current], move, tutorial);
             al_flip_display();
         }
@@ -96,30 +98,35 @@ char menu_part(theme* theme, difficult* difficult, allegro_structures* allegro_s
             else if ((allegro_structures -> event.keyboard.keycode == ALLEGRO_KEY_T)) tutorial ^= 1;
         }
         else if (allegro_structures -> event.type == ALLEGRO_EVENT_DISPLAY_CLOSE)
-            exit = _EXIT;
+            next_part = _EXIT;
 
         frame++;
     }
-    if ((tutorial) && (exit))
-        exit = _TUTORIAL_PART;
+    if ((tutorial) && (next_part))
+        next_part = _TUTORIAL_PART;
+    
     save_preference(tutorial);
-    save_last_used(theme -> current);
+    save_last_used_theme(theme -> current);
     save_last_used_difficult(difficult -> current);
     destroy_joystick(joystick);
-    al_destroy_bitmap(monster_left);
+    al_destroy_bitmap(monster);
     al_destroy_bitmap(logo);
     al_destroy_bitmap(alien);
     
-    return exit;
+    return next_part;
 }
 
 char tutorial_part(set_theme* theme, allegro_structures* allegro_structures, int tutorial){
     ALLEGRO_BITMAP* tutorial_img = add_tutorial(&allegro_structures -> disp_mode);
     unsigned int frame = 0;
-    char exit = _GAME_PART;
+    char next_part = _GAME_PART;
+    if (!tutorial_img){
+        fprintf(stderr, "Failed to load an image to tutorial\n");
+        exit(1);
+    }
 
     al_set_target_bitmap(al_get_backbuffer(allegro_structures -> disp));
-    while(exit){
+    while(next_part){
         al_wait_for_event(allegro_structures -> queue, &allegro_structures -> event);
 
         if (allegro_structures -> event.type == ALLEGRO_EVENT_TIMER){
@@ -148,14 +155,14 @@ char tutorial_part(set_theme* theme, allegro_structures* allegro_structures, int
             if (allegro_structures -> event.keyboard.keycode == ALLEGRO_KEY_SPACE)
                 break;
             if (allegro_structures -> event.keyboard.keycode == ALLEGRO_KEY_ESCAPE)
-                exit = _EXIT;
+                next_part = _EXIT;
         }
         else if (allegro_structures -> event.type == ALLEGRO_EVENT_DISPLAY_CLOSE)
-            exit = _EXIT;
+            next_part = _EXIT;
         frame++;
     }
 
-    return exit;
+    return next_part;
 }
 
 char game_part(int *points, difficult* difficult, set_theme* theme, allegro_structures* allegro_structures){
@@ -163,12 +170,18 @@ char game_part(int *points, difficult* difficult, set_theme* theme, allegro_stru
     unsigned int frame = 0;
     game* game;
     int mov_x;
-    char exit = _GAME_OVER_PART;
+    char next_part = _GAME_OVER_PART;
     int shot_pos;
 
     srand(time(NULL));
-    game = add_game(difficult -> current, theme, &allegro_structures -> disp_mode);
-    sprite_base = get_sprite_base(&game -> limits);
+    if (!(game = add_game(difficult -> current, theme, &allegro_structures -> disp_mode))){
+        fprintf(stderr, "Failed to create the game\n");
+        exit(1);
+    }
+    if (!(sprite_base = get_sprite_base(&game -> limits))){
+        fprintf(stderr, "Failed to get the sprite_base\n");
+        exit(1);
+    }
     al_set_target_bitmap(al_get_backbuffer(allegro_structures -> disp));
 
     set_game_sprites(game, sprite_base);
@@ -176,7 +189,7 @@ char game_part(int *points, difficult* difficult, set_theme* theme, allegro_stru
     start_objects_position(game);
 
     mov_x = RIGHT;
-    while (((game -> space -> ship -> exploded != 19) || (game -> space -> ship -> life != 0)) && (mov_x) && (exit)){
+    while (((game -> space -> ship -> exploded != 19) || (game -> space -> ship -> life != 0)) && (mov_x) && (next_part)){
         al_wait_for_event(allegro_structures -> queue, &allegro_structures -> event);
         update_joystick_game(game -> joystick, game -> space -> ship, sprite_base, game -> limits);
     
@@ -185,7 +198,9 @@ char game_part(int *points, difficult* difficult, set_theme* theme, allegro_stru
             al_play_sample(game -> move_s[(frame / game -> tick_rate) % MOVE_SOUNDS], 0.2, 0.0, 1.0, ALLEGRO_PLAYMODE_ONCE, NULL);
         }
         if (!has_alien(game -> space)){
-            mov_x = restart_round(game, sprite_base);
+            restart_round(game);
+            set_aliens_sprites(game -> space, sprite_base);
+            mov_x = RIGHT;
             frame = 0;
             set_game_sounds(game);
         }
@@ -237,20 +252,24 @@ char game_part(int *points, difficult* difficult, set_theme* theme, allegro_stru
             al_flip_display();
         }
         else if (allegro_structures -> event.type == ALLEGRO_EVENT_DISPLAY_CLOSE)
-            exit = _EXIT;
+            next_part = _EXIT;
         frame++;
     }
     *points = game -> points;
+    printf("destroy sprite base\n");
     destroy_sprite_base(sprite_base);
+    printf("destroy game\n");
     destroy_game(game);
-    return exit;
+    printf("game destroyed\n");
+    return next_part;
 }
 
 char game_over_part(set_theme* theme, int points, allegro_structures* allegro_structures){
     unsigned int frame = 0;
-    char exit = _MENU_PART;
+    char next_part = _MENU_PART;
 
-    while(exit){
+    printf("game over part\n");
+    while(next_part){
         al_wait_for_event(allegro_structures -> queue, &allegro_structures -> event);
 
         if (allegro_structures -> event.type == ALLEGRO_EVENT_TIMER){
@@ -263,12 +282,12 @@ char game_over_part(set_theme* theme, int points, allegro_structures* allegro_st
             if (allegro_structures -> event.keyboard.keycode == ALLEGRO_KEY_SPACE)
                 break;
             if (allegro_structures -> event.keyboard.keycode == ALLEGRO_KEY_ESCAPE)
-                exit = _EXIT;
+                next_part = _EXIT;
         }
         else if (allegro_structures -> event.type == ALLEGRO_EVENT_DISPLAY_CLOSE)
-            exit = _EXIT;
+            next_part = _EXIT;
         frame++;
     }
 
-    return exit;
+    return next_part;
 }

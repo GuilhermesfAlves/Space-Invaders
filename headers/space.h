@@ -49,6 +49,6 @@ void hit_shots(shot_sentinel* ship_list, shot_sentinel* enemy_list);
 void hit_ship(ship* ship, shot_sentinel* shot_list);
 
 void set_random_power_ups(enemy*** map, int lines, int rows, int power_up_qtd);
-int ship_got_power_up(space* space);
+void ship_got_power_up(space* space);
 
 #endif

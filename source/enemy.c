@@ -46,7 +46,7 @@ int already_shooten(enemy* new, enemy** shooten){
 	return 0;
 }
 
-void two_enemy_shots(int pos_x, int pos_y, short lines, short rows, enemy*** map, shot_sentinel* shot_list){
+void enemy_shots(int pos_x, int pos_y, short lines, short rows, enemy*** map, shot_sentinel* shot_list){
 	enemy** closer;
 	float distance;
 	float distance_closer;

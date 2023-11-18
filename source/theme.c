@@ -1,5 +1,8 @@
 #include "../headers/theme.h"
 
+#include <stdlib.h>
+#include <stdio.h>
+
 theme* create_themes(unsigned char current){
     theme* new_theme;
 
@@ -79,7 +82,7 @@ unsigned char last_used_theme(){
     return atoi(&ind); 
 }
 
-void save_last_used(unsigned char current){
+void save_last_used_theme(unsigned char current){
 
     FILE* LastUsed = fopen("database/LastUsedTheme.txt","w"); 
     

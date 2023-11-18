@@ -1,4 +1,6 @@
 #include "../headers/joystick.h"
+#include <stdlib.h>
+
 
 joystick* add_joystick(){
     joystick* new_joystick;

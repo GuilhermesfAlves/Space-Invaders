@@ -6,27 +6,41 @@ allegro_structures* add_allegro_structures(){
 
     if (!(new_allegro_structures = (allegro_structures*) malloc(sizeof(allegro_structures))))
         return NULL;
+
     al_set_app_name("Space Invaders");
-    new_allegro_structures -> timer = al_create_timer(1.0 / 60.0);
+    new_allegro_structures -> timer = al_create_timer(1.0 / 60.0); //60 fps
     new_allegro_structures -> queue = al_create_event_queue();
     al_get_display_mode(al_get_num_video_adapters() - 1, &new_allegro_structures -> disp_mode);
-    new_allegro_structures -> disp_mode.height -= 70;
-    new_allegro_structures -> disp = al_create_display(new_allegro_structures -> disp_mode.width, new_allegro_structures -> disp_mode.height);
+    new_allegro_structures -> disp_mode.height -= 70; // tela cheia sem a barra de tarefas
+    if (!(new_allegro_structures -> disp = al_create_display(new_allegro_structures -> disp_mode.width, new_allegro_structures -> disp_mode.height))){
+        fprintf(stderr, "Can't create display\n");
+        return NULL;
+    }
     al_set_window_title(new_allegro_structures -> disp, "Space Invaders");
-    new_allegro_structures -> font = al_create_builtin_font();
+    if (!(new_allegro_structures -> font = al_create_builtin_font())){
+        fprintf(stderr, "Can't load builtin font\n");
+        return NULL;
+    }
     new_allegro_structures -> sample = al_load_sample("sound/menu_song.wav");
     new_allegro_structures -> song_instance = al_create_sample_instance(new_allegro_structures -> sample);
-    al_set_sample_instance_playmode(new_allegro_structures -> song_instance, ALLEGRO_PLAYMODE_LOOP);
+    al_set_sample_instance_playmode(new_allegro_structures -> song_instance, ALLEGRO_PLAYMODE_LOOP); //em loop para sempre
     al_set_sample_instance_gain(new_allegro_structures -> song_instance, 0.1);
     al_reserve_samples(20);
-    al_attach_sample_instance_to_mixer(new_allegro_structures -> song_instance, al_get_default_mixer());
-    new_allegro_structures -> back_gradient = al_load_bitmap("img/Back.png");
-
+    if (!(al_attach_sample_instance_to_mixer(new_allegro_structures -> song_instance, al_get_default_mixer()))){
+        fprintf(stderr,"Can't set sample instance to mixer\n");
+        return NULL;
+    }
+    if (!(new_allegro_structures -> back_gradient = al_load_bitmap("img/Back.png"))){
+        fprintf(stderr,"Can't load back gradient\n");
+        return NULL;
+    }
     return new_allegro_structures;
 }
 
 void destroy_allegro_structures(allegro_structures* allegro_structures){
 
+    al_destroy_sample_instance(allegro_structures -> song_instance);
+    al_destroy_sample(allegro_structures -> sample);
     al_destroy_bitmap(allegro_structures -> back_gradient);
     al_destroy_font(allegro_structures -> font);
     al_destroy_display(allegro_structures -> disp);
@@ -39,7 +53,7 @@ void destroy_allegro_structures(allegro_structures* allegro_structures){
 
 void show_START_ALERT(ALLEGRO_FONT* font, ALLEGRO_DISPLAY_MODE *disp_data, unsigned int frame, int move, set_theme* theme){
 
-    if ((!move) && ((frame / 60) % 2))
+    if ((!move) && ((frame / 60) % 2)) // A cada segundo pisca 
         al_draw_text(font, theme -> primary, disp_data -> width/2, disp_data -> height - 25 - move, ALLEGRO_ALIGN_CENTRE, "Press SPACE to Start!");
 }
 
@@ -47,13 +61,13 @@ void show_themes(ALLEGRO_FONT* font, ALLEGRO_DISPLAY_MODE *disp_data, theme* the
 
     al_draw_text(font, theme -> vec[theme -> current] -> secondary, disp_data -> width/2, disp_data -> height*0.6 - move, ALLEGRO_ALIGN_CENTRE, "Press TAB to change color");
     for (unsigned char i = 0; i < MAX_THEMES; i++){
-        if (theme -> current == i){
-            al_draw_filled_circle((disp_data -> width/2) + (i - 4)*35, disp_data -> height*0.63 - move , 15, theme -> vec[i] -> primary);
-            al_draw_filled_circle((disp_data -> width/2) + (i - 4)*35, disp_data -> height*0.63 - move, 10, theme -> vec[i] -> back_theme);
+        if (theme -> current == i){ // tema selecionado
+            al_draw_filled_circle((disp_data -> width/2) + (i - MAX_THEMES/2)*35, disp_data -> height*0.63 - move , 15, theme -> vec[i] -> primary);
+            al_draw_filled_circle((disp_data -> width/2) + (i - MAX_THEMES/2)*35, disp_data -> height*0.63 - move, 10, theme -> vec[i] -> back_theme);
         }
         else{
-            al_draw_filled_circle((disp_data -> width/2) + (i - 4)*35, disp_data -> height*0.63 - move, 10, theme -> vec[i] -> back_theme);
-            al_draw_filled_circle((disp_data -> width/2) + (i - 4)*35, disp_data -> height*0.63 - move, 5, theme -> vec[i] -> primary);
+            al_draw_filled_circle((disp_data -> width/2) + (i - MAX_THEMES/2)*35, disp_data -> height*0.63 - move, 10, theme -> vec[i] -> back_theme);
+            al_draw_filled_circle((disp_data -> width/2) + (i - MAX_THEMES/2)*35, disp_data -> height*0.63 - move, 5, theme -> vec[i] -> primary);
         }
     }
     al_draw_text(font, theme -> vec[theme -> current] -> primary, disp_data -> width/2, disp_data -> height*0.655 - move, ALLEGRO_ALIGN_CENTRE, theme -> vec[theme -> current] -> name);
@@ -87,8 +101,6 @@ void show_historic(ALLEGRO_FONT* font, difficult* difficult, set_theme* theme, i
     int mid_y = max_y*0.5;
     int space_between = (-min_y - 50 + max_y - 30)*0.1;
 
-    if (!difficult -> show)
-        return;
     al_draw_filled_rounded_rectangle(min_x, min_y - move, max_x, (max_y*0.95) - move, 40, 40, theme -> back_theme);
     al_draw_rounded_rectangle(min_x, min_y - move, max_x, (max_y*0.95) - move, 40, 40, theme -> primary, 10);
     al_draw_textf(font, theme -> primary, mid_x, min_y + 10 + (space_between >> 2) - move, ALLEGRO_ALIGN_CENTRE, "HISTORIC - %s", difficult -> vec[difficult -> current].name);
@@ -100,7 +112,11 @@ void show_historic(ALLEGRO_FONT* font, difficult* difficult, set_theme* theme, i
 ALLEGRO_BITMAP* add_logo(ALLEGRO_DISPLAY_MODE* disp_data){
     ALLEGRO_BITMAP *logo = al_load_bitmap("img/LOGO.png");
     ALLEGRO_BITMAP *logo_redimens = al_create_bitmap(disp_data -> width*0.359895833, disp_data -> width*0.150984956);
-    
+    if (!(logo) || !(logo_redimens)){
+        fprintf(stderr, "Can't load logo\n");
+        return NULL;
+    }
+
     al_set_target_bitmap(logo_redimens);
     al_draw_scaled_bitmap(logo, 0, 0, al_get_bitmap_width(logo), al_get_bitmap_height(logo), 0, 0, disp_data -> width*0.359895833, disp_data -> width*0.150984956, 0);
     al_destroy_bitmap(logo);
@@ -111,7 +127,11 @@ ALLEGRO_BITMAP* add_logo(ALLEGRO_DISPLAY_MODE* disp_data){
 ALLEGRO_BITMAP* add_logo_alien(ALLEGRO_DISPLAY_MODE* disp_data){
     ALLEGRO_BITMAP *ALIEN = al_load_bitmap("img/ALIEN1_0.png");
     ALLEGRO_BITMAP *ALIEN_REDIM = al_create_bitmap(disp_data -> width*0.12, disp_data -> width*0.087272727);
-    
+    if (!(ALIEN) || !(ALIEN_REDIM)){
+        fprintf(stderr, "Can't load alien\n");
+        return NULL;
+    }
+
     al_set_target_bitmap(ALIEN_REDIM);
     al_draw_scaled_bitmap(ALIEN, 0, 0, al_get_bitmap_width(ALIEN), al_get_bitmap_height(ALIEN), 0, 0, disp_data -> width*0.12, disp_data -> width*0.087272727, 0);
     al_destroy_bitmap(ALIEN);
@@ -122,6 +142,10 @@ ALLEGRO_BITMAP* add_logo_alien(ALLEGRO_DISPLAY_MODE* disp_data){
 ALLEGRO_BITMAP* add_monster(ALLEGRO_DISPLAY_MODE* disp_data){
     ALLEGRO_BITMAP *MONSTER = al_load_bitmap("img/si_monster.png");
     ALLEGRO_BITMAP *MONSTER_REDIM = al_create_bitmap(al_get_bitmap_width(MONSTER)*0.25, al_get_bitmap_height(MONSTER)*0.25);
+    if (!(MONSTER) || !(MONSTER_REDIM)){
+        fprintf(stderr, "Can't load monster\n");
+        return NULL;
+    }
     
     al_set_target_bitmap(MONSTER_REDIM);
     al_draw_scaled_bitmap(MONSTER, 0, 0, al_get_bitmap_width(MONSTER), al_get_bitmap_height(MONSTER), 0, 0, al_get_bitmap_width(MONSTER)*0.25, al_get_bitmap_height(MONSTER)*0.25, 0);
@@ -133,7 +157,11 @@ ALLEGRO_BITMAP* add_monster(ALLEGRO_DISPLAY_MODE* disp_data){
 ALLEGRO_BITMAP* add_tutorial(ALLEGRO_DISPLAY_MODE* disp_data){
     ALLEGRO_BITMAP *TUTORIAL = al_load_bitmap("img/TUTORIAL.png");
     ALLEGRO_BITMAP *TUTORIAL_REDIM = al_create_bitmap(disp_data -> width*al_get_bitmap_width(TUTORIAL)*0.00045, disp_data -> width*al_get_bitmap_height(TUTORIAL)*0.00045);
-    
+    if (!(TUTORIAL) || !(TUTORIAL_REDIM)){
+        fprintf(stderr, "Can't load tutorial\n");
+        return NULL;
+    }
+
     al_set_target_bitmap(TUTORIAL_REDIM);
     al_draw_scaled_bitmap(TUTORIAL, 0, 0, al_get_bitmap_width(TUTORIAL), al_get_bitmap_height(TUTORIAL), 0, 0, disp_data -> width*al_get_bitmap_width(TUTORIAL)*0.00045, disp_data -> width*al_get_bitmap_height(TUTORIAL)*0.00045, 0);
     al_destroy_bitmap(TUTORIAL);
@@ -212,7 +240,10 @@ sprite_base* get_sprite_base(limits* limits){
 
         for (int j = 0; j < ALT_SPRITES; j++){
             sprintf(path, "img/%s%d_%d.png", name[0], i, j);
-            unscaled = al_load_bitmap(path);
+            if (!(unscaled = al_load_bitmap(path))){
+                fprintf(stderr, "Failed to load the %d %d %s image", i, j, name[0]);
+                return NULL;
+            }
             new_sprite_base -> aliens[i][j] = al_create_bitmap((limits -> max_width - limits -> min_width)*al_get_bitmap_width(unscaled)/285,(limits -> max_width - limits -> min_width)*al_get_bitmap_width(unscaled)/285);
             al_set_target_bitmap(new_sprite_base -> aliens[i][j]);
             al_draw_scaled_bitmap(unscaled, 0, 0, al_get_bitmap_width(unscaled), al_get_bitmap_height(unscaled), 0, 0, (limits -> max_width - limits -> min_width)*al_get_bitmap_width(unscaled)/285, (limits -> max_width - limits -> min_width)*al_get_bitmap_height(unscaled)/285, 0);
@@ -229,7 +260,10 @@ sprite_base* get_sprite_base(limits* limits){
 
         for (int j = 0; j < ALT_SPRITES; j++){
             sprintf(path, "img/%s%d_%d.png", name[1], i, j);
-            unscaled = al_load_bitmap(path);
+            if (!(unscaled = al_load_bitmap(path))){
+                fprintf(stderr, "Failed to load the %d %d %s image", i, j, name[1]);
+                return NULL;
+            }
             new_sprite_base -> shots[i][j] = al_create_bitmap((limits -> max_width - limits -> min_width)*al_get_bitmap_width(unscaled)/230,(limits -> max_width - limits -> min_width)*al_get_bitmap_height(unscaled)/230);
             al_set_target_bitmap(new_sprite_base -> shots[i][j]);
             al_draw_scaled_bitmap(unscaled, 0, 0, al_get_bitmap_width(unscaled), al_get_bitmap_height(unscaled), 0, 0, (limits -> max_width - limits -> min_width)*al_get_bitmap_width(unscaled)/230, (limits -> max_width - limits -> min_width)*al_get_bitmap_height(unscaled)/230, 0);
@@ -242,7 +276,10 @@ sprite_base* get_sprite_base(limits* limits){
 
     for (int i = 0; i < OBSTACLE_LIFES; i++){
         sprintf(path, "img/%s%d.png", name[2], i);
-        unscaled = al_load_bitmap(path);
+        if (!(unscaled = al_load_bitmap(path))){
+            fprintf(stderr, "Failed to load the %d %s image", i, name[2]);
+            return NULL;
+        }
         new_sprite_base -> obstacles[i] = al_create_bitmap((limits -> max_width - limits -> min_width)*al_get_bitmap_width(unscaled)/300,(limits -> max_width - limits -> min_width)*al_get_bitmap_width(unscaled)/300);
         al_set_target_bitmap(new_sprite_base -> obstacles[i]);
         al_draw_scaled_bitmap(unscaled, 0, 0, al_get_bitmap_width(unscaled), al_get_bitmap_height(unscaled), 0, 0, (limits -> max_width - limits -> min_width)*al_get_bitmap_width(unscaled)/300, (limits -> max_width - limits -> min_width)*al_get_bitmap_width(unscaled)/300, 0);
@@ -254,7 +291,10 @@ sprite_base* get_sprite_base(limits* limits){
 
     for (int i = 0; i < ALT_SPRITES; i++){
         sprintf(path, "img/%s%d.png", name[4], i);
-        unscaled = al_load_bitmap(path);
+        if (!(unscaled = al_load_bitmap(path))){
+            fprintf(stderr, "Failed to load the %d %s image", i, name[4]);
+            return NULL;
+        }
         new_sprite_base -> explosion[i] = al_create_bitmap((limits -> max_width - limits -> min_width)*al_get_bitmap_width(unscaled)/320, (limits -> max_width - limits -> min_width)*al_get_bitmap_width(unscaled)/320);
         al_set_target_bitmap(new_sprite_base -> explosion[i]);
         al_draw_scaled_bitmap(unscaled, 0, 0, al_get_bitmap_width(unscaled), al_get_bitmap_height(unscaled), 0, 0, (limits -> max_width - limits -> min_width)*al_get_bitmap_width(unscaled)/320, (limits -> max_width - limits -> min_width)*al_get_bitmap_width(unscaled)/320, 0);
@@ -266,7 +306,10 @@ sprite_base* get_sprite_base(limits* limits){
 
     for (int i = 0; i < QTD_POWER_UP_TYPES; i++){
         sprintf(path, "img/%s%d.png", name[5], i);
-        unscaled = al_load_bitmap(path);
+        if (!(unscaled = al_load_bitmap(path))){
+            fprintf(stderr, "Failed to load the %d %s image", i, name[5]);
+            return NULL;
+        }
         new_sprite_base -> power_up[i] = al_create_bitmap((limits -> max_width - limits -> min_width)*al_get_bitmap_width(unscaled)/650, (limits -> max_width - limits -> min_width)*al_get_bitmap_width(unscaled)/650);
         al_set_target_bitmap(new_sprite_base -> power_up[i]);
         al_draw_scaled_bitmap(unscaled, 0, 0, al_get_bitmap_width(unscaled), al_get_bitmap_height(unscaled), 0, 0, (limits -> max_width - limits -> min_width)*al_get_bitmap_width(unscaled)/650, (limits -> max_width - limits -> min_width)*al_get_bitmap_width(unscaled)/650, 0);
@@ -278,7 +321,10 @@ sprite_base* get_sprite_base(limits* limits){
 
     for (int i = 0; i < 2; i++){
         sprintf(path, "img/%s%d.png", name[3], i); 
-        unscaled = al_load_bitmap(path);
+        if (!(unscaled = al_load_bitmap(path))){
+            fprintf(stderr, "Failed to load the %d %s image", i, name[3]);
+            return NULL;
+        }
         new_sprite_base -> ship[i] = al_create_bitmap((limits -> max_width - limits -> min_width)*al_get_bitmap_width(unscaled)/300,(limits -> max_width - limits -> min_width)*al_get_bitmap_height(unscaled)/300);
         al_set_target_bitmap(new_sprite_base -> ship[i]);
         al_draw_scaled_bitmap(unscaled, 0, 0, al_get_bitmap_width(unscaled), al_get_bitmap_height(unscaled), 0, 0, (limits -> max_width - limits -> min_width)*al_get_bitmap_width(unscaled)/300, (limits -> max_width - limits -> min_width)*al_get_bitmap_height(unscaled)/300, 0);
@@ -311,9 +357,11 @@ void destroy_sprite_base(sprite_base* sprite_base){
     for (int i = 0; i < ALT_SPRITES; i++)
         al_destroy_bitmap(sprite_base -> explosion[i]);
     free(sprite_base -> explosion);
-    for (int i = 0; i < 2; i++){
+
+    for (int i = 0; i < 2; i++)
         al_destroy_bitmap(sprite_base -> ship[i]);
-    }
+    free(sprite_base -> ship);
+
     free(sprite_base);
 }
 
@@ -368,25 +416,25 @@ void show_ship(ship* ship, set_theme* theme, unsigned int frame){
 
 void show_lifes(ALLEGRO_FONT* font, ship* ship, set_theme* theme, limits limits){
 
-    al_draw_text(font, theme -> primary, limits.max_width - 450, limits.min_height + 20, ALLEGRO_ALIGN_RIGHT, "LIFES: ");
+    al_draw_text(font, theme -> primary, limits.max_width - 450, limits.min_height + 20, ALLEGRO_ALIGN_RIGHT, "LIVES: ");
     for (int i = ship ->life - 1; i > -1; i--)
        al_draw_tinted_scaled_bitmap(*ship -> alive_img, theme -> secondary, 0,0 ,al_get_bitmap_width(*ship -> alive_img),al_get_bitmap_height(*ship -> alive_img), limits.max_width - 150 - (75*i),limits.min_height - 13, al_get_bitmap_width(*ship -> alive_img)*0.75, al_get_bitmap_height(*ship -> alive_img)*0.75,0);
 }
 
 void show_points(ALLEGRO_FONT* font, game* game){
 
-    al_draw_textf(font, game -> theme -> primary, game -> limits.min_width + 30, game -> limits.min_height + 20, ALLEGRO_ALIGN_LEFT, "POINTS: %d", game -> points);
+    al_draw_textf(font, game -> theme -> primary, game -> limits.min_width + 30, game -> limits.min_height + 20, ALLEGRO_ALIGN_LEFT, "SCORE: %d", game -> points);
 }
 
 void show_power_ups(power_up_list* power_up_list, set_theme* theme){
 
     for (power_up* aux_power_up = power_up_list -> first; aux_power_up; aux_power_up = aux_power_up -> next)
-        al_draw_tinted_bitmap(aux_power_up -> img, theme -> secondary, aux_power_up -> pos_x, aux_power_up -> pos_y, 0);
+        al_draw_tinted_bitmap(aux_power_up -> img, theme -> secondary, aux_power_up -> pos_x - al_get_bitmap_width(aux_power_up -> img)/2, aux_power_up -> pos_y - al_get_bitmap_height(aux_power_up -> img)/2, 0);
 }
 
 void show_game(ALLEGRO_FONT* font, game* game, unsigned int frame){
 
-    al_draw_rounded_rectangle(game -> limits.min_width + 100, game -> limits.max_height*1.025, game -> limits.max_width - 100, game -> limits.max_height*1.03, 3,3, game -> theme -> secondary, 9);
+    al_draw_rounded_rectangle(game -> limits.min_width, game -> limits.max_height*1.025, game -> limits.max_width, game -> limits.max_height*1.03, 3,3, game -> theme -> secondary, 9);
     show_aliens(font, game, frame);
     show_shots(game -> space -> shot_list, game -> theme, frame);
     show_shots(game -> space -> ship -> shot_list, game -> theme, frame); 
@@ -399,24 +447,6 @@ void show_game(ALLEGRO_FONT* font, game* game, unsigned int frame){
     show_power_ups(game -> space -> power_up_list, game -> theme);
 }
 
-char restart_round(game* game, sprite_base* sprite_base){
-    char vec[6];
-    char blank_row[2];
-    char qtd_power_ups;
-
-    clean_shots(game -> space -> shot_list);
-    clean_shots(game -> space -> ship -> shot_list);
-    set_formation(&game -> space -> rows, &game -> space -> lines, &game -> difficult, &game -> space -> qtd_obstacles, &qtd_power_ups, vec, blank_row);
-    add_aliens(game -> space, vec, blank_row);
-    start_alien_position(game -> space, game -> limits);
-    set_random_power_ups(game -> space -> map, game -> space -> lines, game -> space -> rows, qtd_power_ups);
-    set_aliens_sprites(game -> space, sprite_base);
-    if (game -> space -> ship -> life < SHIP_MAX_LIFES)
-        game -> space -> ship -> life++;
-    game -> tick_rate -= 5;
-    return 1;
-}
-
 void show_game_over(ALLEGRO_FONT* font, ALLEGRO_DISPLAY_MODE* disp_mode, unsigned int frame, int points, set_theme* theme){
     int centre_x = disp_mode -> width/2;
     int centre_y = disp_mode -> height/2;
@@ -424,7 +454,7 @@ void show_game_over(ALLEGRO_FONT* font, ALLEGRO_DISPLAY_MODE* disp_mode, unsigne
     al_draw_filled_rounded_rectangle(centre_x - 400, centre_y - 400, centre_x + 400, centre_y + 400, 40, 40, theme -> secondary);
     al_draw_filled_rounded_rectangle(centre_x - 380, centre_y - 380, centre_x + 380, centre_y + 380, 20, 20, theme -> back_theme);
     al_draw_text(font, theme -> primary, centre_x, centre_y - 300, ALLEGRO_ALIGN_CENTRE, "GAME OVER");
-    al_draw_textf(font, theme -> primary, centre_x, centre_y, ALLEGRO_ALIGN_CENTRE, "POINTS: %d", points);
+    al_draw_textf(font, theme -> primary, centre_x, centre_y, ALLEGRO_ALIGN_CENTRE, "SCORE: %d", points);
     al_draw_text(font, theme -> secondary, centre_x, centre_y + 280, ALLEGRO_ALIGN_CENTRE, "Press ESC to Exit");
     if ((frame / 40) % 2)
         al_draw_text(font, theme -> primary, centre_x, centre_y + 300, ALLEGRO_ALIGN_CENTRE, "Press SPACE to go to Menu");

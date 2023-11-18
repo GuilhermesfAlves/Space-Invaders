@@ -1,5 +1,5 @@
 #include "../headers/sound.h"
-
+#include <stdio.h>
 int set_ship_sounds(ship* ship){
 
     if (!ship)

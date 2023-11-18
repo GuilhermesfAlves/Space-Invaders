@@ -7,12 +7,14 @@
 
 enum diff_mode {Diff_Easy, Diff_Normal, Diff_Hard, Diff_Extreme};
 
+//for each count in the historic there are points, the data and the time
 typedef struct{
     int points;
     char data[10];
     char time[8];
 }historic;
 
+//for a difficult there is a name and historic
 typedef struct{
     char* name;
     char type;
@@ -20,6 +22,7 @@ typedef struct{
     historic historic[QTD_P_HISTORIC];
 }difficulties;
 
+//bigger structure that contains each different difficult
 typedef struct{
     unsigned char show;
     unsigned char current;

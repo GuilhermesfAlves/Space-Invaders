@@ -1,4 +1,5 @@
 #include "../headers/power_up.h"
+#include <stdlib.h>
 
 power_up_list* create_power_up_list(){
     power_up_list* new_power_up_list;
@@ -16,6 +17,8 @@ void destroy_power_up_list(power_up_list* power_up_list){
 
     for (power_up* aux_power_up = power_up_list -> first; aux_power_up; aux_power_up = aux_power_up -> next)
         destroy_power_up(aux_power_up, power_up_list);
+
+    free(power_up_list);
 }
 
 power_up* add_power_up(char type, int pos_x, int pos_y, power_up_list* power_up_list){

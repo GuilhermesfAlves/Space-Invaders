@@ -7,6 +7,7 @@
 #define SHOT_SPRITES 5
 #define ALT_SPRITES 2
 
+//the structure that contains the allegro basic structures to run
 typedef struct{
     ALLEGRO_DISPLAY* disp;
     ALLEGRO_DISPLAY_MODE disp_mode;
@@ -19,6 +20,7 @@ typedef struct{
     ALLEGRO_BITMAP* back_gradient;
 }allegro_structures;
 
+//the structure that constains the images of the game
 typedef struct {
     ALLEGRO_BITMAP*** aliens;
     ALLEGRO_BITMAP*** shots;
@@ -50,11 +52,12 @@ void set_shot_sprite(shot* shot, sprite_base* sprite_base);
 void set_shot_sprites(shot_sentinel* shot_list, sprite_base* sprite_base);
 void set_power_up_sprite(power_up* power_up, sprite_base* sprite_base);
 
+//to return the structure with all the bitmaps for the game
 sprite_base* get_sprite_base(limits* limits);
 void destroy_sprite_base(sprite_base* sprite_base);
 
 void show_game(ALLEGRO_FONT* font, game* game, unsigned int frame);
-char restart_round(game* game, sprite_base* sprite_base);
+char restart_round(game* game);
 void show_game_over(ALLEGRO_FONT* font, ALLEGRO_DISPLAY_MODE* disp_mode, unsigned int frame, int points, set_theme* theme);
 
 #endif //__DESIGN__

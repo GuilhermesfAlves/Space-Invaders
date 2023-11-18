@@ -1,4 +1,5 @@
 #include "../headers/menu.h"
+#include <stdio.h>
 
 /*           ____                                                   */ 
 /*         /\  __`\                                                 */
@@ -17,17 +18,32 @@
  
 
 int main(){
-    al_init();
-    al_install_keyboard();
-    al_install_audio();
-    al_init_font_addon();
-    al_init_image_addon();
-    al_init_primitives_addon();
-    al_init_acodec_addon();
+    if ((!al_init())\
+     || (!al_install_keyboard())\
+     || (!al_install_audio())\
+     || (!al_init_font_addon())\
+     || (!al_init_image_addon())\
+     || (!al_init_primitives_addon())\
+     || (!al_init_acodec_addon())){
+        fprintf(stderr, "Can't init allegro libs\n");
+        exit(1);    
+    }
 
     allegro_structures* allegro_structures = add_allegro_structures();
+    if (!allegro_structures){
+        fprintf(stderr,"Can't initialize allegro_strucutures\n");
+        exit(1);
+    }
     theme* theme = create_themes(last_used_theme());
+    if (!theme){
+        fprintf(stderr,"Can't initialize themes\n");
+        exit(1);
+    }
     difficult* difficult = add_difficult(last_used_difficult());
+    if (!difficult){
+        fprintf(stderr,"Can't initialize difficult\n");
+        exit(1);
+    }
     char mode = _MENU_PART;
     int points = 0;
     add_icon(allegro_structures -> disp);
@@ -55,8 +71,11 @@ int main(){
             write_historic(&difficult -> vec[difficult -> current]);
             mode = game_over_part(theme -> vec[theme -> current], points, allegro_structures);
             break;
-        default:
+        case _EXIT:
             break;
+        default:
+            fprintf(stderr, "Mode %d i not a Part of the game", mode);
+            exit(1);
        }
     }    
     destroy_themes(theme);

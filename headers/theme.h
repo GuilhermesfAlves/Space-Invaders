@@ -1,8 +1,6 @@
 #ifndef __SI_THEME__
 #define __SI_THEME__
 
-#include <stdlib.h>
-#include <stdio.h>
 #include "allegro_headers.h"
 
 #define MAX_THEMES 9
@@ -25,6 +23,6 @@ typedef struct{
 theme* create_themes(unsigned char current);
 void destroy_themes(theme* theme);
 unsigned char last_used_theme();
-void save_last_used(unsigned char current);
+void save_last_used_theme(unsigned char current);
 
 #endif //__THEME__

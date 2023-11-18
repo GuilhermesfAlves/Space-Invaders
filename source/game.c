@@ -1,4 +1,5 @@
 #include "../headers/game.h"
+#include <stdlib.h>
 #include <stdio.h>
 
 game* add_game(unsigned char difficult, set_theme *theme, ALLEGRO_DISPLAY_MODE *disp_mode){
@@ -43,7 +44,8 @@ void update_game(game* game, unsigned int frame){
     if (game -> space -> shot_list -> first){
         update_shots(game -> space -> shot_list, game -> limits.max_height, game -> limits.max_width, game -> limits.min_width);
         hit_obstacles(game -> space -> obstacles, game -> space -> qtd_obstacles, game -> space -> shot_list);
-        hit_ship(game -> space -> ship, game -> space -> shot_list);
+        if (!game -> space -> ship -> exploded)
+            hit_ship(game -> space -> ship, game -> space -> shot_list);
     }
     update_shots(game -> space -> ship -> shot_list, game -> limits.min_height,  game -> limits.max_width, game -> limits.min_width);
     game -> points += hit_aliens(game -> space -> map, game -> space -> lines, game -> space -> rows, game -> space -> ship -> shot_list);
@@ -51,7 +53,7 @@ void update_game(game* game, unsigned int frame){
     hit_shots(game -> space -> ship -> shot_list, game -> space -> shot_list);
     game -> points += hit_alien(game -> space -> super_alien, game -> space -> ship -> shot_list);
     if (frame % (game -> tick_rate*2) == 0)
-        two_enemy_shots(game -> space -> ship -> pos_x, game -> space -> ship -> pos_y, game -> space -> lines, game -> space -> rows, game -> space -> map, game -> space -> shot_list);
+        enemy_shots(game -> space -> ship -> pos_x, game -> space -> ship -> pos_y, game -> space -> lines, game -> space -> rows, game -> space -> map, game -> space -> shot_list);
     if (game -> space -> ship -> power_up_eff <= 0)
         game -> space -> ship -> power_up_type = NONE;
     else if (game -> space -> ship -> power_up_eff > 0)
@@ -59,6 +61,26 @@ void update_game(game* game, unsigned int frame){
 
     if (game -> space -> power_up_list -> first)
         ship_got_power_up(game -> space);
+}
+
+char restart_round(game* game){
+    char vec[6];
+    char blank_row[2];
+    char qtd_power_ups;
+
+    clean_shots(game -> space -> shot_list);
+    clean_shots(game -> space -> ship -> shot_list);
+    if (!(set_formation(&game -> space -> rows, &game -> space -> lines, &game -> difficult, &game -> space -> qtd_obstacles, &qtd_power_ups, vec, blank_row))){
+        fprintf(stderr, "Can't set map formation\n");
+        return 0;
+    }
+    add_aliens(game -> space, vec, blank_row);
+    start_alien_position(game -> space, game -> limits);
+    set_random_power_ups(game -> space -> map, game -> space -> lines, game -> space -> rows, qtd_power_ups);
+    if (game -> space -> ship -> life < SHIP_MAX_LIFES)
+        game -> space -> ship -> life++;
+    game -> tick_rate -= 5; //acelera o tickrate em 5 por rodada, aumentando a dificuldade
+    return 1; 
 }
 
 void start_alien_position(space* space, limits limits){
@@ -79,6 +101,9 @@ void start_obstacles_position(space* space, limits limits){
     int between_x = (limits.max_width - limits.min_width)/space -> qtd_obstacles;
 
     for (int i = 0; i < space -> qtd_obstacles; i++){
+        if (!space -> obstacles[i])
+            continue;
+
         space -> obstacles[i] -> pos_x = between_x*i + between_x/2 + 50;
         space -> obstacles[i] -> pos_y = (limits.max_height - limits.min_height)*0.75;
     }
@@ -96,3 +121,4 @@ void start_objects_position(game* game){
     start_obstacles_position(game -> space, game -> limits);
     start_ship_position(game -> space -> ship, game -> limits);
 }
+

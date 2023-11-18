@@ -1,6 +1,6 @@
 #ifndef __SI_OBSTACLES__
 #define __SI_OBSTACLES__
-#include <stdlib.h>
+
 #include "allegro_headers.h"
 
 #define OBSTACLE_LIFES 10

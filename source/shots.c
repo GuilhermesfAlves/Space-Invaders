@@ -1,5 +1,5 @@
 #include "../headers/shots.h"
-#include <stdio.h>
+
 shot_sentinel* create_shotlist(void){
 	shot_sentinel* list; 
 	
@@ -15,9 +15,9 @@ shot_sentinel* create_shotlist(void){
 shot* straight_shoot(shot_sentinel *list, unsigned char damage, char trajectory_x, char trajectory_y, short pos_x, short pos_y, unsigned char type){
 	shot* new_shot;
 
-	if ((type + 1 != HARD) && (has_shot_in_row(list, pos_x)))
+	if (((type == SHIP) || (type == SHIP - 1)) && (has_shot_in_row(list, pos_x)))
 		return NULL;
-		
+
 	if (!(new_shot = (shot*) malloc(sizeof(shot))))
         return NULL;
 
@@ -39,7 +39,6 @@ shot* straight_shoot(shot_sentinel *list, unsigned char damage, char trajectory_
 
 	return new_shot;
 }
-
 
 //IMPLEMENTAR!
 //	Remove os tiros da lista
@@ -67,6 +66,13 @@ void clean_shots(shot_sentinel *list){
 
 	for (shot* p = list -> first; p; p = (shot*) p -> next)
 		destroy_shot(p, list);
+	
+}
+
+void destroy_shot_list(shot_sentinel *list){
+	
+	clean_shots(list);
+	free(list);
 }
 
 void update_shots(shot_sentinel* shot_list, short lim_y, short max_x, short min_x){

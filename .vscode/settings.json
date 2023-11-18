@@ -1,0 +1,17 @@
+{
+    "files.associations": {
+        "theme.h": "c",
+        "enemy.h": "c",
+        "obstacles.h": "c",
+        "space.h": "c",
+        "shots.h": "c",
+        "design.h": "c",
+        "game.h": "c",
+        "sound.h": "c",
+        "ship.h": "c",
+        "power_up.h": "c",
+        "menu.h": "c",
+        "joystick.h": "c",
+        "difficult.h": "c"
+    }
+}

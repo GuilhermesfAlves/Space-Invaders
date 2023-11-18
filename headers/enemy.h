@@ -5,11 +5,12 @@
 
 #define ENEMIES_TO_SHOOT 2
 
+//struct of each enemie on the game
 typedef struct{
 	char type;
 	int pos_x;
 	int pos_y;
-	char dir;
+	char dir; //direction
 	short points;
 	char power_up;
 	unsigned char exploded;
@@ -21,6 +22,7 @@ typedef struct{
 
 enemy* add_enemy(int type, char dir);
 void* destroy_enemy(enemy* enemy);
-void two_enemy_shots(int pos_x, int pos_y, short lines, short rows, enemy*** map, shot_sentinel* shot_list);
+//select and fire shots from the enemies on the map, the qtd is set by an define
+void enemy_shots(int pos_x, int pos_y, short lines, short rows, enemy*** map, shot_sentinel* shot_list);
 
 #endif

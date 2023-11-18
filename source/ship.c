@@ -1,5 +1,5 @@
 #include "../headers/ship.h"
-
+#include <stdlib.h>
 
 ship* add_ship(){
     ship* new_ship;
@@ -10,7 +10,6 @@ ship* add_ship(){
     new_ship -> life = SHIP_INICIAL_LIFES;
     new_ship -> pos_x = 0;
 	new_ship -> pos_y = 0;
-    new_ship -> move = 0;
     new_ship -> exploded = 0;
     new_ship -> power_up_type = 0;
     new_ship -> power_up_eff = 0;

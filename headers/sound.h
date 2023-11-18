@@ -1,6 +1,6 @@
 #ifndef __SI_SOUND__
 #define __SI_SOUND__
-#include <stdio.h>
+
 #include "game.h"
 
 #define MOVE_SOUNDS 4
