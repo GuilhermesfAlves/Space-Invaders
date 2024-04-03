@@ -1,6 +1,6 @@
-# Space Invaders
+# Prova 4 da matéria de Programação 2
 
-Jogo para trabalho A4 de Programação 2.
+## <h2 align="center">Space Invaders<h2>
 
 O enunciado do trabalho era fazer o Space Invaders. Nele havia muita liberdade do que criar.
 
@@ -22,3 +22,9 @@ Existem 4 tipos de inimigos:
  - Super(150-300pts): Causa 2 de dano, se move mais rápido atrás dos inimigos convencionais, atira 1 vez
 
 A cada 2 movimentos, os 2 inimigos mais próximos à nave disparam.
+
+# USO
+```bash
+	make
+	./space_invaders
+```
