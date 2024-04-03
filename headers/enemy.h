@@ -20,9 +20,11 @@ typedef struct{
 	ALLEGRO_SAMPLE* death_s;
 } enemy;
 
+//criação de um inimigo
 enemy* add_enemy(int type, char dir);
+//destruição de um inimigo
 void* destroy_enemy(enemy* enemy);
-//select and fire shots from the enemies on the map, the qtd is set by an define
+//disparo de ENEMIES_TO_SHOOT tiros de aliens das posições mais pertos da nave
 void enemy_shots(int pos_x, int pos_y, short lines, short rows, enemy*** map, shot_sentinel* shot_list);
 
 #endif

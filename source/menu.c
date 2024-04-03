@@ -256,11 +256,8 @@ char game_part(int *points, difficult* difficult, set_theme* theme, allegro_stru
         frame++;
     }
     *points = game -> points;
-    printf("destroy sprite base\n");
     destroy_sprite_base(sprite_base);
-    printf("destroy game\n");
     destroy_game(game);
-    printf("game destroyed\n");
     return next_part;
 }
 
@@ -268,7 +265,6 @@ char game_over_part(set_theme* theme, int points, allegro_structures* allegro_st
     unsigned int frame = 0;
     char next_part = _MENU_PART;
 
-    printf("game over part\n");
     while(next_part){
         al_wait_for_event(allegro_structures -> queue, &allegro_structures -> event);
 

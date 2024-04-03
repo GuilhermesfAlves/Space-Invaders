@@ -1,7 +1,7 @@
 #ifndef __SI_JOYSTICK__
 #define __SI_JOYSTICK__
 
-//possible controls in the game
+//controles possíveis no jogo
 typedef struct{
     unsigned char tab;
     unsigned char enter;
@@ -10,11 +10,12 @@ typedef struct{
     unsigned char space;
 }joystick;
 
+//criação do joystick
 joystick* add_joystick();
+//destruição do joystick
 void destroy_joystick(joystick* joystick);
 
-//used by commands that receive the keyboard input
-//to flip a char
+//funções para flipar um movimento do joystick
 
 void joystick_space(joystick* joystick);
 void joystick_enter(joystick* joystick);

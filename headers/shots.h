@@ -31,12 +31,19 @@ typedef struct{
 	shot *last;
 } shot_sentinel;
 
+//cria um shot e insere ele numa shot_list
 shot* straight_shoot(shot_sentinel *list, unsigned char damage, char trajectory_x, char trajectory_y, short pos_x, short pos_y, unsigned char type);
-shot_sentinel* create_shotlist(void);
+//cria uma shot_list 
+shot_sentinel* create_shotlist();
+//limpa todos os tiros em uma shot_list
 void clean_shots(shot_sentinel *list);
+//destroi uma shot_list
 void destroy_shot_list(shot_sentinel *list);
+//destroi um tiro de um shot_list
 shot* destroy_shot(shot* current, shot_sentinel *list);
+//avança todos os tiros para sua direção 
 void update_shots(shot_sentinel* shot_list, short lim_y, short max_x, short min_x);
+//confere se há algum tiro em uma shot_list que esteja à uma distância menor que ROW_SPACE
 int has_shot_in_row(shot_sentinel* shot_list, short pos_x);
 
 #endif //__SHOTS__

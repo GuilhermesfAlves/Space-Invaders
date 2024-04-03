@@ -23,11 +23,9 @@ typedef struct{
     ALLEGRO_SAMPLE* death_s; //sound effect
 }ship;
 
-shot* ship_straight_shoot(ship *ship);
-
+//inicialização de ship
 ship* add_ship();
+//destruição de ship
 void destroy_ship(ship* ship);
-
-int shot_in_row(ship* ship);
 
 #endif //__SHIP__

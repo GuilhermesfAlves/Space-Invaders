@@ -7,7 +7,7 @@
 #define SHOT_SPRITES 5
 #define ALT_SPRITES 2
 
-//the structure that contains the allegro basic structures to run
+//a estrutura que contém todos os dados necessários para a allegro
 typedef struct{
     ALLEGRO_DISPLAY* disp;
     ALLEGRO_DISPLAY_MODE disp_mode;
@@ -20,7 +20,7 @@ typedef struct{
     ALLEGRO_BITMAP* back_gradient;
 }allegro_structures;
 
-//the structure that constains the images of the game
+//a estrutura que contém todas as imagens do jogo
 typedef struct {
     ALLEGRO_BITMAP*** aliens;
     ALLEGRO_BITMAP*** shots;

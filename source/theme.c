@@ -3,6 +3,7 @@
 #include <stdlib.h>
 #include <stdio.h>
 
+// cria e determina quais são as opções de cores possíveis para o jogo
 theme* create_themes(unsigned char current){
     theme* new_theme;
 
@@ -60,6 +61,7 @@ theme* create_themes(unsigned char current){
     return new_theme;
 }
 
+//destroi a memória allocada para os temas
 void destroy_themes(theme* theme){
     
     for(int i = 0; i < MAX_THEMES; i++)
@@ -69,6 +71,7 @@ void destroy_themes(theme* theme){
     free(theme);
 }
 
+// Lê de um determinado arquivo a última preferência de tema escolhida 
 unsigned char last_used_theme(){
     char ind;
 
@@ -82,6 +85,7 @@ unsigned char last_used_theme(){
     return atoi(&ind); 
 }
 
+// Guarda em um arquivo a preferência de tema definida pelo usuário
 void save_last_used_theme(unsigned char current){
 
     FILE* LastUsed = fopen("database/LastUsedTheme.txt","w"); 
