@@ -1,1 +1,3 @@
-.vscode/
+/objects
+/.vscode
+space_invaders
