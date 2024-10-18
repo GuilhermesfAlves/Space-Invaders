@@ -28,3 +28,5 @@ A cada 2 movimentos, os 2 inimigos mais próximos à nave disparam.
 	make
 	./space_invaders
 ```
+![Print do jogo 1](SpaceInvadersHome.png)
+![Print do jogo 2](SpaceInvadersGame.png)
